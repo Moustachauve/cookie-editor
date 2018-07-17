@@ -86,7 +86,7 @@ $(function () {
 function showCookiesForTab() {
     var url = getCurrentTabUrl();
     console.log('Getting cookies for "' + url + '"');
-    chrome.cookies.getAll({ url: getCurrentTabUrl() }, function (cookies) {
+    chrome.runtime.sendMessage({ type: "getAllCookies", url: getCurrentTabUrl() }, function (cookies) {
         cookies = cookies.sort(sortCookiesByName);
         loadedCookies = cookies;
         $('#pageTitle').text('Cookie Editor');
@@ -230,10 +230,12 @@ function guid() {
 function initWindow(tabs) {
     console.log('initiating...');
     allTabs = tabs;
-    chrome.cookies.onChanged.addListener(onCookiesChanged);
-    chrome.tabs.onUpdated.addListener(onTabsChanged);
-    chrome.tabs.onActivated.addListener(onTabActivated);
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabInfo) {
+    //chrome.cookies.onChanged.addListener(onCookiesChanged);
+    //chrome.tabs.onUpdated.addListener(onTabsChanged);
+    //chrome.tabs.onActivated.addListener(onTabActivated);
+    //chrome.tabs.query({active: true, currentWindow: true}, function(tabInfo) {
+    //});
+    chrome.runtime.sendMessage({ type: "getCurrentTab" }, function (tabInfo) {
         console.log('Got current tab info', tabInfo);
         currentTabId = tabInfo[0].id;
         showCookiesForTab();
@@ -262,11 +264,15 @@ function getCurrentTabUrl() {
     return '';
 }
 
-chrome.tabs.query({}, initWindow);
-
-chrome.runtime.getBrowserInfo(function (info) {
-    var mainVersion = info.version.split('.')[0];
-    if (mainVersion < 57) {
-        $('#cookie-container').css('height', '600px');
-    }
+chrome.runtime.sendMessage({ type: "getTabs" }, function (response) {
+    initWindow(response); 
 });
+
+if (chrome.runtime.getBrowserInfo) {
+    chrome.runtime.getBrowserInfo(function (info) {
+        var mainVersion = info.version.split('.')[0];
+        if (mainVersion < 57) {
+            $('#cookie-container').css('height', '600px');
+        }
+    });
+}
