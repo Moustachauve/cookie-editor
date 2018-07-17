@@ -175,6 +175,12 @@ function createCookie(cookie) {
         domain: cookie.domain || '',
         name: cookie.name || '',
         value: cookie.value || '',
+        path: cookie.path || null,
+        secure: cookie.secure || null,
+        httpOnly: cookie.httpOnly || null,
+        sameSite: cookie.sameSite || null,
+        expirationDate: cookie.expirationDate || null,
+        storeId: cookie.storeId || null,
         url: getCurrentTabUrl(),
     }
     
