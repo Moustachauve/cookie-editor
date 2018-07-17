@@ -1,0 +1,21 @@
+html, body {
+    height: 100%;
+}
+.panel-section-footer {
+    background-color: #fafafa;
+}
+#cookie-container {
+    position: absolute;
+    width: 100%;
+    bottom: 40px;
+    top: 0;
+    min-height: initial;
+    max-height: initial;
+    min-width: initial;
+    max-width: initial;
+}
+.panel.button-bar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}

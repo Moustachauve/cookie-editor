@@ -19,9 +19,10 @@
             "38": "button/cookie-38.png"
         },
         "default_title": "EditMyCookie",
-        "default_popup": "popup/cookie-list.html",
+        "default_popup": "interface/popup/cookie-list.html",
         "browser_style": true
     },
+    "devtools_page": "interface/devtools/devtool.html",
     "permissions": [
         "cookies", "<all_urls>", "tabs"
     ],
