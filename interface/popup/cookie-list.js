@@ -1,6 +1,6 @@
 'use strict'
 
-var allTabs;
+var currentTab;
 var loadedCookies;
 var currentTabId;
 
@@ -86,7 +86,7 @@ $(function () {
 function showCookiesForTab() {
     var url = getCurrentTabUrl();
     console.log('Getting cookies for "' + url + '"');
-    chrome.runtime.sendMessage({ type: "getAllCookies", url: getCurrentTabUrl() }, function (cookies) {
+    sendMessage("getAllCookies", { url: getCurrentTabUrl() }, function (cookies) {
         cookies = cookies.sort(sortCookiesByName);
         loadedCookies = cookies;
         $('#pageTitle').text('Cookie Editor');
@@ -199,16 +199,14 @@ function onCookiesChanged(changeInfo) {
 }
 
 function onTabsChanged(tabId, changeInfo, tab) {
-    if (changeInfo.url || changeInfo.status === 'complete') {
+    if (tabId == currentTabId && (changeInfo.url || changeInfo.status === 'complete')) {
         showCookiesForTab();
         console.log('Tab has changed!');
     }
 }
 
 function onTabActivated(activeInfo) {
-    console.log('Tab activated!');
-    currentTabId = activeInfo.tabId;
-    showCookiesForTab();
+    updateCurrentTab();
 }
 
 function sortCookiesByName(a, b) {
@@ -227,34 +225,29 @@ function guid() {
         s4() + '-' + s4() + s4() + s4();
 }
 
-function initWindow(tabs) {
-    console.log('initiating...');
-    allTabs = tabs;
+function initWindow(tab) {
     //chrome.cookies.onChanged.addListener(onCookiesChanged);
     //chrome.tabs.onUpdated.addListener(onTabsChanged);
     //chrome.tabs.onActivated.addListener(onTabActivated);
-    //chrome.tabs.query({active: true, currentWindow: true}, function(tabInfo) {
-    //});
-    chrome.runtime.sendMessage({ type: "getCurrentTab" }, function (tabInfo) {
+    updateCurrentTab();
+}
+
+function updateCurrentTab() {
+    sendMessage("getCurrentTab", null, function (tabInfo) {
         console.log('Got current tab info', tabInfo);
         currentTabId = tabInfo[0].id;
+        currentTab = tabInfo[0];
         showCookiesForTab();
     });
 }
 
 function getCurrentTab() {
-    if (!allTabs) {
-        console.log('no tabs found');
+    if (!currentTab) {
+        console.log('no tab found');
         return null;
     }
-    console.log(allTabs.length + ' tabs, getting current tab id "' + currentTabId + '"..');
-    for (let tab of allTabs) {
-        if (tab.id === currentTabId) {
-            return tab;
-        }
-    }
-    console.log('Tab not found');
-    return null;
+    
+    return currentTab;
 }
 
 function getCurrentTabUrl() {
@@ -264,9 +257,14 @@ function getCurrentTabUrl() {
     return '';
 }
 
-chrome.runtime.sendMessage({ type: "getTabs" }, function (response) {
-    initWindow(response); 
-});
+function sendMessage(type, params, callback, errorCallback) {
+    if (window.browser) {
+        var sending = browser.runtime.sendMessage({ type: type, params: params });
+        sending.then(callback, errorCallback);  
+    } else {
+        chrome.runtime.sendMessage({ type: type, params: params }, callback);
+    }
+}
 
 if (chrome.runtime.getBrowserInfo) {
     chrome.runtime.getBrowserInfo(function (info) {
@@ -276,3 +274,5 @@ if (chrome.runtime.getBrowserInfo) {
         }
     });
 }
+
+initWindow(); 
