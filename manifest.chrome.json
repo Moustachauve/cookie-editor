@@ -16,7 +16,7 @@
             "32": "icons/cookie-32-filled.png",
             "48": "icons/cookie-48-filled.png"
         },
-        "default_title": "EditMyCookie",
+        "default_title": "Cookie-Editor",
         "default_popup": "interface/popup/cookie-list.html"
     },
     "devtools_page": "interface/devtools/devtool.html",

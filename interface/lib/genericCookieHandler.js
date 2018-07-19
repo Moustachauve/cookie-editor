@@ -23,14 +23,13 @@ function GenericCookieHandler() {
             path: cookie.path || null,
             secure: cookie.secure || null,
             httpOnly: cookie.httpOnly || null,
-            sameSite: cookie.sameSite || null,
             expirationDate: cookie.expirationDate || null,
             storeId: cookie.storeId || null,
             url: url,
         };
         
         if (window.browser) {
-            browser.cookie.set(newCookie).then(callback);
+            browser.cookies.set(newCookie).then(callback);
         } else {
             chrome.cookies.set(newCookie, callback);
         }
