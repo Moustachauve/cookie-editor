@@ -5,6 +5,8 @@
     var loadedCookies;
     var currentTabId;
 
+    var cookieHandler = new CookieHandler();
+
     $(function () {
         $('#cookie-container').on('click', 'li .header', function () {
             var $this = $(this);
@@ -71,7 +73,7 @@
 
             cookie.name = name;
             cookie.value = value;
-            createCookie(cookie);
+            cookieHandler.saveCookie(cookie, getCurrentTabUrl());
 
             if ($(this).hasClass('create')) {
                 $('#return-list').click();
@@ -85,9 +87,7 @@
     });
 
     function showCookiesForTab() {
-        var url = getCurrentTabUrl();
-        console.log('Getting cookies for "' + url + '"');
-        sendMessage("getAllCookies", { url: getCurrentTabUrl() }, function (cookies) {
+        cookieHandler.getAllCookies(function (cookies) {
             cookies = cookies.sort(sortCookiesByName);
             loadedCookies = cookies;
             $('#pageTitle').text('Cookie Editor');
@@ -159,11 +159,7 @@
     }
 
     function removeCookie(name, url, callback) {
-        var removing = chrome.cookies.remove({
-            url: url ? url : getCurrentTabUrl(),
-            name: name
-        }, function (e) {
-            // On success
+        var removing = cookieHandler.removeCookie(name, url || getCurrentTabUrl(), function (e) {
             console.log('success', e);
             if (callback) {
                 callback();
@@ -171,32 +167,13 @@
         });
     }
 
-    function createCookie(cookie) {
-        var newCookie = {
-            domain: cookie.domain || '',
-            name: cookie.name || '',
-            value: cookie.value || '',
-            path: cookie.path || null,
-            secure: cookie.secure || null,
-            httpOnly: cookie.httpOnly || null,
-            sameSite: cookie.sameSite || null,
-            expirationDate: cookie.expirationDate || null,
-            storeId: cookie.storeId || null,
-            url: getCurrentTabUrl(),
-        };
-        
-        chrome.cookies.set(newCookie, function (e) {
-            // On success
-        });
+    function onCookiesChanged(changeInfo) {
+        showCookiesForTab();
+        console.log('Cookies have changed!');
     }
 
-    function onCookiesChanged(changeInfo) {
-        var domain = changeInfo.cookie.domain.substring(1);
-        console.log(getCurrentTabUrl(), domain, changeInfo);
-        if (getCurrentTabUrl().indexOf(domain) !== -1) {
-            showCookiesForTab();
-            console.log('Cookies have changed!');
-        }
+    function onCookieHandlerReady() {
+        showCookiesForTab();
     }
 
     function onTabsChanged(tabId, changeInfo, tab) {
@@ -230,30 +207,13 @@
         //chrome.cookies.onChanged.addListener(onCookiesChanged);
         //chrome.tabs.onUpdated.addListener(onTabsChanged);
         //chrome.tabs.onActivated.addListener(onTabActivated);
-        updateCurrentTab();
-    }
-
-    function updateCurrentTab() {
-        sendMessage("getCurrentTab", null, function (tabInfo) {
-            console.log('Got current tab info', tabInfo);
-            currentTabId = tabInfo[0].id;
-            currentTab = tabInfo[0];
-            showCookiesForTab();
-        });
-    }
-
-    function getCurrentTab() {
-        if (!currentTab) {
-            console.log('no tab found');
-            return null;
-        }
-        
-        return currentTab;
+        cookieHandler.on('cookiesChanged', onCookiesChanged);
+        cookieHandler.on('ready', onCookieHandlerReady);
     }
 
     function getCurrentTabUrl() {
-        if (getCurrentTab()) {
-            return getCurrentTab().url;
+        if (cookieHandler.currentTab) {
+            return cookieHandler.currentTab.url;
         }
         return '';
     }

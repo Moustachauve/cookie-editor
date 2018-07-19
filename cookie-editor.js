@@ -8,21 +8,49 @@ function sendMessage() {
 }
 
 function handleMessage(request, sender, sendResponse) {
+    console.log('message received: ' + (request.type || 'unknown'));
     switch (request.type) {
         case 'getTabs':
             chrome.tabs.query({}, function (tabs) {
                 sendResponse(tabs);
             });
             return true;
+
         case 'getCurrentTab':
             chrome.tabs.query({ active: true, currentWindow: true }, function (tabInfo) {
                 sendResponse(tabInfo);
             });
             return true;
+
         case 'getAllCookies':
-            chrome.cookies.getAll({ url: request.params.url }, function (cookies) {
-                sendResponse(cookies);
-            });
+            var getAllCookiesParams = { 
+                url: request.params.url 
+            };
+            if (window.browser) {
+                browser.cookies.getAll(getAllCookiesParams).then(sendResponse);
+            } else {
+                chrome.cookies.getAll(getAllCookiesParams, sendResponse);
+            }
+            return true;
+
+        case 'saveCookie':
+            if (window.browser) {
+                browser.cookie.set(request.params.cookie).then(sendResponse);
+            } else {
+                chrome.cookies.set(request.params.cookie, sendResponse);
+            }
+            return true;
+
+        case 'removeCookie':
+            var removeParams = {
+                name: request.params.name, 
+                url: request.params.url
+            };
+            if (window.browser) {
+                browser.cookies.remove(removeParams).then(sendResponse);
+            } else {
+                chrome.cookies.remove(removeParams, sendResponse);
+            }
             return true;
     }
 }

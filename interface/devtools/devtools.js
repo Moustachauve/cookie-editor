@@ -1,5 +1,5 @@
 chrome.devtools.panels.create("Cookie-Editor",
-    "../../button/cookie-38.png",
+    "/icons/cookie-38-filled.png",
     "/interface/devtools/cookie-list.html",
     function(panel) {
 

@@ -6,6 +6,7 @@ body {
     min-width: 500px;
     font-size: 12px;
     overflow: hidden;
+    font-family: "Segoe UI", Tahoma, sans-serif;
 }
 
 body * {

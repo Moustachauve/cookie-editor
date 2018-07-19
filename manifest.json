@@ -6,8 +6,7 @@
     "background": {
         "scripts": [
             "cookie-editor.js"
-        ],
-        "persistent": false
+        ]
     },
     "browser_action": {
         "default_icon": {
@@ -16,8 +15,22 @@
             "32": "icons/cookie-32-filled.png",
             "48": "icons/cookie-48-filled.png"
         },
+		"theme_icons": [{
+			"light": "icons/cookie-16-light.png",
+			"dark": "icons/cookie-16.png",
+			"size": 16
+		}, {
+			"light": "icons/cookie-32-light.png",
+			"dark": "icons/cookie-32.png",
+			"size": 32
+		}, {
+			"light": "icons/cookie-128-light.png",
+			"dark": "icons/cookie-128.png",
+			"size": 128
+		}],
         "default_title": "EditMyCookie",
-        "default_popup": "interface/popup/cookie-list.html"
+        "default_popup": "interface/popup/cookie-list.html",
+        "browser_style": true
     },
     "devtools_page": "interface/devtools/devtool.html",
     "permissions": [
