@@ -5,20 +5,30 @@ function CookieHandler() {
 
     var self = this;
     var isInit = false;
+    var backgroundPageConnection;
 
     updateCurrentTab(init);
 
     function init() {
         console.log('Devtool init');
+        var tabId;
         if (window.browser) {
+            backgroundPageConnection = browser.runtime.connect({name: "panel"});
+            tabId = browser.devtools.inspectedWindow.tabId;
             //browser.cookies.onChanged.addListener(onCookiesChanged);
             //browser.tabs.onUpdated.addListener(onTabsChanged);
             //browser.tabs.onActivated.addListener(onTabActivated);
         } else {
-            //chrome.cookies.onChanged.addListener(onCookiesChanged);
-            //chrome.tabs.onUpdated.addListener(onTabsChanged);
-            //chrome.tabs.onActivated.addListener(onTabActivated);
+            backgroundPageConnection = chrome.runtime.connect({name: "panel"});
+            tabId = chrome.devtools.inspectedWindow.tabId;
         }
+
+        backgroundPageConnection.onMessage.addListener(onMessage);
+
+        backgroundPageConnection.postMessage({
+            type: 'init',
+            tabId: tabId
+        });
 
         isInit = true;
         console.log('Devtool ready');
@@ -50,21 +60,30 @@ function CookieHandler() {
         sendMessage("removeCookie", {name: name, url: url}, callback);
     };
 
+    function onMessage(request) {
+        console.log('background message received: ' + (request.type || 'unknown'));
+        switch (request.type) {
+            case 'cookiesChanged':
+                onCookiesChanged(request.data);
+                return;
+
+            case 'tabsChanged':
+                onTabsChanged(request.data);
+                return;
+        }
+    }
+
     function onCookiesChanged(changeInfo) {
         var domain = changeInfo.cookie.domain.substring(1);
         if (self.currentTab.url.indexOf(domain) !== -1) {
             self.emit('cookiesChanged');
         }
     }
-    function onTabsChanged(tabId, changeInfo, tab) {
-        if (tabId == self.currentTabId && (changeInfo.url || changeInfo.status === 'complete')) {
+    function onTabsChanged(changeInfo) {
+        if (changeInfo.url || changeInfo.status === 'complete') {
             console.log('tabChanged!');
             updateCurrentTab();
         }
-    }
-
-    function onTabActivated(activeInfo) {
-        updateCurrentTab();
     }
 
     function updateCurrentTab(callback) {
@@ -75,7 +94,9 @@ function CookieHandler() {
             if (newTab && isInit) {
                 self.emit('cookiesChanged');
             }
-            callback();
+            if (callback) {
+                callback();
+            }
         });
     }
 

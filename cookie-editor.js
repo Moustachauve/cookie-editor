@@ -1,10 +1,15 @@
-function sendMessage() {
-    if (window.browser) {
-        var sending = browser.tabs.sendMessage({ type: type, params: params });
-        sending.then(callback, errorCallback);
-    } else {
-        chrome.runtime.sendMessage({ type: type, params: params }, callback);
-    }
+var connections = {};
+
+if (window.browser) {
+    browser.runtime.onConnect.addListener(onConnect);
+    browser.runtime.onMessage.addListener(handleMessage);
+    browser.cookies.onChanged.addListener(onCookiesChanged);
+    browser.tabs.onUpdated.addListener(onTabsChanged);
+} else {
+    chrome.runtime.onConnect.addListener(onConnect);
+    chrome.runtime.onMessage.addListener(handleMessage);
+    chrome.cookies.onChanged.addListener(onCookiesChanged);
+    chrome.tabs.onUpdated.addListener(onTabsChanged);
 }
 
 function handleMessage(request, sender, sendResponse) {
@@ -55,27 +60,56 @@ function handleMessage(request, sender, sendResponse) {
     }
 }
 
-function onCookiesChanged(changeInfo) {
+function onConnect(port) {
+    var extensionListener = function (request, sender, sendResponse) {
+        console.log('port message received: ' + (request.type || 'unknown'));
+        switch (request.type) {
+            case 'init':
+                console.log('Devtool connected on tab ' + request.tabId);
+                connections[request.tabId] = port;
+                return;
+        }
 
+	// other message handling
+    };
+
+    // Listen to messages sent from the DevTools page
+    port.onMessage.addListener(extensionListener);
+
+    port.onDisconnect.addListener(function(port) {
+        port.onMessage.removeListener(extensionListener);
+        var tabs = Object.keys(connections);
+        for (var i=0, len=tabs.length; i < len; i++) {
+          if (connections[tabs[i]] == port) {
+            console.log('Devtool disconnected on tab ' + tabs[i]);
+            delete connections[tabs[i]];
+            break;
+          }
+        }
+    });
+}
+
+function sendMessageToTab(tabId, type, data) {
+    if (tabId in connections) {
+        connections[tabId].postMessage({
+            type: type,
+            data: data
+        });
+    }
+}
+
+function sendMessageToAllTabs(type, data) {
+    var tabs = Object.keys(connections);
+    for (var i=0, len=tabs.length; i < len; i++) {
+        sendMessageToTab(tabs[i], type, data);
+    }
+}
+
+function onCookiesChanged(changeInfo) {
+    console.log('cookies changed, notifying all devtools');
+    sendMessageToAllTabs('cookiesChanged', changeInfo);
 }
 
 function onTabsChanged(tabId, changeInfo, tab) {
-
-}
-
-function onTabActivated(tabInfo) {
-
-}
-
-
-if (window.browser) {
-    browser.runtime.onMessage.addListener(handleMessage);
-    browser.cookies.onChanged.addListener(onCookiesChanged);
-    browser.tabs.onUpdated.addListener(onTabsChanged);
-    browser.tabs.onActivated.addListener(onTabActivated);
-} else {
-    chrome.runtime.onMessage.addListener(handleMessage);
-    chrome.cookies.onChanged.addListener(onCookiesChanged);
-    chrome.tabs.onUpdated.addListener(onTabsChanged);
-    chrome.tabs.onActivated.addListener(onTabActivated);
+    sendMessageToTab(tabId, 'tabsChanged', changeInfo);
 }

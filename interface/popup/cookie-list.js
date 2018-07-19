@@ -44,6 +44,10 @@
         });
 
         $('#delete-all-cookies').click(function (e) {
+            if (!loadedCookies.length) {
+                return;
+            }
+            
             for (var i = 0; i < loadedCookies.length; i++) {
                 removeCookie(loadedCookies[i].name);
             }
