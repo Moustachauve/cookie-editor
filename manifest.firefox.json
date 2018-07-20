@@ -10,25 +10,25 @@
     },
     "browser_action": {
         "default_icon": {
-            "16": "icons/cookie-16-filled.png",
-            "19": "icons/cookie-19-filled.png",
-            "32": "icons/cookie-32-filled.png",
-            "48": "icons/cookie-48-filled.png"
+            "16": "icons/cookie-filled-small.svg",
+            "32": "icons/cookie-filled-small.svg",
+            "48": "icons/cookie-filled.svg",
+            "128": "icons/cookie-filled.svg"
         },
         "theme_icons": [
             {
-                "light": "icons/cookie-16-light.png",
-                "dark": "icons/cookie-16.png",
+                "light": "icons/cookie-light-small.svg",
+                "dark": "icons/cookie-small.svg",
                 "size": 16
             },
             {
-                "light": "icons/cookie-32-light.png",
-                "dark": "icons/cookie-32.png",
+                "light": "icons/cookie-light-small.svg",
+                "dark": "icons/cookie-small.svg",
                 "size": 32
             },
             {
-                "light": "icons/cookie-128-light.png",
-                "dark": "icons/cookie-128.png",
+                "light": "icons/cookie-light.svg",
+                "dark": "icons/cookie.svg",
                 "size": 128
             }
         ],
@@ -43,11 +43,11 @@
         "tabs"
     ],
     "icons": {
-        "16": "icons/cookie-16-filled.png",
-        "19": "icons/cookie-19-filled.png",
-        "32": "icons/cookie-32-filled.png",
-        "48": "icons/cookie-48-filled.png",
-        "128": "icons/cookie-128-filled.png"
+        "16": "icons/cookie-filled-small.svg",
+        "19": "icons/cookie-filled-small.svg",
+        "32": "icons/cookie-filled-small.svg",
+        "48": "icons/cookie-filled.svg",
+        "128": "icons/cookie-filled.svg"
     },
     "applications": {
         "gecko": {

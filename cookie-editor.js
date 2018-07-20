@@ -57,7 +57,7 @@
 
             case 'saveCookie':
                 if (window.browser) {
-                    browser.cookie.set(request.params.cookie).then(sendResponse);
+                    browser.cookies.set(request.params.cookie).then(sendResponse);
                 } else {
                     chrome.cookies.set(request.params.cookie, sendResponse);
                 }

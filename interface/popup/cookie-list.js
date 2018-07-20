@@ -70,14 +70,20 @@
             var name = form.find('input[name="name"]').val();
             var value = form.find('textarea[name="value"]').val();
             var cookie = loadedCookies[form.data('id')];
+            var oldName;
 
-            if (!cookie) {
+            if (cookie) {
+                oldName = cookie.name;
+            } else {
                 cookie = {};
+                oldName = name;
             }
 
             cookie.name = name;
             cookie.value = value;
-            cookieHandler.saveCookie(cookie, getCurrentTabUrl());
+            cookieHandler.removeCookie(oldName, getCurrentTabUrl(), function() {
+                cookieHandler.saveCookie(cookie, getCurrentTabUrl());
+            });
 
             if ($(this).hasClass('create')) {
                 $('#return-list').click();
