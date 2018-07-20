@@ -3,7 +3,7 @@
     "name": "Cookie-Editor",
     "version": "1.3",
     "author": "Moustachauve",
-    "description": "Simple Cookie Editor",
+    "description": "Simple yet powerful Cookie Editor",
     "background": {
         "scripts": [
             "cookie-editor.js"
