@@ -1,0 +1,58 @@
+{
+    "manifest_version": 2,
+    "name": "Cookie-Editor",
+    "version": "1.3",
+    "description": "Simple Cookie Editor",
+    "background": {
+        "scripts": [
+            "cookie-editor.js"
+        ]
+    },
+    "browser_action": {
+        "default_icon": {
+            "16": "icons/cookie-filled-small.svg",
+            "32": "icons/cookie-filled-small.svg",
+            "48": "icons/cookie-filled.svg",
+            "128": "icons/cookie-filled.svg"
+        },
+        "theme_icons": [
+            {
+                "light": "icons/cookie-light-small.svg",
+                "dark": "icons/cookie-small.svg",
+                "size": 16
+            },
+            {
+                "light": "icons/cookie-light-small.svg",
+                "dark": "icons/cookie-small.svg",
+                "size": 32
+            },
+            {
+                "light": "icons/cookie-light.svg",
+                "dark": "icons/cookie.svg",
+                "size": 128
+            }
+        ],
+        "default_title": "Cookie-Editor",
+        "default_popup": "interface/popup/cookie-list.html",
+        "browser_style": true
+    },
+    "devtools_page": "interface/devtools/devtool.html",
+    "permissions": [
+        "cookies",
+        "<all_urls>",
+        "tabs"
+    ],
+    "icons": {
+        "16": "icons/cookie-filled-small.svg",
+        "19": "icons/cookie-filled-small.svg",
+        "32": "icons/cookie-filled-small.svg",
+        "48": "icons/cookie-filled.svg",
+        "128": "icons/cookie-filled.svg"
+    },
+    "applications": {
+        "gecko": {
+            "id": "cookie-editor@cgagnier.ca",
+            "strict_min_version": "57.0"
+        }
+    }
+}
