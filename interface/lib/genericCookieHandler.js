@@ -27,6 +27,10 @@ function GenericCookieHandler() {
             storeId: cookie.storeId || null,
             url: url,
         };
+
+        if (cookie.hostOnly) {
+            newCookie.domain = null;
+        }
         
         if (window.browser) {
             browser.cookies.set(newCookie).then(callback);
