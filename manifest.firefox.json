@@ -51,7 +51,7 @@
     },
     "applications": {
         "gecko": {
-            "id": "cookie-editor@cgagnier.ca",
+            "id": "{c3c10168-4186-445c-9c5b-63f12b8e2c87}",
             "strict_min_version": "57.0"
         }
     }
