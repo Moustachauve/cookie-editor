@@ -145,6 +145,7 @@ label {
 .action-btns {
     display: flex;
     flex-direction: row-reverse;
+    align-items: stretch;
     padding-top: 26px;
     padding: 4px;
     -moz-user-select: none;
@@ -153,7 +154,6 @@ label {
 
 .action-btns button {
     flex: 1 1 auto;
-    align-items: stretch;
     text-align: center;
     border: none;
     background-color: transparent;

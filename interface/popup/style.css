@@ -14,6 +14,10 @@ body * {
     text-align: start;
 }
 
+button::-moz-focus-inner {
+    border: 0;
+}
+
 .container {
     padding: 8px 16px;
 }
@@ -121,11 +125,13 @@ label {
 .action-btns {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     padding-top: 26px;
     padding: 4px;
 }
 
 .action-btns button {
+    flex: 1 1 auto;
     border: none;
     background-color: transparent;
     cursor: pointer;
