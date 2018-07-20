@@ -1,12 +1,18 @@
+html, body {
+    height: 100%;
+    min-height: 600px;
+    min-width: 400px;
+}
+
 body {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     padding: 0;
     margin: 0;
-    min-width: 500px;
-    font-size: 12px;
+    width: 100%;
+    font-size: 1em;
     overflow: hidden;
-    font-family: "Segoe UI", Tahoma, sans-serif;
 }
 
 body * {
@@ -14,36 +20,53 @@ body * {
     text-align: start;
 }
 
-.container {
-    padding: 8px 16px;
+button::-moz-focus-inner {
+    border: 0;
 }
 
 #pageTitle {
-    font-size: 16px;
+    flex: 0 0 auto;
+    flex-shrink: 0;
     overflow: hidden;
-    line-height: 16px;
-    margin: 5px 0;
-    
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    min-width: 0;
+    padding: 0.5em;
+    background-color: #fafafa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
 }
-
-h2 {
+#pageTitle .titles {
+    display: inline-block;
+}
+#pageTitle img {
+    margin-right: 10px;
+    height: 2.259em;
+}
+#pageTitle h1, #pageTitle h2 {
     margin: 0;
     padding: 0;
 }
 
-button {
-    cursor: pointer;
+#pageTitle h1 {
+    font-size: 1.25em;
+}
+
+#pageTitle h2 {
+    font-size: 1em;
+    color: #1a1a1a;
+    font-weight: normal;
 }
 
 #cookie-container {
-    min-height: 100px;
-    min-width: 300px;
-    max-height: 400px;
     overflow-y: auto;
     background-color: #eaeaea;
+    flex: 1 1 auto;
+}
+#cookie-container > .container {
+    margin-top: 2em;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.panel.button-bar {
+    flex: 0 0 auto;
 }
 
 #cookie-container ul {
@@ -54,23 +77,16 @@ button {
 }
 
 #cookie-container li .header {
+    padding: 1.25em 1em;
+    font-weight: bold;
     border: 1px solid #cacaca;
+    background-color: #ffffff;
     position: relative;
-    cursor: pointer;
     -moz-user-select: none;
     user-select: none;
-    background-color: #ffffff;
 }
-
 #cookie-container li .header .btns {
     display: none;
-    position: absolute;
-    right: 16px;
-    top: 4px;
-}
-
-#cookie-container li .header:hover .btns {
-    display: block;
 }
 
 #cookie-container li .header .fa-angle-down {
@@ -86,13 +102,21 @@ button {
 
 #cookie-container li .expando {
     display: flex;
+    flex-direction: column-reverse;
+    padding: 1.25em 1em;
+    padding-bottom: 0.4em;
+}
+.form.container div:first-child {
+    margin-bottom: 0.75em;
 }
 
 #cookie-container textarea, #cookie-container input[type="text"] {
     width: 100%;
+    font-size: 1em;
+    font-family: inherit;
     resize: vertical;
     margin: 0;
-    width: 100%;
+    padding: 1em 0.5em;
 }
 
 label {
@@ -101,8 +125,8 @@ label {
 }
 
 .panel-section-footer-button {
-    font-size: 14px;
-    line-height: 14px;
+    font-size: 0.75em;
+    line-height: 0.75em;
 }
 
 .button-bar {
@@ -120,35 +144,28 @@ label {
 
 .action-btns {
     display: flex;
-    flex-direction: column;
+    flex-direction: row-reverse;
     padding-top: 26px;
     padding: 4px;
+    -moz-user-select: none;
+    user-select: none;
 }
 
 .action-btns button {
+    flex: 1 1 auto;
+    align-items: stretch;
+    text-align: center;
     border: none;
     background-color: transparent;
-    cursor: pointer;
-    padding: 8px;
-    transition: color 75ms;
-    transition-timing-function: ease-in;
+    padding: 18px;
 }
 
-.action-btns button:hover {
-    opacity: 0.5;
-}
-.action-btns button.delete:hover, button.delete.browser-style:hover {
-    color: #CF000F;
-    opacity: 0.8;
-}
-.action-btns button.save:hover {
-    color: #1E824C;
-    opacity: 0.8;
+.action-btns button:active {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Quick workaround the rendering issue for popups */
-body, .expando, #cookie-container {
-	background-image: url("pixel.png");
+.action-btns button:last-child {
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .panel-section-footer {
@@ -157,7 +174,7 @@ body, .expando, #cookie-container {
     color: #1a1a1a;
     display: flex;
     flex-direction: row;
-    height: 41px;
+    height: 65px;
     margin-top: -1px;
     padding: 0;
     -moz-user-select: none;
@@ -166,9 +183,14 @@ body, .expando, #cookie-container {
 .panel-section-footer-button {
     flex: 1 1 auto;
     height: 100%;
+    line-height: 36px;
+    font-size: 18px;
     margin: 0 -1px;
     padding: 12px;
     text-align: center;
+}
+.panel-section-footer-button:active {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 .panel-section-footer-separator {
     background-color: rgba(0, 0, 0, 0.1);

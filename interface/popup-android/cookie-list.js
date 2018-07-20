@@ -32,7 +32,7 @@
 
         $('#create-cookie').click(function (e) {
             $('#cookie-container').html('');
-            $('#pageTitle h1').text('Cookie Editor - Create a Cookie');
+            $('#pageTitle').text('Cookie Editor - Create a Cookie');
 
             var form = createHtmlFormCookie('', '', '');
             form.addClass('create');
@@ -94,7 +94,7 @@
         cookieHandler.getAllCookies(function (cookies) {
             cookies = cookies.sort(sortCookiesByName);
             loadedCookies = cookies;
-            $('#pageTitle h1').text('Cookie Editor');
+            $('#pageTitle').text('Cookie Editor');
             $('.button-bar').removeClass('active');
             $('.button-bar#button-bar-default').addClass('active');
 
