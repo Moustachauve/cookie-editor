@@ -9,8 +9,8 @@ If(!(test-path $buildPath))
 Copy-Item "manifest.firefox.json" -Destination "manifest.json"
 
 Compress-Archive -LiteralPath `
-icons\*, 
-interface\*, `
+icons\, 
+interface\, `
 cookie-editor.js, `
 manifest.json `
 -CompressionLevel Optimal `
@@ -23,8 +23,8 @@ manifest.json `
 Copy-Item "manifest.chrome.json" -Destination "manifest.json"
 
 Compress-Archive -LiteralPath `
-icons\*, 
-interface\*, `
+icons\, 
+interface\, `
 cookie-editor.js, `
 manifest.json `
 -CompressionLevel Optimal `
