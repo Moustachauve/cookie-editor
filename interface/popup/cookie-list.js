@@ -97,6 +97,8 @@
     });
 
     function showCookiesForTab() {
+        var domain = getDomainFromUrl(cookieHandler.currentTab.url);
+        $('.titles h2').text(domain || cookieHandler.currentTab.url);
         cookieHandler.getAllCookies(function (cookies) {
             cookies = cookies.sort(sortCookiesByName);
             loadedCookies = cookies;
@@ -235,6 +237,11 @@
         } else {
             chrome.runtime.sendMessage({ type: type, params: params }, callback);
         }
+    }
+
+    function getDomainFromUrl(url) {
+        var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
+        return matches && matches[1];
     }
 
     if (chrome.runtime.getBrowserInfo) {
