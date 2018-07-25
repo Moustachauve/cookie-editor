@@ -138,7 +138,7 @@
         if (window.browser) {
             browser.runtime.getPlatformInfo().then(getPlatformInfoCallback);
         } else {
-            chrome.runtime.getPlatformInfo().then(getPlatformInfoCallback);
+            chrome.runtime.getPlatformInfo(getPlatformInfoCallback);
         }
     }
 
