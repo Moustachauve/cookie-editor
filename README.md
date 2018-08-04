@@ -1,4 +1,4 @@
-# cookie-editor
+# Cookie-Editor
 Cookie-Editor let you efficiently create, edit and delete cookies for the current tab. Perfect for developing, quickly testing or even manually managing your cookies for your privacy.
 
 ## Description
