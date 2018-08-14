@@ -25,6 +25,12 @@ button::-moz-focus-inner {
     border: 0;
 }
 
+svg.icon {
+  height: 1em;
+  width: 1em;
+  pointer-events: none;
+}
+
 #pageTitle {
     flex: 0 0 auto;
     flex-shrink: 0;
@@ -86,13 +92,13 @@ button::-moz-focus-inner {
     display: none;
 }
 
-#cookie-container li .header .fa-angle-down {
+#cookie-container li .header .icon {
     -moz-transition: transform 150ms ease-in 0s;
     transition: transform 150ms ease-in 0s;
     margin-right: 10px;
 }
 
-#cookie-container li .header.active .fa-angle-down {
+#cookie-container li .header.active .icon {
     -moz-transform: rotate(180deg);
     transform: rotate(180deg);
 }

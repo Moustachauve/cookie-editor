@@ -19,6 +19,12 @@ button::-moz-focus-inner {
     border: 0;
 }
 
+svg.icon {
+  height: 1em;
+  width: 1em;
+  pointer-events: none;
+}
+
 .container {
     padding: 8px 16px;
 }
@@ -78,13 +84,13 @@ button {
     display: block;
 }
 
-#cookie-container li .header .fa-angle-down {
+#cookie-container li .header .icon.arrow {
     -moz-transition: transform 150ms ease-in 0s;
     transition: transform 150ms ease-in 0s;
     margin-right: 10px;
 }
 
-#cookie-container li .header.active .fa-angle-down {
+#cookie-container li .header.active .icon.arrow {
     -moz-transform: rotate(180deg);
     transform: rotate(180deg);
 }
@@ -102,15 +108,13 @@ button {
 
 #cookie-container textarea, #cookie-container input[type="text"] {
     width: 100%;
-    resize: vertical;
     margin: 0;
-    width: 100%;
 }
 
 #cookie-container textarea {
-    height: 80px;
-    max-height: 80px;
-    min-height: 80px;
+    height: 60px;
+    max-height: 60px;
+    min-height: 60px;
     resize: none;
 }
 
@@ -190,6 +194,10 @@ body, .expando, #cookie-container {
     margin: 0 -1px;
     padding: 12px;
     text-align: center;
+    cursor: pointer;
+}
+.panel-section-footer-button:hover {
+    background-color: rgba(0, 0, 0, 0.08);
 }
 .panel-section-footer-separator {
     background-color: rgba(0, 0, 0, 0.1);

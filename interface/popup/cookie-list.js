@@ -131,6 +131,9 @@
     });
 
     function showCookiesForTab() {
+        if (!cookieHandler.currentTab) {
+            return;
+        }
         var domain = getDomainFromUrl(cookieHandler.currentTab.url);
         var subtitleLine = document.querySelector('.titles h2');
         if (subtitleLine) {
@@ -178,19 +181,19 @@
         return `
             <li data-name="${name}">
                 <div class="header container">
-                    <i class="fa fa-angle-down"></i>
+                    <svg class="icon arrow"><use xlink:href="../sprites/solid.svg#angle-down"></use></svg>
                     ${name}
                     <div class="btns">
                         <button class="delete browser-style">
-                            <i class="fa fa-trash"></i>
+                            <svg class="icon"><use xlink:href="../sprites/solid.svg#trash"></use></svg>
                         </button>
                     </div>
                 </div>
                 <div class="expando">
                     <div class="wrapper">
                         <div class="action-btns">
-                            <button class="delete"><i class="fa fa-trash"></i></button>
-                            <button class="save"><i class="fa fa-check"></i></button>
+                            <button class="delete"><svg class="icon"><use xlink:href="../sprites/solid.svg#trash"></use></svg></button>
+                            <button class="save"><svg class="icon"><use xlink:href="../sprites/solid.svg#check"></use></svg></button>
                         </div>
                         ${formHtml}
                     </div>
