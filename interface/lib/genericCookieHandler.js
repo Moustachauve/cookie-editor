@@ -9,7 +9,9 @@ function GenericCookieHandler() {
 
     this.getAllCookies = function(callback) {
         if (window.browser) {
-            browser.cookies.getAll({ url: this.currentTab.url }).then(callback);
+            browser.cookies.getAll({ url: this.currentTab.url }).then(callback, function (e) {
+                console.error('Failed to retrieve cookies', e);
+            });
         } else {
             chrome.cookies.getAll({ url: this.currentTab.url }, callback);
         }
@@ -33,7 +35,9 @@ function GenericCookieHandler() {
         }
         
         if (window.browser) {
-            browser.cookies.set(newCookie).then(callback);
+            browser.cookies.set(newCookie).then(callback, function (e) {
+                console.error('Failed to create cookie', e);
+            });
         } else {
             chrome.cookies.set(newCookie, callback);
         }
@@ -41,7 +45,9 @@ function GenericCookieHandler() {
 
     this.removeCookie = function(name, url, callback) {
         if (window.browser) {
-            browser.cookies.remove({name: name, url: url}).then(callback);
+            browser.cookies.remove({name: name, url: url}).then(callback, function (e) {
+                console.error('Failed to remove cookies', e);
+            });
         } else {
             chrome.cookies.remove({name: name, url: url}, callback);
         }
