@@ -9,11 +9,17 @@ function GenericCookieHandler() {
 
     this.getAllCookies = function(callback) {
         if (window.browser) {
-            browser.cookies.getAll({ url: this.currentTab.url }).then(callback, function (e) {
+            browser.cookies.getAll({
+                url: this.currentTab.url,
+                storeId: this.currentTab.cookieStoreId
+            }).then(callback, function (e) {
                 console.error('Failed to retrieve cookies', e);
             });
         } else {
-            chrome.cookies.getAll({ url: this.currentTab.url }, callback);
+            chrome.cookies.getAll({
+                url: this.currentTab.url,
+                storeId: this.currentTab.cookieStoreId
+            }, callback);
         }
     };
 
@@ -28,6 +34,7 @@ function GenericCookieHandler() {
             expirationDate: cookie.expirationDate || null,
             storeId: cookie.storeId || null,
             url: url,
+            storeId: this.currentTab.cookieStoreId
         };
 
         if (cookie.hostOnly) {
@@ -45,11 +52,19 @@ function GenericCookieHandler() {
 
     this.removeCookie = function(name, url, callback) {
         if (window.browser) {
-            browser.cookies.remove({name: name, url: url}).then(callback, function (e) {
+            browser.cookies.remove({
+                name: name,
+                url: url,
+                storeId: this.currentTab.cookieStoreId
+            }).then(callback, function (e) {
                 console.error('Failed to remove cookies', e);
             });
         } else {
-            chrome.cookies.remove({name: name, url: url}, callback);
+            chrome.cookies.remove({
+                name: name,
+                url: url,
+                storeId: this.currentTab.cookieStoreId
+            }, callback);
         }
     };
 }

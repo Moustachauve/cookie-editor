@@ -36,7 +36,10 @@ function CookieHandler() {
     }
 
     this.getAllCookies = function(callback) {
-        sendMessage("getAllCookies", {url: this.currentTab.url}, callback);
+        sendMessage("getAllCookies", {
+            url: this.currentTab.url,
+            storeId: this.currentTab.cookieStoreId
+        }, callback);
     };
 
     this.saveCookie = function(cookie, url, callback) {
@@ -50,13 +53,18 @@ function CookieHandler() {
             expirationDate: cookie.expirationDate || null,
             storeId: cookie.storeId || null,
             url: url,
+            storeId: this.currentTab.cookieStoreId
         };
         
         sendMessage("saveCookie", {cookie: newCookie}, callback);
     };
 
     this.removeCookie = function(name, url, callback) {
-        sendMessage("removeCookie", {name: name, url: url}, callback);
+        sendMessage("removeCookie", {
+            name: name, 
+            url: url,
+            storeId: this.currentTab.cookieStoreId
+        }, callback);
     };
 
     function onMessage(request) {
