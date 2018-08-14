@@ -7,6 +7,7 @@ body {
     font-size: 12px;
     overflow: hidden;
     font-family: "Segoe UI", Tahoma, sans-serif;
+    background-color: #ffffff;
 }
 
 body * {
@@ -89,6 +90,13 @@ button {
 }
 
 #cookie-container li .expando {
+    max-height: 0;
+    display: flex;
+    overflow: hidden;
+}
+
+#cookie-container li .expando .wrapper {
+    flex: 1;
     display: flex;
 }
 
@@ -97,6 +105,13 @@ button {
     resize: vertical;
     margin: 0;
     width: 100%;
+}
+
+#cookie-container textarea {
+    height: 80px;
+    max-height: 80px;
+    min-height: 80px;
+    resize: none;
 }
 
 label {

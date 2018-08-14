@@ -32,7 +32,7 @@ function CookieHandler() {
 
     function onCookiesChanged(changeInfo) {
         var domain = changeInfo.cookie.domain.substring(1);
-        if (self.currentTab.url.indexOf(domain) !== -1 && changeInfo.cookie.storeId === self.currentTab.cookieStoreId) {
+        if (self.currentTab.url.indexOf(domain) !== -1 && changeInfo.cookie.storeId === (self.currentTab.cookieStoreId || '0')) {
             self.emit('cookiesChanged');
         }
     }

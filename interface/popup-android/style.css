@@ -13,6 +13,7 @@ body {
     width: 100%;
     font-size: 1em;
     overflow: hidden;
+    background-color: #ffffff;
 }
 
 body * {
@@ -65,10 +66,6 @@ button::-moz-focus-inner {
     font-size: 1.2em;
 }
 
-.panel.button-bar {
-    flex: 0 0 auto;
-}
-
 #cookie-container ul {
     margin: 0;
     padding: 0;
@@ -101,11 +98,19 @@ button::-moz-focus-inner {
 }
 
 #cookie-container li .expando {
+    max-height: 0;
     display: flex;
-    flex-direction: column-reverse;
+    overflow: hidden;
+}
+
+#cookie-container li .expando .wrapper {
+    flex: 1;
     padding: 1.25em 1em;
     padding-bottom: 0.4em;
+    display: flex;
+    flex-direction: column-reverse;
 }
+
 .form.container div:first-child {
     margin-bottom: 0.75em;
 }
@@ -117,6 +122,13 @@ button::-moz-focus-inner {
     resize: vertical;
     margin: 0;
     padding: 1em 0.5em;
+}
+
+#cookie-container textarea {
+    resize: none;
+    height: 90px;
+    max-height: 90px;
+    min-height: 90px;
 }
 
 label {
@@ -131,6 +143,8 @@ label {
 
 .button-bar {
     display: none;
+    flex: 0 0 auto;
+    border-top: 1px solid rgba(0, 0, 0, 0.15) 
 }
 
 .button-bar.active {

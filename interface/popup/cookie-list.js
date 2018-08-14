@@ -1,75 +1,35 @@
 (function () {
     'use strict';
 
+    let containerCookie;
     var currentTab;
     var loadedCookies;
     var currentTabId;
 
     var cookieHandler = new CookieHandler();
 
-    $(function () {
-        $('#cookie-container').on('click', 'li .header', function () {
-            var $this = $(this);
-            $this.parent().find('.expando').stop().slideToggle('fast');
-            $this.stop().toggleClass('active');
-        }); 
+    document.addEventListener('DOMContentLoaded', function () {
+        containerCookie = document.getElementById('cookie-container');
 
-        $('#cookie-container').on('click', 'li .header .delete, li .expando .delete', function (e) {
+        function expandCookie(e) {
+            var parent = e.target.closest('li');
+            toggleSlide(parent.querySelector('.expando'));
+            parent.querySelector('.header').classList.toggle('active');
+        }
+
+        function deleteButton(e) {
             e.preventDefault();
             console.log('removing cookie...');
-            var listElement = $(this).parent().parent().parent();
-            removeCookie(listElement.data('name'));
-            //listElement.slideUp('fast');
+            var listElement = e.target.closest('li');
+            removeCookie(listElement.dataset.name);
             return false;
-        });
+        }
 
-        $('#cookie-container').on('click', 'li .expando .save', function (e) {
-            e.preventDefault();
+        function saveCookie(form) {
             console.log('saving cookie...');
-            var listElement = $(this).parent().parent().find('form').submit();
-            return false;
-        });
-
-        $('#create-cookie').click(function (e) {
-            $('#cookie-container').html('');
-            $('#pageTitle h1').text('Cookie Editor - Create a Cookie');
-
-            var form = createHtmlFormCookie('', '', '');
-            form.addClass('create');
-            $('#cookie-container').append(form);
-
-            $('.button-bar').removeClass('active');
-            $('.button-bar#button-bar-add').addClass('active');
-            return false;
-        });
-
-        $('#delete-all-cookies').click(function (e) {
-            if (!loadedCookies.length) {
-                return;
-            }
-            
-            for (var i = 0; i < loadedCookies.length; i++) {
-                removeCookie(loadedCookies[i].name);
-            }
-            loadedCookies = null;
-            //$('#cookie-container li').slideUp('fast');
-        });
-
-        $('#refresh-ui').click(function() {
-            location.reload();
-        });
-
-        $('#return-list').click(function() {
-            $('#cookie-container').html('');
-            showCookiesForTab();
-        });
-
-        $('#cookie-container').on('submit', '.form', function (e) {
-            e.preventDefault();
-            var form = $(this);
-            var name = form.find('input[name="name"]').val();
-            var value = form.find('textarea[name="value"]').val();
-            var cookie = loadedCookies[form.data('id')];
+            var name = form.querySelector('input[name="name"]').value;
+            var value = form.querySelector('textarea[name="value"]').value;
+            var cookie = loadedCookies[form.dataset.id];
             var oldName;
 
             if (cookie) {
@@ -81,39 +41,124 @@
 
             cookie.name = name;
             cookie.value = value;
-            cookieHandler.removeCookie(oldName, getCurrentTabUrl(), function() {
+            cookieHandler.removeCookie(oldName, getCurrentTabUrl(), function () {
                 cookieHandler.saveCookie(cookie, getCurrentTabUrl());
             });
 
-            if ($(this).hasClass('create')) {
-                $('#return-list').click();
-            } 
+            if (form.classList.contains('create')) {
+                document.getElementById('return-list').click();
+            }
+            return false;
+        }
+
+        if (containerCookie) {
+            containerCookie.addEventListener('click', e => {
+                var target = e.target;
+                if (target.nodeName === 'path') {
+                    target = target.parentNode;
+                }
+                if (target.nodeName === 'svg') {
+                    target = target.parentNode;
+                }
+
+                if (target.classList.contains('header')) {
+                    return expandCookie(e);
+                }
+                if (target.classList.contains('delete')) {
+                    return deleteButton(e);
+                }
+                if (target.classList.contains('save')) {
+                    return saveCookie(e.target.closest('li').querySelector('form'));
+                }
+            })
+        }
+
+        document.getElementById('create-cookie').addEventListener('click', e => {
+            containerCookie.innerHTML = '';
+            let pageTitle = document.getElementById('pageTitle');
+            if (pageTitle) {
+                pageTitle.innerHTML = 'Cookie Editor - Create a Cookie';
+            }
+
+            containerCookie.innerHTML = createHtmlFormCookie('', '', '');
+
+            document.getElementById('button-bar-default').classList.remove('active');
+            document.getElementById('button-bar-add').classList.add('active');
             return false;
         });
 
-        $('#save-create-cookie').click(function() {
-            $('.form.create').submit();
+        document.getElementById('delete-all-cookies').addEventListener('click', e => {
+            if (!loadedCookies.length) {
+                return;
+            }
+            
+            for (var i = 0; i < loadedCookies.length; i++) {
+                removeCookie(loadedCookies[i].name);
+            }
+            loadedCookies = null;
         });
+
+        document.getElementById('refresh-ui').addEventListener('click', e => {
+            location.reload();
+        });
+
+        document.getElementById('return-list').addEventListener('click', e => {
+            containerCookie.innerHTML = '';
+            showCookiesForTab();
+        });
+
+        containerCookie.addEventListener('submit', e => {
+            e.preventDefault();
+            saveCookie(e.target);
+            return false;
+        });
+
+        document.getElementById('save-create-cookie').addEventListener('click', e => {
+            saveCookie(document.querySelector('form'));
+        });
+
+        initWindow();
+        showCookiesForTab();
+
+        if (chrome.runtime.getBrowserInfo) {
+            chrome.runtime.getBrowserInfo(function (info) {
+                var mainVersion = info.version.split('.')[0];
+                if (mainVersion < 57) {
+                    containerCookie.style.height = '600px';
+                }
+            });
+        }
     });
 
     function showCookiesForTab() {
         var domain = getDomainFromUrl(cookieHandler.currentTab.url);
-        $('.titles h2').text(domain || cookieHandler.currentTab.url);
+        var subtitleLine = document.querySelector('.titles h2');
+        if (subtitleLine) {
+            subtitleLine.innerHTML = domain || cookieHandler.currentTab.url;
+        }
+        
         cookieHandler.getAllCookies(function (cookies) {
             cookies = cookies.sort(sortCookiesByName);
             loadedCookies = cookies;
-            $('#pageTitle h1').text('Cookie Editor');
-            $('.button-bar').removeClass('active');
-            $('.button-bar#button-bar-default').addClass('active');
+            let pageTitle = document.getElementById('pageTitle');
+            if (pageTitle) {
+                pageTitle.innerHTML = 'Cookie Editor';
+            }
+
+            document.getElementById('button-bar-add').classList.remove('active');
+            document.getElementById('button-bar-default').classList.add('active');
 
             if (cookies.length > 0) {
-                var list = $('<ul>');
-
+                var cookiesHtml = '';
                 cookies.forEach(function (cookie, id) {
-                    list.append(createHtmlForCookie(cookie.name, cookie.value, id));
+                    cookiesHtml += createHtmlForCookie(cookie.name, cookie.value, id);
                 });
 
-                $('#cookie-container').html(list);
+                containerCookie.innerHTML = `
+                    <ul>
+                        ${cookiesHtml}
+                    </ul>
+                `;
             } else {
                 showNoCookies();
             }
@@ -121,53 +166,53 @@
     }
 
     function showNoCookies() {
-        var noCookiesText = $("<p>");
-        noCookiesText.addClass('container');
-        noCookiesText.text('This page does not have any cookies');
-        $('#cookie-container').html(noCookiesText);
+        var noCookiesText = `
+        <p class="container">
+            This page does not have any cookies
+        </p>`;
+        containerCookie.innerHTML = noCookiesText;
     }
 
     function createHtmlForCookie(name, value, id) {
-        var element = $("<li>");
-        element.data('name', name);
-
-        var header = $('<div>').addClass('header container').text(name);
-        header.prepend('<i class="fa fa-angle-down"></i>');
-
-        var headerBtns = $('<div>').addClass('btns');
-        headerBtns.append($('<button>').addClass('delete browser-style').html('<i class="fa fa-trash"></i>'));
-        header.append(headerBtns);
-        element.append(header);
-
-        var expandoZone = $('<div>').addClass('expando').css('display', 'none');
-
-        var actionBtns = $('<div>').addClass('action-btns');
-        actionBtns.append($('<button>').addClass('delete').html('<i class="fa fa-trash"></i>'));
-        actionBtns.append($('<button>').addClass('save').html('<i class="fa fa-check"></i>'));
-        expandoZone.append(actionBtns);
-
-        expandoZone.append(createHtmlFormCookie(name, value, id));
-
-        element.append(expandoZone);
-
-        return element;
+        let formHtml = createHtmlFormCookie(name, value, id);
+        return `
+            <li data-name="${name}">
+                <div class="header container">
+                    <i class="fa fa-angle-down"></i>
+                    ${name}
+                    <div class="btns">
+                        <button class="delete browser-style">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="expando">
+                    <div class="wrapper">
+                        <div class="action-btns">
+                            <button class="delete"><i class="fa fa-trash"></i></button>
+                            <button class="save"><i class="fa fa-check"></i></button>
+                        </div>
+                        ${formHtml}
+                    </div>
+                </div>
+            </li>
+        `;
     }
 
     function createHtmlFormCookie(name, value, id) {
         var formId = guid();
-        var formContainer = $('<form>').addClass('form container').attr('id', formId).data('id', id);
-
-        var inputNameContainer = $('<div>').addClass('browser-style');
-        inputNameContainer.append($('<label>').addClass('browser-style').text('Name').attr('for', 'name-' + formId));
-        inputNameContainer.append($('<input>').addClass('browser-style').attr('name', 'name').attr('type', 'text').attr('value', name).attr('id', 'name-' + formId));
-        formContainer.append(inputNameContainer);
-
-        var inputValueContainer = $('<div>').addClass('browser-style');
-        inputValueContainer.append($('<label>').addClass('browser-style').text('Value').attr('for', 'value-' + formId));
-        inputValueContainer.append($('<textarea>').addClass('browser-style').attr('name', 'value').text(value).attr('id', 'value-' + formId));
-        formContainer.append(inputValueContainer);
-
-        return formContainer;
+        return `
+            <form data-id="${id}" class="form container ${!id ? `create` : ''}" id="${formId}">
+                <div class="browser-style">
+                    <label class="browser-style" for="name-${formId}">Name</label>
+                    <input class="browser-style" name="name" type="text" value="${name}" id="name-${formId}" />
+                </div>
+                <div class="browser-style">
+                    <label class="browser-style" for="value-${formId}">Value</label>
+                    <textarea class="browser-style" name="value" id="name-${formId}">${value}</textarea>
+                </div>
+            </form>
+        `;
     }
 
     function removeCookie(name, url, callback) {
@@ -216,9 +261,6 @@
     }
 
     function initWindow(tab) {
-        //chrome.cookies.onChanged.addListener(onCookiesChanged);
-        //chrome.tabs.onUpdated.addListener(onTabsChanged);
-        //chrome.tabs.onActivated.addListener(onTabActivated);
         cookieHandler.on('cookiesChanged', onCookiesChanged);
         cookieHandler.on('ready', onCookieHandlerReady);
     }
@@ -243,15 +285,64 @@
         var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
         return matches && matches[1];
     }
+}());
 
-    if (chrome.runtime.getBrowserInfo) {
-        chrome.runtime.getBrowserInfo(function (info) {
-            var mainVersion = info.version.split('.')[0];
-            if (mainVersion < 57) {
-                $('#cookie-container').css('height', '600px');
-            }
-        });
+/** 
+ * getHeight - for elements with display:none 
+ * https://stackoverflow.com/a/29047447
+ **/
+function getHeight(el) {
+    var elStyle = window.getComputedStyle(el);
+    var elMaxHeight = elStyle.maxHeight;
+    var elMaxHeightInt = elMaxHeight.replace('px', '').replace('%', '');
+    var wantedHeight = 0;
+
+    // if its not hidden we just return normal height
+    if (elMaxHeightInt !== '0') {
+        return el.offsetHeight;
     }
 
-    initWindow(); 
-}());
+    // the element is hidden so:
+    // making the el block so we can meassure its height but still be hidden
+    el.style.position = 'absolute';
+    el.style.visibility = 'hidden';
+    el.style.display = 'block';
+    el.style.maxHeight = 'none';
+
+    wantedHeight = el.offsetHeight;
+
+    // reverting to the original values
+    el.style.display = '';
+    el.style.position = '';
+    el.style.visibility = '';
+    el.style.maxHeight = elMaxHeight;
+
+    return wantedHeight;
+}
+
+function toggleSlide(el) {
+    var elMaxHeight = 0;
+    
+    if (el.getAttribute('data-max-height')) {
+        // we've already used this before, so everything is setup
+        if (el.style.maxHeight.replace('px', '').replace('%', '') === '0') {
+            el.style.maxHeight = el.getAttribute('data-max-height');
+        } else {
+            elMaxHeight = getHeight(el) + 'px';
+            el.setAttribute('data-max-height', elMaxHeight);
+            el.style.maxHeight = '0';
+        }
+    } else {
+        elMaxHeight = getHeight(el) + 'px';
+        el.style['transition'] = 'max-height 0.3s ease-in-out';
+        el.style.overflowY = 'hidden';
+        el.style.maxHeight = '0';
+        el.setAttribute('data-max-height', elMaxHeight);
+        el.style.display = 'flex';
+
+        // we use setTimeout to modify maxHeight later than display (to we have the transition effect)
+        setTimeout(function () {
+            el.style.maxHeight = elMaxHeight;
+        }, 10);
+    }
+}
