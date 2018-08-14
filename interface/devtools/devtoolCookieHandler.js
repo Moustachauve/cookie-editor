@@ -51,9 +51,8 @@ function CookieHandler() {
             secure: cookie.secure || null,
             httpOnly: cookie.httpOnly || null,
             expirationDate: cookie.expirationDate || null,
-            storeId: cookie.storeId || null,
+            storeId: cookie.storeId || this.currentTab.cookieStoreId || null,
             url: url,
-            storeId: this.currentTab.cookieStoreId
         };
         
         sendMessage("saveCookie", {cookie: newCookie}, callback);
