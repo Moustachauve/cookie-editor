@@ -1,6 +1,18 @@
 html, body {
     height: 100%;
 }
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    font-size: 1em;
+    overflow: hidden;
+    background-color: #ffffff;
+}
 .panel-section-footer {
     background-color: #fafafa;
 }
