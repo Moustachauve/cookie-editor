@@ -57,6 +57,12 @@ button {
     background-color: #eaeaea;
 }
 
+#cookie-container > .container {
+    margin-top: 2em;
+    text-align: center;
+    font-size: 1.2em;
+}
+
 #cookie-container ul {
     margin: 0;
     padding: 0;
@@ -151,6 +157,21 @@ label {
     align-items: stretch;
     padding-top: 26px;
     padding: 4px;
+}
+
+.btns button.delete {
+    background-color: #fbfbfb;
+    border: 1px solid #b1b1b1;
+    height: 24px;
+    outline: 0 !important;
+    padding: 0 8px 0;
+    transition-duration: 250ms;
+    transition-property: box-shadow, border;
+}
+
+.btns button.delete::-moz-focus-inner {
+    border: 0;
+    outline: 0;
 }
 
 .action-btns button {
