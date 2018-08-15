@@ -104,14 +104,21 @@
         });
 
         document.getElementById('delete-all-cookies').addEventListener('click', e => {
-            if (!loadedCookies.length) {
+            let buttonIcon = document.getElementById('delete-all-cookies').querySelector('use');
+            if (buttonIcon.getAttribute("xlink:href") === "../sprites/solid.svg#check") {
                 return;
             }
-            
-            for (var i = 0; i < loadedCookies.length; i++) {
-                removeCookie(loadedCookies[i].name);
+            if (loadedCookies && loadedCookies.length) {
+                for (var i = 0; i < loadedCookies.length; i++) {
+                    removeCookie(loadedCookies[i].name);
+                }
+                loadedCookies = null;
             }
-            loadedCookies = null;
+            sendNotification('All cookies were deleted');
+            buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#check");
+            setTimeout(() => {
+                buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#trash");
+            }, 1500);
         });
 
         document.getElementById('export-cookies').addEventListener('click', e => {
@@ -123,7 +130,7 @@
             buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#check"); 
             copyText(JSON.stringify(loadedCookies, null, 4));
 
-            sendNotification('Cookies exported to clipboard')
+            sendNotification('Cookies exported to clipboard');
             setTimeout(() => {
                 buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#file-export");
             }, 1500);
