@@ -2,14 +2,19 @@
     'use strict';
 
     let containerCookie;
+    let notificationElement;
     var currentTab;
     var loadedCookies;
     var currentTabId;
+
+    var notificationQueue = [];
+    var notificationTimeout;
 
     var cookieHandler = new CookieHandler();
 
     document.addEventListener('DOMContentLoaded', function () {
         containerCookie = document.getElementById('cookie-container');
+        notificationElement = document.getElementById('notification');
 
         function expandCookie(e) {
             var parent = e.target.closest('li');
@@ -25,11 +30,22 @@
             return false;
         }
 
-        function saveCookie(form) {
-            console.log('saving cookie...');
+        function saveCookieForm(form) {
+            var id = form.dataset.id;
             var name = form.querySelector('input[name="name"]').value;
             var value = form.querySelector('textarea[name="value"]').value;
-            var cookie = loadedCookies[form.dataset.id];
+            saveCookie(id, name, value);
+
+            if (form.classList.contains('create')) {
+                returnToList();
+            }
+            return false;
+        }
+
+        function saveCookie(id, name, value) {
+            console.log('saving cookie...');
+
+            var cookie = loadedCookies[id];
             var oldName;
 
             if (cookie) {
@@ -44,11 +60,11 @@
             cookieHandler.removeCookie(oldName, getCurrentTabUrl(), function () {
                 cookieHandler.saveCookie(cookie, getCurrentTabUrl());
             });
+        }
 
-            if (form.classList.contains('create')) {
-                document.getElementById('return-list').click();
-            }
-            return false;
+        function returnToList() {
+            containerCookie.innerHTML = '';
+            showCookiesForTab();
         }
 
         if (containerCookie) {
@@ -68,7 +84,7 @@
                     return deleteButton(e);
                 }
                 if (target.classList.contains('save')) {
-                    return saveCookie(e.target.closest('li').querySelector('form'));
+                    return saveCookieForm(e.target.closest('li').querySelector('form'));
                 }
             })
         }
@@ -98,23 +114,86 @@
             loadedCookies = null;
         });
 
-        document.getElementById('refresh-ui').addEventListener('click', e => {
-            location.reload();
+        document.getElementById('export-cookies').addEventListener('click', e => {
+            let buttonIcon = document.getElementById('export-cookies').querySelector('use');
+            if (buttonIcon.getAttribute("xlink:href") === "../sprites/solid.svg#check") {
+                return;
+            }
+
+            buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#check"); 
+            copyText(JSON.stringify(loadedCookies, null, 4));
+
+            sendNotification('Cookies exported to clipboard')
+            setTimeout(() => {
+                buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#file-export");
+            }, 1500);
         });
 
-        document.getElementById('return-list').addEventListener('click', e => {
+        document.getElementById('import-cookies').addEventListener('click', e => {
             containerCookie.innerHTML = '';
-            showCookiesForTab();
+            let pageTitle = document.getElementById('pageTitle');
+            if (pageTitle) {
+                pageTitle.innerHTML = 'Cookie Editor - Import Cookies from Json';
+            }
+
+            containerCookie.innerHTML = createHtmlFormImport();
+
+            document.getElementById('button-bar-default').classList.remove('active');
+            document.getElementById('button-bar-import').classList.add('active');
+            return false;
+        });
+
+        document.getElementById('return-list-add').addEventListener('click', e => {
+            returnToList();
+        });
+        document.getElementById('return-list-import').addEventListener('click', e => {
+            returnToList();
         });
 
         containerCookie.addEventListener('submit', e => {
             e.preventDefault();
-            saveCookie(e.target);
+            saveCookieForm(e.target);
             return false;
         });
 
         document.getElementById('save-create-cookie').addEventListener('click', e => {
-            saveCookie(document.querySelector('form'));
+            saveCookieForm(document.querySelector('form'));
+        });
+
+        document.getElementById('save-import-cookie').addEventListener('click', e => {
+            let json = document.querySelector('textarea').value;
+            if (!json) {
+                return;
+            }
+
+            let cookies;
+            try {
+                cookies = JSON.parse(json);
+            } catch {
+                console.log("Couldn't parse Json");
+                return;
+            }
+
+            if (!isArray(cookies)) {
+                console.log("Invalid Json");
+                return;
+            }
+
+            cookies.forEach(cookie => {
+                cookieHandler.saveCookie(cookie, getCurrentTabUrl());
+            });
+        });
+
+        notificationElement.addEventListener('animationend', e => {
+            if (notificationElement.classList.contains('fadeInUp')) {
+                return;
+            }
+
+            triggerNotification();
+        });
+
+        document.getElementById('notification-dismiss').addEventListener('click', e => {
+            hideNotification();
         });
 
         initWindow();
@@ -129,6 +208,8 @@
             });
         }
     });
+
+    // == End document ready == //
 
     function showCookiesForTab() {
         if (!cookieHandler.currentTab) {
@@ -149,6 +230,7 @@
             }
 
             document.getElementById('button-bar-add').classList.remove('active');
+            document.getElementById('button-bar-import').classList.remove('active');
             document.getElementById('button-bar-default').classList.add('active');
 
             if (cookies.length > 0) {
@@ -213,6 +295,18 @@
                 <div class="browser-style">
                     <label class="browser-style" for="value-${formId}">Value</label>
                     <textarea class="browser-style" name="value" id="name-${formId}">${value}</textarea>
+                </div>
+            </form>
+        `;
+    }
+
+    function createHtmlFormImport() {
+        var formId = guid();
+        return `
+            <form class="form container import" id="${formId}">
+                <div class="browser-style">
+                    <label class="browser-style" for="content-${formId}">Json</label>
+                    <textarea class="browser-style json" name="content" id="content-${formId}" placeholder="Paste your Json here"></textarea>
                 </div>
             </form>
         `;
@@ -288,6 +382,49 @@
         var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
         return matches && matches[1];
     }
+
+    function sendNotification(message) {
+        notificationQueue.push(message);
+        triggerNotification();
+    }
+
+    function triggerNotification() {
+        if (!notificationQueue || !notificationQueue.length) {
+            return;
+        }
+        if (notificationTimeout) {
+            return;
+        }
+        if (notificationElement.classList.contains('fadeInUp')) {
+            return;
+        }
+
+        showNotification();
+    }
+
+    function showNotification() {
+        if (notificationTimeout) {
+            return;
+        }
+
+        let currentNotification = notificationQueue.shift();
+        notificationElement.querySelector('span').innerHTML = currentNotification;
+        notificationElement.classList.add('fadeInUp');
+        notificationElement.classList.remove('fadeOutDown');
+
+        notificationTimeout = setTimeout(() => {
+            hideNotification();
+        }, 2500);
+    }
+
+    function hideNotification() {
+        if (notificationTimeout) {
+            clearTimeout(notificationTimeout);
+            notificationTimeout = null;
+        }
+        notificationElement.classList.remove('fadeInUp');
+        notificationElement.classList.add('fadeOutDown');
+    }
 }());
 
 /** 
@@ -348,4 +485,19 @@ function toggleSlide(el) {
             el.style.maxHeight = elMaxHeight;
         }, 10);
     }
+}
+
+function copyText(text) {
+    var fakeText = document.createElement('textarea');
+    fakeText.classList.add('clipboardCopier');
+    fakeText.innerHTML = text;
+    document.body.appendChild(fakeText)
+    fakeText.focus();
+    fakeText.select();
+    document.execCommand('Copy');
+    document.body.removeChild(fakeText);
+}
+
+function isArray(value) {
+    return value && typeof value === 'object' && value.constructor === Array;
 }

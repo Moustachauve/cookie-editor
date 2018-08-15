@@ -149,8 +149,10 @@ label {
 
 .button-bar {
     display: none;
+    background-color: #f0f0f0;
     flex: 0 0 auto;
-    border-top: 1px solid rgba(0, 0, 0, 0.15) 
+    border-top: 1px solid rgba(0, 0, 0, 0.15);
+    z-index: 5;
 }
 
 .button-bar.active {
@@ -216,4 +218,87 @@ label {
     background-color: rgba(0, 0, 0, 0.1);
     width: 1px;
     z-index: 99;
+}
+
+
+#notification-container {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 90px; 
+    text-align: center;
+    opacity: 1;
+    transition: opacity 150ms ease-in 0s;
+    pointer-events: none;
+}
+
+#notification {
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    padding-right: 25px;
+    margin: auto 25px;
+    background-color: rgba(0, 0, 0, 0.87);
+    border-radius: 5px;
+    color: #fafafa;
+    font-size: 16px;
+    font-weight: 400;
+    pointer-events: auto;
+    animation-duration: 0.3s;
+    animation-fill-mode: both;
+    opacity: 0;
+}
+
+.fadeInUp {
+    opacity: 0;
+    animation-name: fadeInUp;
+}
+.fadeOutDown {
+    opacity: 0;
+    animation-name: fadeOutDown;
+}
+
+#notification-dismiss {
+    position: absolute;
+    top: 5px;
+    right: 2px;
+    background: none;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    fill: #656565;
+}
+
+#notification-dismiss svg {
+    width: 0.9em;
+    height: 0.9em;
+}
+#notification:hover #notification-dismiss {
+    fill: #aaa;
+}
+#notification:hover #notification-dismiss:hover {
+    fill: #fafafa;
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translate3d(0,60px,0);
+    }
+
+    to {
+        transform: translate3d(0,0,0);
+        opacity: 1
+    }
+}
+@keyframes fadeOutDown {
+    from {
+        transform: translate3d(0,0,0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translate3d(0,60px,0);
+        opacity: 0;
+    }
 }
