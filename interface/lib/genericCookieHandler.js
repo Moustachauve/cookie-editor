@@ -42,11 +42,22 @@ function GenericCookieHandler() {
         }
         
         if (window.browser) {
-            browser.cookies.set(newCookie).then(callback, function (e) {
-                console.error('Failed to create cookie', e);
+            browser.cookies.set(newCookie).then(cookie => {
+                callback(null, cookie);
+            }, error => {
+                console.error('Failed to create cookie', error);
+                callback(error.message, null);
             });
         } else {
-            chrome.cookies.set(newCookie, callback);
+            chrome.cookies.set(newCookie, cookie => {
+                if (cookie) {
+                    return callback(null, cookie);
+                } else {
+                    let error = chrome.runtime.lastError;
+                    console.error('Failed to create cookie', error);
+                    return callback(error.message, cookie);
+                }
+            });
         }
     };
 

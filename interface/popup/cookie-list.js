@@ -168,6 +168,11 @@
         });
 
         document.getElementById('save-import-cookie').addEventListener('click', e => {
+            let buttonIcon = document.getElementById('save-import-cookie').querySelector('use');
+            if (buttonIcon.getAttribute("xlink:href") !== "../sprites/solid.svg#file-export") {
+                return;
+            }
+
             let json = document.querySelector('textarea').value;
             if (!json) {
                 return;
@@ -178,17 +183,34 @@
                 cookies = JSON.parse(json);
             } catch {
                 console.log("Couldn't parse Json");
+                sendNotification("Could not parse the Json value");
+                buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#times");
+                setTimeout(() => {
+                    buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#file-export");
+                }, 1500);
                 return;
             }
 
             if (!isArray(cookies)) {
                 console.log("Invalid Json");
+                sendNotification("The Json is not valid");
+                buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#times");
+                setTimeout(() => {
+                    buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#file-export");
+                }, 1500);
                 return;
             }
 
             cookies.forEach(cookie => {
-                cookieHandler.saveCookie(cookie, getCurrentTabUrl());
+                cookieHandler.saveCookie(cookie, getCurrentTabUrl(), function(error, cookie) {
+                    if (error) {
+                        sendNotification(error);
+                    }
+                });
             });
+
+            sendNotification('Cookies were created');
+            showCookiesForTab();
         });
 
         notificationElement.addEventListener('animationend', e => {
@@ -259,7 +281,7 @@
 
     function showNoCookies() {
         var noCookiesText = `
-        <p class="container">
+        <p class="container" id="no-cookies">
             This page does not have any cookies
         </p>`;
         containerCookie.innerHTML = noCookiesText;

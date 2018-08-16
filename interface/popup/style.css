@@ -57,7 +57,7 @@ button {
     background-color: #eaeaea;
 }
 
-#cookie-container > .container {
+#no-cookies {
     margin-top: 2em;
     text-align: center;
     font-size: 1.2em;
@@ -240,6 +240,7 @@ body, .expando, #cookie-container {
     opacity: 1;
     transition: opacity 150ms ease-in 0s;
     pointer-events: none;
+    padding: 0 25px;
 }
 
 #notification {
@@ -247,7 +248,7 @@ body, .expando, #cookie-container {
     display: inline-block;
     padding: 10px 20px;
     padding-right: 25px;
-    margin: auto 25px;
+    margin: auto;
     background-color: rgba(0, 0, 0, 0.75);
     border-radius: 5px;
     color: #fafafa;
@@ -256,6 +257,10 @@ body, .expando, #cookie-container {
     animation-duration: 0.3s;
     animation-fill-mode: both;
     opacity: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
 }
 
 .fadeInUp {

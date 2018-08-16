@@ -231,6 +231,7 @@ label {
     opacity: 1;
     transition: opacity 150ms ease-in 0s;
     pointer-events: none;
+    padding: 0 25px;
 }
 
 #notification {
@@ -238,7 +239,7 @@ label {
     display: inline-block;
     padding: 10px 20px;
     padding-right: 25px;
-    margin: auto 25px;
+    margin: auto;
     background-color: rgba(0, 0, 0, 0.87);
     border-radius: 5px;
     color: #fafafa;
@@ -248,6 +249,10 @@ label {
     animation-duration: 0.3s;
     animation-fill-mode: both;
     opacity: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
 }
 
 .fadeInUp {

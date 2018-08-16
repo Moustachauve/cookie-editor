@@ -57,9 +57,22 @@
 
             case 'saveCookie':
                 if (window.browser) {
-                    browser.cookies.set(request.params.cookie).then(sendResponse);
+                    browser.cookies.set(request.params.cookie).then(cookie => {
+                        sendResponse(null, cookie);
+                    }, error => {
+                        console.error('Failed to create cookie', error);
+                        sendResponse(error.message, null);
+                    });
                 } else {
-                    chrome.cookies.set(request.params.cookie, sendResponse);
+                    chrome.cookies.set(request.params.cookie, cookie => {
+                        if (cookie) {
+                            sendResponse(null, cookie);
+                        } else {
+                            let error = chrome.runtime.lastError;
+                            console.error('Failed to create cookie', error);
+                            sendResponse(error.message, cookie);
+                        }
+                    });
                 }
                 return true;
 
