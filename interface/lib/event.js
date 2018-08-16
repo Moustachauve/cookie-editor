@@ -1,11 +1,11 @@
 function Event() {
     'use strict';
-    var self = this;
+    const self = this;
 
     this.queue = {};
 
     this.emit = function (event, ...params) {
-        var queue = self.queue[event];
+        let queue = self.queue[event];
 
         if (typeof queue === 'undefined') {
             return;

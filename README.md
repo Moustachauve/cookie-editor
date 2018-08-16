@@ -7,7 +7,7 @@ Cookie-Editor is designed to have a simple to use interface that let you do most
 You can easily create, edit and delete a cookie for the current page that you are visiting.
 There is also a handy button to mass delete all the cookies for the current page.
 
-The addon is available also available on Firefox for Android for easy and convenient cookie manipulation on a mobile device.
+The Add-on is available also available on Firefox for Android for easy and convenient cookie manipulation on a mobile device.
 
 ## Install on Google Chrome
 Find this extension on the [Chrome Web Store](https://chrome.google.com/webstore/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm).

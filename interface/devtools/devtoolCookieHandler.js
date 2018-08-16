@@ -3,15 +3,15 @@ function CookieHandler() {
     'use strict';
     GenericCookieHandler.call(this);
 
-    var self = this;
-    var isInit = false;
-    var backgroundPageConnection;
+    const self = this;
+    let isInit = false;
+    let backgroundPageConnection;
 
     updateCurrentTab(init);
 
     function init() {
         console.log('Devtool init');
-        var tabId;
+        let tabId;
         if (window.browser) {
             backgroundPageConnection = browser.runtime.connect({name: "panel"});
             tabId = browser.devtools.inspectedWindow.tabId;
@@ -43,7 +43,7 @@ function CookieHandler() {
     };
 
     this.saveCookie = function(cookie, url, callback) {
-        var newCookie = {
+        const newCookie = {
             domain: cookie.domain || '',
             name: cookie.name || '',
             value: cookie.value || '',
@@ -54,7 +54,7 @@ function CookieHandler() {
             storeId: cookie.storeId || this.currentTab.cookieStoreId || null,
             url: url,
         };
-        
+
         sendMessage("saveCookie", {cookie: newCookie}, callback);
     };
 
@@ -80,7 +80,7 @@ function CookieHandler() {
     }
 
     function onCookiesChanged(changeInfo) {
-        var domain = changeInfo.cookie.domain.substring(1);
+        const domain = changeInfo.cookie.domain.substring(1);
         if (self.currentTab.url.indexOf(domain) !== -1) {
             self.emit('cookiesChanged');
         }
@@ -94,7 +94,7 @@ function CookieHandler() {
 
     function updateCurrentTab(callback) {
         sendMessage("getCurrentTab", null, function (tabInfo) {
-            var newTab = tabInfo[0].id !== self.currentTabId || tabInfo[0].url !== self.currentTab.url;
+            const newTab = tabInfo[0].id !== self.currentTabId || tabInfo[0].url !== self.currentTab.url;
             self.currentTabId = tabInfo[0].id;
             self.currentTab = tabInfo[0];
             if (newTab && isInit) {
@@ -108,7 +108,7 @@ function CookieHandler() {
 
     function sendMessage(type, params, callback, errorCallback) {
         if (window.browser) {
-            var sending = browser.runtime.sendMessage({ type: type, params: params });
+            const sending = browser.runtime.sendMessage({type: type, params: params});
             sending.then(callback, errorCallback);  
         } else {
             chrome.runtime.sendMessage({ type: type, params: params }, callback);

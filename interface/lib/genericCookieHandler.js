@@ -4,7 +4,6 @@ function GenericCookieHandler() {
     Event.call(this);
 
     this.cookies = [];
-    this.currentTabId = null;
     this.currentTab = null;
 
     this.getAllCookies = function(callback) {
@@ -24,7 +23,7 @@ function GenericCookieHandler() {
     };
 
     this.saveCookie = function(cookie, url, callback) {
-        var newCookie = {
+        const newCookie = {
             domain: cookie.domain || '',
             name: cookie.name || '',
             value: cookie.value || '',
@@ -32,9 +31,8 @@ function GenericCookieHandler() {
             secure: cookie.secure || null,
             httpOnly: cookie.httpOnly || null,
             expirationDate: cookie.expirationDate || null,
-            storeId: cookie.storeId || null,
-            url: url,
-            storeId: this.currentTab.cookieStoreId
+            storeId: cookie.storeId || this.currentTab.cookieStoreId || null,
+            url: url
         };
 
         if (cookie.hostOnly) {

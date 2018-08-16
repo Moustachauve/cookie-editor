@@ -3,8 +3,8 @@ function CookieHandler() {
     'use strict';
     GenericCookieHandler.call(this);
 
-    var self = this;
-    var isInit = false;
+    const self = this;
+    let isInit = false;
 
     if (window.browser) {
         browser.tabs.query({ active: true, currentWindow: true }).then(init);
@@ -31,13 +31,13 @@ function CookieHandler() {
     }
 
     function onCookiesChanged(changeInfo) {
-        var domain = changeInfo.cookie.domain.substring(1);
+        const domain = changeInfo.cookie.domain.substring(1);
         if (self.currentTab.url.indexOf(domain) !== -1 && changeInfo.cookie.storeId === (self.currentTab.cookieStoreId || '0')) {
             self.emit('cookiesChanged');
         }
     }
     function onTabsChanged(tabId, changeInfo, tab) {
-        if (tabId == self.currentTabId && (changeInfo.url || changeInfo.status === 'complete')) {
+        if (tabId === self.currentTabId && (changeInfo.url || changeInfo.status === 'complete')) {
             console.log('tabChanged!');
             if (window.browser) {
                 browser.tabs.query({ active: true, currentWindow: true }).then(updateCurrentTab);
@@ -56,7 +56,7 @@ function CookieHandler() {
     }
 
     function updateCurrentTab(tabInfo) {
-        var newTab = tabInfo[0].id !== self.currentTabId || tabInfo[0].url !== self.currentTab.url;
+        const newTab = tabInfo[0].id !== self.currentTabId || tabInfo[0].url !== self.currentTab.url;
         self.currentTabId = tabInfo[0].id;
         self.currentTab = tabInfo[0];
         

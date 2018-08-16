@@ -168,7 +168,6 @@ label {
     display: flex;
     flex-direction: row-reverse;
     align-items: stretch;
-    padding-top: 26px;
     padding: 4px;
     -moz-user-select: none;
     user-select: none;
@@ -268,9 +267,8 @@ label {
     position: absolute;
     top: 5px;
     right: 2px;
-    background: none;
     border: none;
-    background-color: transparent;
+    background: transparent none;
     cursor: pointer;
     fill: #656565;
 }

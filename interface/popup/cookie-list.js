@@ -3,21 +3,19 @@
 
     let containerCookie;
     let notificationElement;
-    var currentTab;
-    var loadedCookies;
-    var currentTabId;
+    let loadedCookies;
 
-    var notificationQueue = [];
-    var notificationTimeout;
+    let notificationQueue = [];
+    let notificationTimeout;
 
-    var cookieHandler = new CookieHandler();
+    const cookieHandler = new CookieHandler();
 
     document.addEventListener('DOMContentLoaded', function () {
         containerCookie = document.getElementById('cookie-container');
         notificationElement = document.getElementById('notification');
 
         function expandCookie(e) {
-            var parent = e.target.closest('li');
+            const parent = e.target.closest('li');
             toggleSlide(parent.querySelector('.expando'));
             parent.querySelector('.header').classList.toggle('active');
         }
@@ -25,15 +23,15 @@
         function deleteButton(e) {
             e.preventDefault();
             console.log('removing cookie...');
-            var listElement = e.target.closest('li');
+            const listElement = e.target.closest('li');
             removeCookie(listElement.dataset.name);
             return false;
         }
 
         function saveCookieForm(form) {
-            var id = form.dataset.id;
-            var name = form.querySelector('input[name="name"]').value;
-            var value = form.querySelector('textarea[name="value"]').value;
+            const id = form.dataset.id;
+            const name = form.querySelector('input[name="name"]').value;
+            const value = form.querySelector('textarea[name="value"]').value;
             saveCookie(id, name, value);
 
             if (form.classList.contains('create')) {
@@ -45,8 +43,8 @@
         function saveCookie(id, name, value) {
             console.log('saving cookie...');
 
-            var cookie = loadedCookies[id];
-            var oldName;
+            let cookie = loadedCookies[id];
+            let oldName;
 
             if (cookie) {
                 oldName = cookie.name;
@@ -69,7 +67,7 @@
 
         if (containerCookie) {
             containerCookie.addEventListener('click', e => {
-                var target = e.target;
+                let target = e.target;
                 if (target.nodeName === 'path') {
                     target = target.parentNode;
                 }
@@ -86,10 +84,10 @@
                 if (target.classList.contains('save')) {
                     return saveCookieForm(e.target.closest('li').querySelector('form'));
                 }
-            })
+            });
         }
 
-        document.getElementById('create-cookie').addEventListener('click', e => {
+        document.getElementById('create-cookie').addEventListener('click', () => {
             containerCookie.innerHTML = '';
             let pageTitle = document.getElementById('pageTitle');
             if (pageTitle) {
@@ -103,13 +101,13 @@
             return false;
         });
 
-        document.getElementById('delete-all-cookies').addEventListener('click', e => {
+        document.getElementById('delete-all-cookies').addEventListener('click', () => {
             let buttonIcon = document.getElementById('delete-all-cookies').querySelector('use');
             if (buttonIcon.getAttribute("xlink:href") === "../sprites/solid.svg#check") {
                 return;
             }
             if (loadedCookies && loadedCookies.length) {
-                for (var i = 0; i < loadedCookies.length; i++) {
+                for (let i = 0; i < loadedCookies.length; i++) {
                     removeCookie(loadedCookies[i].name);
                 }
                 loadedCookies = null;
@@ -121,7 +119,7 @@
             }, 1500);
         });
 
-        document.getElementById('export-cookies').addEventListener('click', e => {
+        document.getElementById('export-cookies').addEventListener('click', () => {
             let buttonIcon = document.getElementById('export-cookies').querySelector('use');
             if (buttonIcon.getAttribute("xlink:href") === "../sprites/solid.svg#check") {
                 return;
@@ -136,7 +134,7 @@
             }, 1500);
         });
 
-        document.getElementById('import-cookies').addEventListener('click', e => {
+        document.getElementById('import-cookies').addEventListener('click', () => {
             containerCookie.innerHTML = '';
             let pageTitle = document.getElementById('pageTitle');
             if (pageTitle) {
@@ -150,10 +148,10 @@
             return false;
         });
 
-        document.getElementById('return-list-add').addEventListener('click', e => {
+        document.getElementById('return-list-add').addEventListener('click', () => {
             returnToList();
         });
-        document.getElementById('return-list-import').addEventListener('click', e => {
+        document.getElementById('return-list-import').addEventListener('click', () => {
             returnToList();
         });
 
@@ -163,7 +161,7 @@
             return false;
         });
 
-        document.getElementById('save-create-cookie').addEventListener('click', e => {
+        document.getElementById('save-create-cookie').addEventListener('click', () => {
             saveCookieForm(document.querySelector('form'));
         });
 
@@ -181,8 +179,8 @@
             let cookies;
             try {
                 cookies = JSON.parse(json);
-            } catch {
-                console.log("Couldn't parse Json");
+            } catch (error) {
+                console.log("Couldn't parse Json", error);
                 sendNotification("Could not parse the Json value");
                 buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#times");
                 setTimeout(() => {
@@ -230,7 +228,7 @@
 
         if (chrome.runtime.getBrowserInfo) {
             chrome.runtime.getBrowserInfo(function (info) {
-                var mainVersion = info.version.split('.')[0];
+                const mainVersion = info.version.split('.')[0];
                 if (mainVersion < 57) {
                     containerCookie.style.height = '600px';
                 }
@@ -244,8 +242,8 @@
         if (!cookieHandler.currentTab) {
             return;
         }
-        var domain = getDomainFromUrl(cookieHandler.currentTab.url);
-        var subtitleLine = document.querySelector('.titles h2');
+        const domain = getDomainFromUrl(cookieHandler.currentTab.url);
+        const subtitleLine = document.querySelector('.titles h2');
         if (subtitleLine) {
             subtitleLine.innerHTML = domain || cookieHandler.currentTab.url;
         }
@@ -263,7 +261,7 @@
             document.getElementById('button-bar-default').classList.add('active');
 
             if (cookies.length > 0) {
-                var cookiesHtml = '';
+                let cookiesHtml = '';
                 cookies.forEach(function (cookie, id) {
                     cookiesHtml += createHtmlForCookie(cookie.name, cookie.value, id);
                 });
@@ -280,11 +278,11 @@
     }
 
     function showNoCookies() {
-        var noCookiesText = `
-        <p class="container" id="no-cookies">
-            This page does not have any cookies
-        </p>`;
-        containerCookie.innerHTML = noCookiesText;
+        containerCookie.innerHTML = `
+            <p class="container" id="no-cookies">
+                This page does not have any cookies
+            </p>
+        `;
     }
 
     function createHtmlForCookie(name, value, id) {
@@ -314,7 +312,7 @@
     }
 
     function createHtmlFormCookie(name, value, id) {
-        var formId = guid();
+        const formId = guid();
         return `
             <form data-id="${id}" class="form container ${!id ? `create` : ''}" id="${formId}">
                 <div class="browser-style">
@@ -323,14 +321,14 @@
                 </div>
                 <div class="browser-style">
                     <label class="browser-style" for="value-${formId}">Value</label>
-                    <textarea class="browser-style" name="value" id="name-${formId}">${value}</textarea>
+                    <textarea class="browser-style" name="value" id="value-${formId}">${value}</textarea>
                 </div>
             </form>
         `;
     }
 
     function createHtmlFormImport() {
-        var formId = guid();
+        const formId = guid();
         return `
             <form class="form container import" id="${formId}">
                 <div class="browser-style">
@@ -342,7 +340,7 @@
     }
 
     function removeCookie(name, url, callback) {
-        var removing = cookieHandler.removeCookie(name, url || getCurrentTabUrl(), function (e) {
+        const removing = cookieHandler.removeCookie(name, url || getCurrentTabUrl(), function (e) {
             console.log('success', e);
             if (callback) {
                 callback();
@@ -359,20 +357,13 @@
         showCookiesForTab();
     }
 
-    function onTabsChanged(tabId, changeInfo, tab) {
-        if (tabId == currentTabId && (changeInfo.url || changeInfo.status === 'complete')) {
-            showCookiesForTab();
-            console.log('Tab has changed!');
-        }
-    }
-
     function onTabActivated(activeInfo) {
         updateCurrentTab();
     }
 
     function sortCookiesByName(a, b) {
-        var aName = a.name.toLowerCase();
-        var bName = b.name.toLowerCase();
+        const aName = a.name.toLowerCase();
+        const bName = b.name.toLowerCase();
         return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
     }
 
@@ -400,7 +391,7 @@
 
     function sendMessage(type, params, callback, errorCallback) {
         if (window.browser) {
-            var sending = browser.runtime.sendMessage({ type: type, params: params });
+            const sending = browser.runtime.sendMessage({type: type, params: params});
             sending.then(callback, errorCallback);  
         } else {
             chrome.runtime.sendMessage({ type: type, params: params }, callback);
@@ -408,7 +399,7 @@
     }
 
     function getDomainFromUrl(url) {
-        var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
+        const matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
         return matches && matches[1];
     }
 
@@ -436,8 +427,7 @@
             return;
         }
 
-        let currentNotification = notificationQueue.shift();
-        notificationElement.querySelector('span').innerHTML = currentNotification;
+        notificationElement.querySelector('span').innerHTML = notificationQueue.shift();
         notificationElement.classList.add('fadeInUp');
         notificationElement.classList.remove('fadeOutDown');
 
@@ -461,10 +451,9 @@
  * https://stackoverflow.com/a/29047447
  **/
 function getHeight(el) {
-    var elStyle = window.getComputedStyle(el);
-    var elMaxHeight = elStyle.maxHeight;
-    var elMaxHeightInt = elMaxHeight.replace('px', '').replace('%', '');
-    var wantedHeight = 0;
+    const elStyle = window.getComputedStyle(el);
+    const elMaxHeight = elStyle.maxHeight;
+    const elMaxHeightInt = elMaxHeight.replace('px', '').replace('%', '');
 
     // if its not hidden we just return normal height
     if (elMaxHeightInt !== '0') {
@@ -478,7 +467,7 @@ function getHeight(el) {
     el.style.display = 'block';
     el.style.maxHeight = 'none';
 
-    wantedHeight = el.offsetHeight;
+    let wantedHeight = el.offsetHeight;
 
     // reverting to the original values
     el.style.display = '';
@@ -490,8 +479,8 @@ function getHeight(el) {
 }
 
 function toggleSlide(el) {
-    var elMaxHeight = 0;
-    
+    let elMaxHeight = 0;
+
     if (el.getAttribute('data-max-height')) {
         // we've already used this before, so everything is setup
         if (el.style.maxHeight.replace('px', '').replace('%', '') === '0') {
@@ -503,7 +492,7 @@ function toggleSlide(el) {
         }
     } else {
         elMaxHeight = getHeight(el) + 'px';
-        el.style['transition'] = 'max-height 0.2s ease-in-out';
+        el.style.transition = 'max-height 0.2s ease-in-out';
         el.style.overflowY = 'hidden';
         el.style.maxHeight = '0';
         el.setAttribute('data-max-height', elMaxHeight);
@@ -517,10 +506,10 @@ function toggleSlide(el) {
 }
 
 function copyText(text) {
-    var fakeText = document.createElement('textarea');
+    const fakeText = document.createElement('textarea');
     fakeText.classList.add('clipboardCopier');
     fakeText.innerHTML = text;
-    document.body.appendChild(fakeText)
+    document.body.appendChild(fakeText);
     fakeText.focus();
     fakeText.select();
     document.execCommand('Copy');

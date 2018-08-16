@@ -1,7 +1,7 @@
 (function () {
     'use strict';
-    
-    var connections = {};
+
+    const connections = {};
 
     if (window.browser) {
         browser.runtime.onConnect.addListener(onConnect);
@@ -16,7 +16,7 @@
     }
     
     isFirefoxAndroid(function(response) {
-        var popupOptions = {};
+        const popupOptions = {};
         if (response) {
             popupOptions.popup = '/interface/popup-android/cookie-list.html';
         } else {
@@ -45,8 +45,8 @@
                 return true;
 
             case 'getAllCookies':
-                var getAllCookiesParams = { 
-                    url: request.params.url 
+                const getAllCookiesParams = {
+                    url: request.params.url
                 };
                 if (window.browser) {
                     browser.cookies.getAll(getAllCookiesParams).then(sendResponse);
@@ -77,8 +77,8 @@
                 return true;
 
             case 'removeCookie':
-                var removeParams = {
-                    name: request.params.name, 
+                const removeParams = {
+                    name: request.params.name,
                     url: request.params.url
                 };
                 if (window.browser) {
@@ -91,7 +91,7 @@
     }
 
     function onConnect(port) {
-        var extensionListener = function (request, sender, sendResponse) {
+        const extensionListener = function (request, sender, sendResponse) {
             console.log('port message received: ' + (request.type || 'unknown'));
             switch (request.type) {
                 case 'init':
@@ -100,7 +100,7 @@
                     return;
             }
 
-        // other message handling
+            // other message handling
         };
 
         // Listen to messages sent from the DevTools page
@@ -108,9 +108,11 @@
 
         port.onDisconnect.addListener(function(port) {
             port.onMessage.removeListener(extensionListener);
-            var tabs = Object.keys(connections);
-            for (var i=0, len=tabs.length; i < len; i++) {
-            if (connections[tabs[i]] == port) {
+            const tabs = Object.keys(connections);
+            let i = 0;
+            const len = tabs.length;
+            for (; i < len; i++) {
+            if (connections[tabs[i]] === port) {
                 console.log('Devtool disconnected on tab ' + tabs[i]);
                 delete connections[tabs[i]];
                 break;
@@ -129,8 +131,10 @@
     }
 
     function sendMessageToAllTabs(type, data) {
-        var tabs = Object.keys(connections);
-        for (var i=0, len=tabs.length; i < len; i++) {
+        const tabs = Object.keys(connections);
+        let i = 0;
+        const len = tabs.length;
+        for (; i < len; i++) {
             sendMessageToTab(tabs[i], type, data);
         }
     }
@@ -145,7 +149,7 @@
     }
 
     function isFirefoxAndroid(callback) {
-        var getPlatformInfoCallback = function (info) {
+        const getPlatformInfoCallback = function (info) {
             callback(info.os === 'android' && window.browser);
         };
         if (window.browser) {
