@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Cookie-Editor",
-    "version": "1.5",
+    "version": "1.5.1",
     "description": "Simple yet powerful Cookie Editor that allow you to quickly create, edit and delete cookies without leaving your tab.",
     "background": {
         "scripts": [
@@ -33,8 +33,7 @@
             }
         ],
         "default_title": "Cookie-Editor",
-        "default_popup": "interface/popup/cookie-list.html",
-        "browser_style": true
+        "default_popup": "interface/popup/cookie-list.html"
     },
     "devtools_page": "interface/devtools/devtool.html",
     "permissions": [

@@ -295,7 +295,7 @@
                     <svg class="icon arrow"><use xlink:href="../sprites/solid.svg#angle-down"></use></svg>
                     ${sanitarize(name)}
                     <div class="btns">
-                        <button class="delete browser-style">
+                        <button class="delete">
                             <svg class="icon"><use xlink:href="../sprites/solid.svg#trash"></use></svg>
                         </button>
                     </div>
@@ -317,13 +317,13 @@
         const formId = guid();
         return `
             <form data-id="${sanitarize(id)}" class="form container ${!id ? `create` : ''}" id="${formId}">
-                <div class="browser-style">
-                    <label class="browser-style" for="name-${formId}">Name</label>
-                    <input class="browser-style" name="name" type="text" value="${sanitarize(name)}" id="name-${formId}" />
+                <div>
+                    <label for="name-${formId}">Name</label>
+                    <input name="name" type="text" value="${sanitarize(name)}" id="name-${formId}" />
                 </div>
-                <div class="browser-style">
-                    <label class="browser-style" for="value-${formId}">Value</label>
-                    <textarea class="browser-style" name="value" id="value-${formId}">${sanitarize(value)}</textarea>
+                <div>
+                    <label for="value-${formId}">Value</label>
+                    <textarea name="value" id="value-${formId}">${sanitarize(value)}</textarea>
                 </div>
             </form>
         `;
@@ -333,9 +333,9 @@
         const formId = guid();
         return `
             <form class="form container import" id="${formId}">
-                <div class="browser-style">
-                    <label class="browser-style" for="content-${formId}">Json</label>
-                    <textarea class="browser-style json" name="content" id="content-${formId}" placeholder="Paste your Json here"></textarea>
+                <div>
+                    <label for="content-${formId}">Json</label>
+                    <textarea class="json" name="content" id="content-${formId}" placeholder="Paste your Json here"></textarea>
                 </div>
             </form>
         `;

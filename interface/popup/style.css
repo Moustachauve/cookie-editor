@@ -186,7 +186,7 @@ label {
 .action-btns button:hover {
     opacity: 0.5;
 }
-.action-btns button.delete:hover, button.delete.browser-style:hover {
+button.delete:hover {
     fill: #CF000F;
     opacity: 0.8;
 }
