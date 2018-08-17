@@ -61,7 +61,7 @@
         }
 
         function returnToList() {
-            containerCookie.innerHTML = '';
+            clearChildren(containerCookie);
             showCookiesForTab();
         }
 
@@ -88,13 +88,13 @@
         }
 
         document.getElementById('create-cookie').addEventListener('click', () => {
-            containerCookie.innerHTML = '';
             let pageTitle = document.getElementById('pageTitle');
             if (pageTitle) {
-                pageTitle.innerHTML = 'Cookie Editor - Create a Cookie';
+                pageTitle.textContent = 'Cookie Editor - Create a Cookie';
             }
 
-            containerCookie.innerHTML = createHtmlFormCookie('', '', '');
+            clearChildren(containerCookie);
+            containerCookie.insertAdjacentHTML('afterbegin', createHtmlFormCookie('', '', ''));
 
             document.getElementById('button-bar-default').classList.remove('active');
             document.getElementById('button-bar-add').classList.add('active');
@@ -135,13 +135,13 @@
         });
 
         document.getElementById('import-cookies').addEventListener('click', () => {
-            containerCookie.innerHTML = '';
             let pageTitle = document.getElementById('pageTitle');
             if (pageTitle) {
-                pageTitle.innerHTML = 'Cookie Editor - Import Cookies from Json';
+                pageTitle.textContent = 'Cookie Editor - Import Cookies from Json';
             }
 
-            containerCookie.innerHTML = createHtmlFormImport();
+            clearChildren(containerCookie);
+            containerCookie.insertAdjacentHTML('afterbegin', createHtmlFormImport());
 
             document.getElementById('button-bar-default').classList.remove('active');
             document.getElementById('button-bar-import').classList.add('active');
@@ -245,7 +245,7 @@
         const domain = getDomainFromUrl(cookieHandler.currentTab.url);
         const subtitleLine = document.querySelector('.titles h2');
         if (subtitleLine) {
-            subtitleLine.innerHTML = domain || cookieHandler.currentTab.url;
+            subtitleLine.textContent = domain || cookieHandler.currentTab.url;
         }
         
         cookieHandler.getAllCookies(function (cookies) {
@@ -253,7 +253,7 @@
             loadedCookies = cookies;
             let pageTitle = document.getElementById('pageTitle');
             if (pageTitle) {
-                pageTitle.innerHTML = 'Cookie Editor';
+                pageTitle.textContent = 'Cookie Editor';
             }
 
             document.getElementById('button-bar-add').classList.remove('active');
@@ -266,11 +266,12 @@
                     cookiesHtml += createHtmlForCookie(cookie.name, cookie.value, id);
                 });
 
-                containerCookie.innerHTML = `
+                clearChildren(containerCookie);
+                containerCookie.insertAdjacentHTML('afterbegin', `
                     <ul>
                         ${cookiesHtml}
                     </ul>
-                `;
+                `);
             } else {
                 showNoCookies();
             }
@@ -278,20 +279,21 @@
     }
 
     function showNoCookies() {
-        containerCookie.innerHTML = `
+        clearChildren(containerCookie);
+        containerCookie.insertAdjacentHTML('afterbegin', `
             <p class="container" id="no-cookies">
                 This page does not have any cookies
             </p>
-        `;
+        `);
     }
 
     function createHtmlForCookie(name, value, id) {
         let formHtml = createHtmlFormCookie(name, value, id);
         return `
-            <li data-name="${name}">
+            <li data-name="${sanitarize(name)}">
                 <div class="header container">
                     <svg class="icon arrow"><use xlink:href="../sprites/solid.svg#angle-down"></use></svg>
-                    ${name}
+                    ${sanitarize(name)}
                     <div class="btns">
                         <button class="delete browser-style">
                             <svg class="icon"><use xlink:href="../sprites/solid.svg#trash"></use></svg>
@@ -314,14 +316,14 @@
     function createHtmlFormCookie(name, value, id) {
         const formId = guid();
         return `
-            <form data-id="${id}" class="form container ${!id ? `create` : ''}" id="${formId}">
+            <form data-id="${sanitarize(id)}" class="form container ${!id ? `create` : ''}" id="${formId}">
                 <div class="browser-style">
                     <label class="browser-style" for="name-${formId}">Name</label>
-                    <input class="browser-style" name="name" type="text" value="${name}" id="name-${formId}" />
+                    <input class="browser-style" name="name" type="text" value="${sanitarize(name)}" id="name-${formId}" />
                 </div>
                 <div class="browser-style">
                     <label class="browser-style" for="value-${formId}">Value</label>
-                    <textarea class="browser-style" name="value" id="value-${formId}">${value}</textarea>
+                    <textarea class="browser-style" name="value" id="value-${formId}">${sanitarize(value)}</textarea>
                 </div>
             </form>
         `;
@@ -427,7 +429,7 @@
             return;
         }
 
-        notificationElement.querySelector('span').innerHTML = notificationQueue.shift();
+        notificationElement.querySelector('span').textContent = notificationQueue.shift();
         notificationElement.classList.add('fadeInUp');
         notificationElement.classList.remove('fadeOutDown');
 
@@ -508,7 +510,7 @@ function toggleSlide(el) {
 function copyText(text) {
     const fakeText = document.createElement('textarea');
     fakeText.classList.add('clipboardCopier');
-    fakeText.innerHTML = text;
+    fakeText.textContent = text;
     document.body.appendChild(fakeText);
     fakeText.focus();
     fakeText.select();
@@ -518,4 +520,27 @@ function copyText(text) {
 
 function isArray(value) {
     return value && typeof value === 'object' && value.constructor === Array;
+}
+
+function clearChildren(element) {
+    while (element.firstChild) {
+        element.removeChild(element.firstChild);
+    }
+}
+
+function sanitarize(string) {
+    if (typeof string !== 'string') {
+        return string;
+    }
+
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        "/": '&#x2F;',
+    };
+    const reg = /[&<>"'/]/ig;
+    return string.replace(reg, (match) => (map[match]));
 }
