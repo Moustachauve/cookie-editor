@@ -1,0 +1,219 @@
+﻿*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    font-family: helvetica,arial,sans-serif;
+    box-sizing: border-box;
+    color: #fafafa;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    color: #FFF;
+    background-color: #10233F;
+}
+
+a {
+    color: #fff;
+    font-weight: bold;
+}
+
+a:hover {
+    color: #fa9900;
+}
+
+#body-container {
+    max-width: 1250px;
+    padding: 50px;
+    margin: auto;
+}
+
+#main-header {
+    position: relative;
+    background-color: #006cff;
+    background-image: url('../img/background-xlarge.jpg');
+    background-image: url('../img/background-xlarge.jpg'), linear-gradient(20deg, #006cff 0%,#252525 100%);
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    /*background:  radial-gradient(ellipse at center, rgba(0,0,0,0.37) 0%,rgba(0,0,0,0.37) 14%,rgba(0,0,0,0) 64%,rgba(0,0,0,0) 100%);*/
+}
+@media screen and (min-width: 1921px) {
+    #main-header {
+        background-image: url('../img/background-xlarge.jpg');
+        background-image: url('../img/background-xlarge.jpg'), linear-gradient(20deg, #006cff 0%,#252525 100%);
+    }
+}
+
+@media screen and (max-width: 1920px) {
+    #main-header {
+        background-image: url('../img/background-large.jpg');
+        background-image: url('../img/background-large.jpg'), linear-gradient(20deg, #006cff 0%,#252525 100%);
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    #main-header {
+        background-image: url('../img/background-medium.jpg');
+        background-image: url('../img/background-medium.jpg'), linear-gradient(20deg, #006cff 0%,#252525 100%);
+    }
+}
+
+@media screen and (max-width: 853px) {
+    #main-header {
+        background-image: url('../img/background-small.jpg');
+        background-image: url('../img/background-small.jpg'), linear-gradient(20deg, #006cff 0%,#252525 100%);
+    }
+}
+
+#main-header .overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 29, 68, 0.6);
+}
+
+#main-header .wrapper {
+    max-width: 1000px;
+    padding: 80px 0;
+    margin: auto;
+    text-align: center;
+    position: relative;
+}
+
+#logo {
+    width: 170px;
+    margin: auto;
+}
+
+#main-header h1, #main-header h2 {
+    text-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
+}
+
+#main-header h1 {
+    font-size: 70px;
+}
+
+#main-header h2 {
+    font-size: 40px;
+    padding: 0 40px;
+}
+
+.download-cta {
+    position: relative;
+    display: inline-block;
+    margin-top: 40px;
+    padding: 15px 30px;
+    font-size: 25px;
+    text-decoration: none;
+    background-color: #F39C12;
+    border-radius: 5px;
+    color: #000;
+    box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.2);
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+/* This is pre-rendering the shadow change for better performance */
+.download-cta::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-shadow: 7px 7px 6px rgba(0, 0, 0, 0.35);
+    border-radius: 2px;
+    opacity: 0;
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.download-cta:hover::after {
+    opacity: 1;
+}
+.download-cta:hover {
+    border-radius: 2px;
+    color: #000;
+    background-color: #F9BF3B;
+}
+
+body > nav {
+    background-color: #888;
+    position: sticky;
+    top: 0;
+}
+
+body > nav > ul {
+    list-style: none;
+    display: flex;
+    align-items: stretch;
+    height: 60px;
+    line-height: 60px;
+}
+body > nav > ul li {
+    display: flex;
+}
+body > nav > ul li, body > nav > ul a {
+    flex: 1;
+}
+
+body > nav > ul a {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+}
+
+body > nav > ul a:hover {
+    color: #fff;
+    background-color: #666;
+}
+
+body > nav > ul, .block {
+    max-width: 1080px;
+    margin: auto;
+}
+
+.block {
+    padding: 75px 30px;
+}
+
+.block h2 {
+    text-align: center;
+    font-weight: bold;
+    font-size: 26px;
+    margin-bottom: 25px;
+}
+
+#access-list {
+    display: flex;
+}
+
+#access-list > div {
+    flex: 1;
+    text-align: center;
+    margin: 25px;
+}
+
+#access-list img {
+    width: 100%;
+    max-width: 230px;
+    margin-bottom: 12px;
+}
+
+#access-list .description {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#browser-install-list img {
+    height: 60px;
+    margin-top: 22px;
+    margin-bottom: 3px;
+}
+
+.github-logo {
+    height: 15px;
+    fill: white;
+    margin-right: 5px;
+}

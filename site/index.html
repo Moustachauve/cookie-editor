@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+
+    <title>Cookie-Editor - Simple, yet Powerful Browser Extension</title>
+    <link href="style/main.css" rel="stylesheet" />
+</head>
+<body>
+    <header id="main-header">
+        <div class="overlay"></div>
+        <div class="wrapper">
+            <img src="img/cookie-filled.svg" id="logo" />
+            <h1>Cookie-Editor</h1>
+            <h2>Simple, yet Powerful Browser Extension</h2>
+            <a href="#download" class="download-cta">Install Now</a>
+        </div>
+    </header>
+    <nav>
+        <ul>
+            <li>
+                <a href="#access">Features</a>
+            </li>
+            <li>
+                <a href="#download">Download</a>
+            </li>
+            <li>
+                <a href="#source-code">Source Code</a>
+            </li>
+            <li>
+                <a href="#suggestions">Suggestions</a>
+            </li>
+        </ul>
+    </nav>
+    <div id="access" class="block" >
+        <h2>Develop Faster, Save Time</h2>
+        <div id="access-list">
+            <div>
+                <img src="img/from-toolbar.png" />
+                <div class="description">From your Toolbar</div>
+            </div>
+            <div>
+                <img src="img/from-devtools.png" />
+                <div class="description">From your DevTools</div>
+            </div>
+            <div>
+                <img src="img/from-android.png" />
+                <div class="description">From your Phone</div>
+            </div>
+        </div>
+    </div>
+    <div id="download" class="block" >
+        <h2>Installation</h2>
+        <p>
+            To install the extension, click on the icon of your browser below and follow the usual installation step for an extension from the extension page.
+            <div id="browser-install-list">
+                <a href="#" title="Install on Google Chrome now!">
+                    <img src="img/chrome-logo.svg" alt="Chrome" />
+                    Chrome
+                </a>
+                <a href="#" title="Install on Mozilla Firefox now!">
+                    <img src="img/firefox-logo.svg" alt="Firefox" />
+                    Firefox
+                </a>
+                <a href="#" title="Install on Vivaldi now!">
+                    <img src="img/vivaldi-logo.svg" alt="Vivaldi" />
+                    Vivaldi
+                </a>
+            </div>
+        </p>
+        <p>
+            Cookie-Editor is available on Google Chrome, Firefox, Firefox for Android and Vivaldi. It will soon be available on Opera.
+        </p>
+    </div>
+
+    <div id="source-code" class="block">
+        <h2>Source Code</h2>
+        <p>You can access the source code of this project on <a href="https://github.com/Moustachauve/cookie-editor" title="View the source code"><img src="img/github-logo.svg" alt="" class="github-logo" />Github</a>. Feel free to contribute as you desire to the project. All the help is appreciated.</p>
+    </div>
+    <div id="suggestions" class="block">
+        <h2>Suggestions or Bug Report</h2>
+        <p>
+            To suggest a feature or to report a bug, please fill an issue on the Github repository issue tracker by <a href="" title="Fill a suggestion or a bug report"><img src="img/github-logo.svg" alt="" class="github-logo" />clicking here</a>.
+        </p>
+    </div>
+
+    <footer class="block">
+        <p>
+            Cookie-Editor was made by <a href="https://cgagnier.ca/" title="Personal Site">Christophe Gagnier</a>, also known as <a href="https://github.com/Moustachauve/" title="Github Profile"><img src="img/github-logo.svg" alt="" class="github-logo" />Moustachauve</a>
+        </p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
