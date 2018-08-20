@@ -106,7 +106,7 @@ a:hover {
     padding: 15px 30px;
     font-size: 25px;
     text-decoration: none;
-    background-color: #F39C12;
+    background-color: #F9BF3B;
     border-radius: 5px;
     color: #000;
     box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.2);
@@ -125,47 +125,65 @@ a:hover {
     opacity: 0;
     transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
-.download-cta:hover::after {
+.download-cta:not(.disabled):hover::after {
     opacity: 1;
 }
-.download-cta:hover {
+.download-cta:not(.disabled):hover {
     border-radius: 2px;
     color: #000;
-    background-color: #F9BF3B;
+    background-color: #FBD06F;
 }
 
-body > nav {
-    background-color: #888;
-    position: sticky;
+.download-cta.disabled {
+    background-color: rgba(200, 200, 200, 0.6);
+    cursor: not-allowed;
+}
+.download-cta.disabled:hover {
+    color: #000;
+}
+
+.sticky {
+    position: fixed;
     top: 0;
+    width: 100%;
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-body > nav > ul {
+.sticky + #main-content {
+     padding-top: 60px;
+}
+
+#main-nav {
+    background-color: #323234;
+    z-index: 25;
+}
+
+#main-nav > ul {
     list-style: none;
     display: flex;
     align-items: stretch;
     height: 60px;
     line-height: 60px;
 }
-body > nav > ul li {
+#main-nav > ul li {
     display: flex;
 }
-body > nav > ul li, body > nav > ul a {
+#main-nav > ul li, body > nav > ul a {
     flex: 1;
 }
 
-body > nav > ul a {
+#main-nav > ul a {
     display: block;
     text-align: center;
     text-decoration: none;
 }
 
-body > nav > ul a:hover {
+#main-nav > ul a:hover {
     color: #fff;
     background-color: #666;
 }
 
-body > nav > ul, .block {
+#main-nav > ul, .block {
     max-width: 1080px;
     margin: auto;
 }
@@ -177,7 +195,7 @@ body > nav > ul, .block {
 .block h2 {
     text-align: center;
     font-weight: bold;
-    font-size: 26px;
+    font-size: 30px;
     margin-bottom: 25px;
 }
 
@@ -202,14 +220,55 @@ body > nav > ul, .block {
     font-weight: 600;
 }
 
+#download {
+    text-align: center;
+}
+
+#browser-install-list {
+    display: flex;
+    text-align: center;
+}
+
+#browser-install-list > div {
+    flex: 1;
+    margin: 20px;
+    position: relative;
+}
+
 #browser-install-list img {
-    height: 60px;
-    margin-top: 22px;
-    margin-bottom: 3px;
+    display: block;
+    height: 100%;
+    max-height: 150px;
+    margin: auto;
+}
+
+#browser-install-list .coming-soon {
+    position: absolute;
+    width: 100%;
+    margin-top: 5px;
+    font-weight: 700;
 }
 
 .github-logo {
     height: 15px;
     fill: white;
     margin-right: 5px;
+}
+
+.github-block {
+    display: flex;
+    align-items: center;
+    max-width: 700px;
+    margin: auto;
+}
+
+.github-block img {
+    width: 100%;
+    max-width: 150px;
+    margin-right: 30px;
+}
+
+.github-block h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
 }
