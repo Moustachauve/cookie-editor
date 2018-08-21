@@ -387,23 +387,26 @@ footer.block {
     position: fixed;
     top: 0;
     left: 0;
+    width: 0;
     background-color: rgba(0,0,0,0.4);
     z-index: 30;
     cursor: pointer;
     opacity: 0;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease;
 }
 
 #img-preview.visible {
     opacity: 1;
     bottom: 0;
     right: 0;
+    width: 100%;
 }
 
 #img-preview.hiding {
     opacity: 0;
     bottom: 0;
     right: 0;
+    width: 100%;
 }
 
 #img-preview .container {
@@ -427,4 +430,19 @@ footer.block {
     font-size: 16px;
     font-weight: 600;
     text-align: center;
+}
+
+/* Phones */
+@media screen and (max-width: 599px) {
+    #access-list {
+        display: block;
+    }
+}
+
+/* Tablets */
+@media screen and (min-width: 600px) and (max-width: 950px) {
+    #features .img-preview {
+        max-width: 250px;
+        max-height: 100px;
+    }
 }
