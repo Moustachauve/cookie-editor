@@ -181,7 +181,15 @@
         </footer>
     </div>
 
+    <div id="img-preview">
+	    <div class="container">
+		    <img src="" />
+		    <div class="description"></div>
+	    </div>
+    </div>
+
     <script>
+	    var imgPreview = document.getElementById('img-preview');
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -191,6 +199,37 @@
                 });
             });
         });
+
+        document.querySelectorAll('.img-preview').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                var parent = e.target.closest('div');
+                var imgUrl = parent.querySelector('img').src;
+                var description = parent.querySelector('.description').textContent.trim();
+
+                imgPreview.querySelector('img').src = imgUrl;
+                imgPreview.querySelector('.description').textContent = description;
+                imgPreview.classList.add('visible');
+            });
+        });
+
+        imgPreview.addEventListener('click', function (e) {
+            if (e.target !== imgPreview) {
+                return;
+            }
+            hideImgPreview();
+        });
+
+        imgPreview.addEventListener('transitionend', function (e) {
+            console.log('transition over');
+            if (imgPreview.classList.contains('hiding')) {
+                imgPreview.classList.remove('hiding');
+            }
+        });
+
+	    function hideImgPreview() {
+            imgPreview.classList.add('hiding');
+            imgPreview.classList.remove('visible');
+	    }
     </script>
     <script src="script/stickyHeader.js"></script>
 </body>
