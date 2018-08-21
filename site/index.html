@@ -1,6 +1,16 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-32262555-5"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-32262555-5');
+    </script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8" />
 
@@ -14,9 +24,10 @@
             <img src="img/cookie-filled.svg" id="logo" />
             <h1>Cookie-Editor</h1>
             <h2>Simple, yet Powerful Browser Extension</h2>
-            <a href="#download" class="download-cta">Install Now</a>
+            <a href="#download" class="btn-cta">Install Now</a>
         </div>
     </header>
+
     <nav id="main-nav">
         <ul>
             <li>
@@ -33,6 +44,7 @@
             </li>
         </ul>
     </nav>
+
     <div id="main-content">
         <div id="access" class="block" >
             <h2>Develop Faster, Save Time</h2>
@@ -51,27 +63,74 @@
                 </div>
             </div>
         </div>
+
+        <div id="features" class="block" >
+            <h2>Simply the Best Cookie Editor</h2>
+            <div class="grid">
+                <div>
+                    <a class="img-preview">
+                        <img src="img/cookie-list.png" />
+                    </a>
+                    <div class="description">
+                        View a list of all the cookies
+                    </div>
+                </div>
+                <div>
+                    <a class="img-preview">
+                        <img src="img/cookie-add.png" />
+                    </a>
+                    <div class="description">
+                        Create a new Cookie
+                    </div>
+                </div>
+                <div>
+                    <a class="img-preview">
+                        <img src="img/cookie-edit.png" />
+                    </a>
+                    <div class="description">
+                        Edit an existing cookie
+                    </div>
+                </div>
+                <div>
+                    <a class="img-preview">
+                        <img src="img/cookie-delete.png" />
+                    </a>
+                    <div class="description">
+                        Delete one or all cookies
+                    </div>
+                </div>
+                <div>
+                    <a class="img-preview">
+                        <img src="img/cookie-import.png" />
+                    </a>
+                    <div class="description">
+                        Export and Import Cookies
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="download" class="block" >
-            <h2>Installation</h2>
+            <h2>Download</h2>
             <p>
                  Cookie-Editor is available on Google Chrome, Firefox and Firefox for Android. It will soon be available on Opera.
                 <div id="browser-install-list">
                     <div>
                         <img src="img/chrome-logo.svg" alt="Chrome" />
-                        <a href="#" class="download-cta">
+                        <a href="https://chrome.google.com/webstore/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm" class="btn-cta">
                             Chrome
                         </a>
                     </div>
                     <div>
                         <img src="img/firefox-logo.svg" alt="Firefox" />
-                        <a href="#" class="download-cta">
+                        <a href="https://addons.mozilla.org/firefox/addon/cookie-editor/" class="btn-cta">
                             Firefox
                         </a>
                     </div>
                     <div>
                         <img src="img/opera-logo.svg" alt="Opera" />
                         <div class="coming-soon">Coming Soon!</div>
-                        <a href="#" class="download-cta disabled">
+                        <a href="#" class="btn-cta disabled">
                             Opera
                         </a>
                     </div>
@@ -80,8 +139,8 @@
         </div>
 
         <div id="source-code" class="block">
-            <div class="github-block">
-                <img src="img/github-logo.svg" />
+            <div id="github-block">
+                    <svg class="github-logo"><use xlink:href="img/github-logo.svg#github"></use></svg>
                 <div>
                     <h3>
                         <a href="https://github.com/moustachauve/" title="Moustachauve's Github Profile">Moustachauve</a> 
@@ -97,14 +156,27 @@
         </div>
         <div id="suggestions" class="block">
             <h2>Suggestions or Bug Report</h2>
-            <p>
-                To suggest a feature or to report a bug, please fill an issue on the Github repository issue tracker by <a href="" title="Fill a suggestion or a bug report"><img src="img/github-logo.svg" alt="" class="github-logo" />clicking here</a>.
-            </p>
+            <div id="suggestions-block">
+                <div class="text">
+                    <p>
+                        Please create an issue on the Github issue tracker for any suggestion or bug report. It will be resolved as fast as possible.
+                    </p>
+                    <a href="https://github.com/Moustachauve/cookie-editor/issues/new" class="btn-cta btn-sm">
+                        <svg><use xlink:href="img/github-logo.svg#github"></use></svg>Create an Issue
+                    </a>
+                </div>
+                <div class="image">
+                    <svg class="icon"><use xlink:href="img/fa-solid.svg#bug"></use></svg>
+                </div>
+            </div>
         </div>
 
         <footer class="block">
             <p>
-                Cookie-Editor was made by <a href="https://cgagnier.ca/" title="Personal Site">Christophe Gagnier</a>, also known as <a href="https://github.com/Moustachauve/" title="Github Profile"><img src="img/github-logo.svg" alt="" class="github-logo" />Moustachauve</a>
+                Cookie-Editor by <a href="https://cgagnier.ca/" title="Personal Site">Christophe Gagnier</a>, known as 
+                <a href="https://github.com/Moustachauve/" title="Github Profile">
+                    <svg class="github-logo"><use xlink:href="img/github-logo.svg#github"></use></svg>Moustachauve
+                </a>
             </p>
         </footer>
     </div>

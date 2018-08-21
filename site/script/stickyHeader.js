@@ -10,3 +10,4 @@ function onScroll() {
   }
 }
 window.onscroll = onScroll;
+onScroll();

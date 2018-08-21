@@ -9,6 +9,8 @@
 body {
     color: #FFF;
     background-color: #10233F;
+    background: linear-gradient(#162C4D, #1554ab);
+    background-attachment: fixed;
 }
 
 a {
@@ -29,8 +31,7 @@ a:hover {
 #main-header {
     position: relative;
     background-color: #006cff;
-    background-image: url('../img/background-xlarge.jpg');
-    background-image: url('../img/background-xlarge.jpg'), linear-gradient(20deg, #006cff 0%,#252525 100%);
+    background-image: url('../img/background-large.jpg');
     background-repeat: no-repeat;
     background-size: cover;
 
@@ -39,28 +40,24 @@ a:hover {
 @media screen and (min-width: 1921px) {
     #main-header {
         background-image: url('../img/background-xlarge.jpg');
-        background-image: url('../img/background-xlarge.jpg'), linear-gradient(20deg, #006cff 0%,#252525 100%);
     }
 }
 
 @media screen and (max-width: 1920px) {
     #main-header {
         background-image: url('../img/background-large.jpg');
-        background-image: url('../img/background-large.jpg'), linear-gradient(20deg, #006cff 0%,#252525 100%);
     }
 }
 
 @media screen and (max-width: 1280px) {
     #main-header {
         background-image: url('../img/background-medium.jpg');
-        background-image: url('../img/background-medium.jpg'), linear-gradient(20deg, #006cff 0%,#252525 100%);
     }
 }
 
 @media screen and (max-width: 853px) {
     #main-header {
         background-image: url('../img/background-small.jpg');
-        background-image: url('../img/background-small.jpg'), linear-gradient(20deg, #006cff 0%,#252525 100%);
     }
 }
 
@@ -99,7 +96,7 @@ a:hover {
     padding: 0 40px;
 }
 
-.download-cta {
+.btn-cta {
     position: relative;
     display: inline-block;
     margin-top: 40px;
@@ -112,8 +109,15 @@ a:hover {
     box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.2);
     transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
+.btn-cta svg {
+    fill: #000;
+    height: 1em;
+    width: 1em;
+    vertical-align: text-top;
+    margin-right: 10px;
+}
 /* This is pre-rendering the shadow change for better performance */
-.download-cta::after {
+.btn-cta::after {
     content: '';
     position: absolute;
     top: 0;
@@ -125,21 +129,26 @@ a:hover {
     opacity: 0;
     transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
-.download-cta:not(.disabled):hover::after {
+.btn-cta:not(.disabled):hover::after {
     opacity: 1;
 }
-.download-cta:not(.disabled):hover {
+.btn-cta:not(.disabled):hover {
     border-radius: 2px;
     color: #000;
     background-color: #FBD06F;
 }
 
-.download-cta.disabled {
+.btn-cta.disabled {
     background-color: rgba(200, 200, 200, 0.6);
     cursor: not-allowed;
 }
-.download-cta.disabled:hover {
+.btn-cta.disabled:hover {
     color: #000;
+}
+
+.btn-cta.btn-sm {
+    font-size: 18px;
+    padding: 10px 15px;
 }
 
 .sticky {
@@ -220,6 +229,64 @@ a:hover {
     font-weight: 600;
 }
 
+#features {
+    padding-top: 0;
+    padding-bottom: 10px;
+}
+
+#features .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+#features .grid > div {
+    margin: 20px;
+    text-align: center;
+}
+
+#features .grid > div:last-child {
+    grid-column: 1 / -1;
+}
+
+#features .img-preview, #features .description {
+    margin: auto;
+}
+
+#features .img-preview {
+    position: relative;
+    display: inline-block;
+    max-width: 400px;
+    max-height: 200px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+#features .img-preview:hover::after {
+    display: inline-block;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    content: "";
+    background-color: rgba(0, 0, 0, 0.5);
+    background-image: url(../img/zoom.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 25%;
+}
+
+#features img {
+    max-width: 100%;
+}
+
+#features .description {
+    font-size: 22px;
+    font-weight: 600;
+    margin-top: 15px;
+}
+
 #download {
     text-align: center;
 }
@@ -251,24 +318,53 @@ a:hover {
 
 .github-logo {
     height: 15px;
+    width: 15px;
     fill: white;
     margin-right: 5px;
 }
 
-.github-block {
+#github-block, #suggestions-block {
     display: flex;
     align-items: center;
     max-width: 700px;
     margin: auto;
 }
 
-.github-block img {
+#github-block svg {
     width: 100%;
+    height: 100%;
     max-width: 150px;
     margin-right: 30px;
 }
 
-.github-block h3 {
+#github-block h3 {
     font-size: 24px;
     margin-bottom: 10px;
+}
+
+#suggestions-block {
+    max-width: 650px;
+}
+
+#suggestions-block .btn-cta {
+    margin-top: 20px;
+}
+
+#suggestions-block .image {
+    margin-left: 25px;
+    max-height: 150px;
+    max-width: 150px;
+}
+#suggestions-block .image svg {
+    height: 100%;
+    width: 100%;
+    fill: #00a743;
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.5));
+}
+
+footer.block {
+    padding-bottom: 25px;
+    font-size: 16px;
+    text-align: center;
+    color: #bababa;
 }
