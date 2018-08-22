@@ -30,7 +30,14 @@
     </header>
 
     <nav id="main-nav">
-        <ul>
+        <div class="mobile">
+            <div class="hamburger">
+                <svg class="icon"><use xlink:href="img/fa-solid.svg#bars"></use></svg>
+            </div>
+            <img src="img/cookie-filled.svg" />
+            <h2>Cookie-Editor</h2>
+        </div>
+        <ul id="nav-list">
             <li>
                 <a href="#access">Features</a>
             </li>
@@ -167,7 +174,7 @@
                     </a>
                 </div>
                 <div class="image">
-                    <svg class="icon"><use xlink:href="img/fa-solid.svg#bug"></use></svg>
+                    <svg><use xlink:href="img/fa-solid.svg#bug"></use></svg>
                 </div>
             </div>
         </div>
@@ -191,6 +198,8 @@
 
     <script>
 	    var imgPreview = document.getElementById('img-preview');
+        var navList = document.getElementById('nav-list');
+
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -211,6 +220,14 @@
                 imgPreview.querySelector('.description').textContent = description;
                 imgPreview.classList.add('visible');
             });
+        });
+
+        document.querySelector('.hamburger').addEventListener('click', function (e) {
+            navList.classList.toggle('open');
+        });
+
+        navList.addEventListener('click', function (e) {
+            navList.classList.remove('open');
         });
 
         imgPreview.addEventListener('click', function (e) {

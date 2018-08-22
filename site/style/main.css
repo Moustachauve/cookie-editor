@@ -150,6 +150,13 @@ a:hover {
     font-size: 18px;
     padding: 10px 15px;
 }
+.icon {
+    max-height: 1em;
+    width: 100%;
+    fill: #fff;
+    display: inline;
+    vertical-align: sub;
+}
 
 .sticky {
     position: fixed;
@@ -165,14 +172,17 @@ a:hover {
 #main-nav {
     background-color: #323234;
     z-index: 25;
+    line-height: 60px;
+}
+
+#main-nav .mobile {
+    display: none;
 }
 
 #main-nav > ul {
     list-style: none;
     display: flex;
     align-items: stretch;
-    height: 60px;
-    line-height: 60px;
 }
 #main-nav > ul li {
     display: flex;
@@ -317,7 +327,7 @@ a:hover {
 
 #browser-install-list img {
     display: block;
-    height: 100%;
+    width: 100%;
     max-height: 150px;
     margin: auto;
 }
@@ -434,8 +444,111 @@ footer.block {
 
 /* Phones */
 @media screen and (max-width: 599px) {
+    #main-header .wrapper {
+        padding-top: 30px;
+    }
+    #logo {
+        width: 100px;
+    }
+    #main-header h1 {
+        font-size: 40px;
+    }
+    #main-header h2 {
+        font-size: 24px;
+    }
+
+    .btn-cta {
+        margin-top: 30px;
+        padding: 15px 25px;
+    }
+
+    #main-nav ul {
+        display: block;
+        max-height: 0;
+        background-color: #323234;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    #main-nav ul.open {
+        max-height: 240px;
+    }
+
+    #main-nav .hamburger {
+        font-size: 35px;
+        line-height: 60px;
+        width: 60px;
+        cursor: pointer;
+        float: right;
+    }
+    #main-nav .hamburger .icon {
+        fill: #bbb;
+    }
+    #main-nav .hamburger:hover .icon {
+        fill: #fff;
+    }
+    #main-nav .mobile {
+        display: block;
+        margin-left: 15px;
+        overflow: hidden;
+        height: 60px;
+    }
+    #main-nav .mobile img {
+        line-height: 60px;
+        width: 40px;
+        height: 60px;
+    }
+    #main-nav .mobile h2 {
+        display: inline-block;
+        vertical-align: text-bottom;
+        margin-left: 8px;
+    }
+
     #access-list {
         display: block;
+    }
+
+    #features .grid  {
+        display: block;
+    }
+    #features .description {
+        margin-top: 5px;
+        font-size: 18px;
+    }
+    #features .grid > div {
+        margin-bottom: 30px;
+    }
+
+    #browser-install-list {
+        display: block;
+    }
+    #browser-install-list img {
+        max-width: 150px;
+    }
+    #browser-install-list .btn-cta {
+        margin-top: 15px;
+    }
+
+    #browser-install-list .coming-soon {
+        margin-top: -10px;
+    }
+
+    #suggestions-block {
+        flex-direction: column;
+        text-align: center;
+    }
+    #suggestions-block .image {
+        margin-top: 20px;
+        margin-left: 0;
+        max-height: 100px;
+    }
+
+    #img-preview img {
+        width: 100%;
+    }
+
+    footer.block {
+        padding-top: 0;
     }
 }
 
@@ -445,4 +558,5 @@ footer.block {
         max-width: 250px;
         max-height: 100px;
     }
+
 }
