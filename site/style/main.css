@@ -259,9 +259,11 @@ a:hover {
     max-height: 200px;
     overflow: hidden;
     background-color: #fff;
+    transition: all 0.3s ease;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.5);
 }
 
-#features .img-preview:hover::after {
+#features .img-preview::after {
     display: inline-block;
     cursor: pointer;
     position: absolute;
@@ -270,11 +272,22 @@ a:hover {
     left: 0;
     right: 0;
     content: "";
-    background-color: rgba(0, 0, 0, 0.5);
-    background-image: url(../img/zoom.svg);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 25%;
+    opacity: 0;
+    transition: all 0.2s ease;
+    background-image: url(../img/zoom.svg);
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+#features .img-preview:hover {
+    transform: scale(1.05);
+    box-shadow: 4px 4px 6px rgba(0,0,0,0.5);
+}
+
+#features .img-preview:hover::after {
+    opacity: 1;
 }
 
 #features img {
@@ -367,4 +380,69 @@ footer.block {
     font-size: 16px;
     text-align: center;
     color: #bababa;
+}
+
+#img-preview {
+    display: grid;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 30;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#img-preview.visible {
+    opacity: 1;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+}
+
+#img-preview.hiding {
+    opacity: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+}
+
+#img-preview .container {
+    margin: auto;
+    max-width: 95%;
+    max-height: 95%;
+    position: relative;
+    background-color: #fff;
+    cursor: default;
+    overflow: hidden;
+}
+
+#img-preview img {
+    min-height: 100px;
+    min-width: 200px;
+}
+#img-preview .description {
+    color: #444;
+    padding: 10px;
+    padding-top: 0;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Phones */
+@media screen and (max-width: 599px) {
+    #access-list {
+        display: block;
+    }
+}
+
+/* Tablets */
+@media screen and (min-width: 600px) and (max-width: 950px) {
+    #features .img-preview {
+        max-width: 250px;
+        max-height: 100px;
+    }
 }
