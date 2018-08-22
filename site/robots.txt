@@ -1,2 +1,4 @@
 User-agent: *
 Disallow:
+
+SITEMAP: https://cookie-editor.cgagnier.ca/sitemap.xml
