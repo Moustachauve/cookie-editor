@@ -13,6 +13,8 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8" />
+	<meta name="description" content="Cookie-Editor is a browser extension/add-on that lets you efficiently create, edit and delete cookies for the current tab. Perfect for developing, quickly testing or even manually managing your cookies for your privacy.">
+	<link rel="canonical" href="https://cookie-editor.cgagnier.ca/">
 
     <title>Cookie-Editor - The Best Cookie Editor for Chrome and Firefox</title>
     <link href="style/main.css" rel="stylesheet" />
@@ -22,7 +24,7 @@
     <header id="main-header">
         <div class="overlay"></div>
         <div class="wrapper">
-            <img src="img/cookie-filled.svg" id="logo" />
+            <img src="img/cookie-filled.svg" id="logo" alt="Cookie-Editor Logo" />
             <h1>Cookie-Editor</h1>
             <h2>Simple, yet Powerful Browser Extension</h2>
             <a href="#download" class="btn-cta" id="download-cta">Install Now</a>
@@ -34,7 +36,7 @@
             <div class="hamburger">
                 <svg class="icon"><use xlink:href="img/fa-solid.svg#bars"></use></svg>
             </div>
-            <img src="img/cookie-filled.svg" />
+            <img src="img/cookie-filled.svg" alt="Logo" />
             <h2>Cookie-Editor</h2>
         </div>
         <ul id="nav-list">
@@ -58,15 +60,15 @@
             <h2>Develop Faster, Save Time</h2>
             <div id="access-list">
                 <div>
-                    <img src="img/from-toolbar.png" />
+                    <img src="img/from-toolbar.png" alt="Access your cookies directly from your toolbar" />
                     <div class="description">From your Toolbar</div>
                 </div>
                 <div>
-                    <img src="img/from-devtools.png" />
+                    <img src="img/from-devtools.png" alt="Access your cookies directly from your DevTools" />
                     <div class="description">From your DevTools</div>
                 </div>
                 <div>
-                    <img src="img/from-android.png" />
+                    <img src="img/from-android.png" alt="Access your cookies directly from your Android phone" />
                     <div class="description">From your Phone</div>
                 </div>
             </div>
@@ -77,7 +79,7 @@
             <div class="grid">
                 <div>
                     <a class="img-preview">
-                        <img src="img/cookie-list.png" />
+                        <img src="img/cookie-list.png" alt="View a list of all your cookies in a simple interface" />
                     </a>
                     <div class="description">
                         View a list of all the cookies
@@ -85,7 +87,7 @@
                 </div>
                 <div>
                     <a class="img-preview">
-                        <img src="img/cookie-add.png" />
+                        <img src="img/cookie-add.png" alt="Quickly create a new cookie for the current page" />
                     </a>
                     <div class="description">
                         Create a new Cookie
@@ -93,7 +95,7 @@
                 </div>
                 <div>
                     <a class="img-preview">
-                        <img src="img/cookie-edit.png" />
+                        <img src="img/cookie-edit.png" alt="Edit the information of an existing cookie on the current page" />
                     </a>
                     <div class="description">
                         Edit an existing cookie
@@ -101,7 +103,7 @@
                 </div>
                 <div>
                     <a class="img-preview">
-                        <img src="img/cookie-delete.png" />
+                        <img src="img/cookie-delete.png" alt="Easily delete a cookie from the current page" />
                     </a>
                     <div class="description">
                         Delete one or all cookies
@@ -109,7 +111,7 @@
                 </div>
                 <div>
                     <a class="img-preview">
-                        <img src="img/cookie-import.png" />
+                        <img src="img/cookie-import.png" alt="Import and export your cookies to a file" />
                     </a>
                     <div class="description">
                         Export and Import Cookies
@@ -120,30 +122,28 @@
 
         <div id="download" class="block" >
             <h2>Download</h2>
-            <p>
-                 Cookie-Editor is available on Google Chrome, Firefox and Firefox for Android. It will soon be available on Opera.
-                <div id="browser-install-list">
-                    <div>
-                        <img src="img/chrome-logo.svg" alt="Chrome" />
-                        <a href="https://chrome.google.com/webstore/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm" class="btn-cta">
-                            Chrome
-                        </a>
-                    </div>
-                    <div>
-                        <img src="img/firefox-logo.svg" alt="Firefox" />
-                        <a href="https://addons.mozilla.org/addon/cookie-editor?src=external-cookie-editor.cgagnier.ca" class="btn-cta">
-                            Firefox
-                        </a>
-                    </div>
-                    <div>
-                        <img src="img/opera-logo.svg" alt="Opera" />
-                        <div class="coming-soon">Coming Soon!</div>
-                        <a href="#" class="btn-cta disabled">
-                            Opera
-                        </a>
-                    </div>
+             Cookie-Editor is available on Google Chrome, Firefox and Firefox for Android. It will soon be available on Opera.
+            <div id="browser-install-list">
+                <div>
+                    <img src="img/chrome-logo.svg" alt="Available for Chrome" />
+                    <a href="https://chrome.google.com/webstore/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm" class="btn-cta">
+                        Chrome
+                    </a>
                 </div>
-            </p>
+                <div>
+                    <img src="img/firefox-logo.svg" alt="Available for Firefox" />
+                    <a href="https://addons.mozilla.org/addon/cookie-editor?src=external-cookie-editor.cgagnier.ca" class="btn-cta">
+                        Firefox
+                    </a>
+                </div>
+                <div>
+                    <img src="img/opera-logo.svg" alt="Available for Opera" />
+                    <div class="coming-soon">Coming Soon!</div>
+                    <a href="#" class="btn-cta disabled">
+                        Opera
+                    </a>
+                </div>
+            </div>
         </div>
 
         <div id="source-code" class="block">
@@ -169,7 +169,7 @@
                     <p>
                         Please create an issue on the Github issue tracker for any suggestion or bug report. It will be resolved as fast as possible.
                     </p>
-                    <a href="https://github.com/Moustachauve/cookie-editor/issues/new" class="btn-cta btn-sm">
+                    <a href="https://github.com/Moustachauve/cookie-editor/issues" class="btn-cta btn-sm">
                         <svg><use xlink:href="img/github-logo.svg#github"></use></svg>Create an Issue
                     </a>
                 </div>
@@ -191,14 +191,14 @@
 
     <div id="img-preview">
 	    <div class="container">
-		    <img src="" />
+		    <img src="img/cookie-list.png" alt="Image Preview" />
 		    <div class="description"></div>
 	    </div>
     </div>
 
     <script>
-	    var imgPreview = document.getElementById('img-preview');
-        var navList = document.getElementById('nav-list');
+        const imgPreview = document.getElementById('img-preview');
+        const navList = document.getElementById('nav-list');
 
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -222,9 +222,9 @@
 
         document.querySelectorAll('.img-preview').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
-                var parent = e.target.closest('div');
-                var imgUrl = parent.querySelector('img').src;
-                var description = parent.querySelector('.description').textContent.trim();
+                const parent = e.target.closest('div');
+                const imgUrl = parent.querySelector('img').src;
+                const description = parent.querySelector('.description').textContent.trim();
 
                 imgPreview.querySelector('img').src = imgUrl;
                 imgPreview.querySelector('.description').textContent = description;

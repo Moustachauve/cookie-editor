@@ -1,8 +1,8 @@
 (function(){
     document.addEventListener('DOMContentLoaded', function () {
-        var header = document.getElementById("main-header");
-        var navbar = document.getElementById("main-nav");
-        var resizeTimeout;
+        const header = document.getElementById("main-header");
+        const navbar = document.getElementById("main-nav");
+        let resizeTimeout;
 
         // Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
         function onScroll() {
