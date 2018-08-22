@@ -25,7 +25,7 @@
             <img src="img/cookie-filled.svg" id="logo" />
             <h1>Cookie-Editor</h1>
             <h2>Simple, yet Powerful Browser Extension</h2>
-            <a href="#download" class="btn-cta">Install Now</a>
+            <a href="#download" class="btn-cta" id="download-cta">Install Now</a>
         </div>
     </header>
 
@@ -210,6 +210,16 @@
             });
         });
 
+        document.querySelectorAll('a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                if (anchor.href.indexOf(window.location.href) > -1) {
+                    return;
+                }
+
+                trackOutboundLink(anchor.href);
+            });
+        });
+
         document.querySelectorAll('.img-preview').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 var parent = e.target.closest('div');
@@ -219,6 +229,13 @@
                 imgPreview.querySelector('img').src = imgUrl;
                 imgPreview.querySelector('.description').textContent = description;
                 imgPreview.classList.add('visible');
+
+                ga('send', {
+                    hitType: 'event',
+                    eventCategory: 'image-preview',
+                    eventAction: 'view',
+                    eventLabel: description
+                });
             });
         });
 
@@ -244,10 +261,56 @@
             }
         });
 
+        document.getElementById('download-cta').addEventListener("click", function () {
+            ga('send', {
+                hitType: 'event',
+                eventCategory: 'download-cta',
+                eventAction: 'click',
+                eventLabel: 'Big Button'
+            });
+        });
+
+        document.getElementById('download-cta').addEventListener("click", function () {
+            ga('send', {
+                hitType: 'event',
+                eventCategory: 'download-cta',
+                eventAction: 'click',
+                eventLabel: 'Big Button'
+            });
+        });
+
+        document.getElementById('nav-list').querySelectorAll('a').forEach(anchor => {
+			anchor.addEventListener('click', function () {
+                ga('send', {
+                    hitType: 'event',
+                    eventCategory: 'menu-item',
+                    eventAction: 'click',
+                    eventLabel: anchor.textContent
+                });
+            });
+        });
+
 	    function hideImgPreview() {
             imgPreview.classList.add('hiding');
             imgPreview.classList.remove('visible');
+            ga('send', {
+                hitType: 'event',
+                eventCategory: 'image-preview',
+                eventAction: 'dismiss',
+                eventLabel: 'image'
+            });
 	    }
+
+        function trackOutboundLink(url) {
+            ga('send', {
+                hitType: 'event',
+                eventCategory: 'outbound',
+                eventAction: 'click',
+                eventLabel: url,
+	            transport: 'beacon',
+                hitCallback: function(){document.location = url;}
+            });
+        }
     </script>
     <script src="script/stickyHeader.js"></script>
 </body>
