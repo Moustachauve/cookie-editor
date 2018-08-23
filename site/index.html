@@ -230,8 +230,8 @@
                 imgPreview.querySelector('.description').textContent = description;
                 imgPreview.classList.add('visible');
 
-                gtag('event', 'image-preview', {
-                    event_category: 'open',
+                gtag('event', 'open', {
+                    event_category: 'image-preview',
                     event_label: description
                 });
             });
@@ -260,16 +260,16 @@
         });
 
         document.getElementById('download-cta').addEventListener("click", function () {
-            gtag('event', 'click', {
-                event_category: 'download-cta',
+            gtag('event', 'download-cta', {
+                event_category: 'click',
                 event_label: 'Big Button'
             });
         });
 
         document.getElementById('nav-list').querySelectorAll('a').forEach(anchor => {
 			anchor.addEventListener('click', function () {
-                gtag('event', 'click', {
-                    event_category: 'menu-item',
+                gtag('event', 'menu-item', {
+                    event_category: 'click',
                     event_label: anchor.textContent
                 });
             });
@@ -278,15 +278,15 @@
 	    function hideImgPreview() {
             imgPreview.classList.add('hiding');
             imgPreview.classList.remove('visible');
-            gtag('event', 'image-preview', {
-                event_category: 'dismiss',
+            gtag('event', 'dismiss', {
+                event_category: 'image-preview',
                 event_label: 'image'
             });
 	    }
 
         function trackOutboundLink(url) {
-            gtag('event', 'click', {
-                event_category: 'outbound',
+            gtag('event', 'outbound', {
+                event_category: 'click',
                 event_label: url,
 	            transport: 'beacon',
                 hitCallback: function(){document.location = url;}
