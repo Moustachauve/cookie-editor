@@ -230,11 +230,9 @@
                 imgPreview.querySelector('.description').textContent = description;
                 imgPreview.classList.add('visible');
 
-                ga('send', {
-                    hitType: 'event',
-                    eventCategory: 'image-preview',
-                    eventAction: 'view',
-                    eventLabel: description
+                gtag('event', 'image-preview', {
+                    event_category: 'open',
+                    event_label: description
                 });
             });
         });
@@ -262,30 +260,17 @@
         });
 
         document.getElementById('download-cta').addEventListener("click", function () {
-            ga('send', {
-                hitType: 'event',
-                eventCategory: 'download-cta',
-                eventAction: 'click',
-                eventLabel: 'Big Button'
-            });
-        });
-
-        document.getElementById('download-cta').addEventListener("click", function () {
-            ga('send', {
-                hitType: 'event',
-                eventCategory: 'download-cta',
-                eventAction: 'click',
-                eventLabel: 'Big Button'
+            gtag('event', 'click', {
+                event_category: 'download-cta',
+                event_label: 'Big Button'
             });
         });
 
         document.getElementById('nav-list').querySelectorAll('a').forEach(anchor => {
 			anchor.addEventListener('click', function () {
-                ga('send', {
-                    hitType: 'event',
-                    eventCategory: 'menu-item',
-                    eventAction: 'click',
-                    eventLabel: anchor.textContent
+                gtag('event', 'click', {
+                    event_category: 'menu-item',
+                    event_label: anchor.textContent
                 });
             });
         });
@@ -293,20 +278,16 @@
 	    function hideImgPreview() {
             imgPreview.classList.add('hiding');
             imgPreview.classList.remove('visible');
-            ga('send', {
-                hitType: 'event',
-                eventCategory: 'image-preview',
-                eventAction: 'dismiss',
-                eventLabel: 'image'
+            gtag('event', 'image-preview', {
+                event_category: 'dismiss',
+                event_label: 'image'
             });
 	    }
 
         function trackOutboundLink(url) {
-            ga('send', {
-                hitType: 'event',
-                eventCategory: 'outbound',
-                eventAction: 'click',
-                eventLabel: url,
+            gtag('event', 'click', {
+                event_category: 'outbound',
+                event_label: url,
 	            transport: 'beacon',
                 hitCallback: function(){document.location = url;}
             });
