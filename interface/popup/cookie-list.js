@@ -225,7 +225,8 @@
 
         initWindow();
         showCookiesForTab();
-
+        adjustWidthIfSmaller();
+        
         if (chrome.runtime.getBrowserInfo) {
             chrome.runtime.getBrowserInfo(function (info) {
                 const mainVersion = info.version.split('.')[0];
@@ -543,4 +544,13 @@ function sanitarize(string) {
     };
     const reg = /[&<>"'/]/ig;
     return string.replace(reg, (match) => (map[match]));
+}
+
+function adjustWidthIfSmaller() {
+    let realWidth = document.documentElement.clientWidth;
+    if (realWidth < 500) {
+        console.log('Editor is smaller than 500px!')
+        document.body.style.minWidth = '100%';
+        document.body.style.width = realWidth + 'px';
+    }
 }
