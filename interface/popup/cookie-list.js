@@ -2,6 +2,7 @@
     'use strict';
 
     let containerCookie;
+    let pageTitleContainer;
     let notificationElement;
     let loadedCookies;
 
@@ -13,6 +14,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         containerCookie = document.getElementById('cookie-container');
         notificationElement = document.getElementById('notification');
+        pageTitleContainer = document.getElementById('pageTitle');
 
         function expandCookie(e) {
             const parent = e.target.closest('li');
@@ -88,11 +90,7 @@
         }
 
         document.getElementById('create-cookie').addEventListener('click', () => {
-            let pageTitle = document.getElementById('pageTitle');
-            if (pageTitle) {
-                pageTitle.textContent = 'Cookie Editor - Create a Cookie';
-            }
-
+            setPageTitle('Cookie Editor - Create a Cookie');
             clearChildren(containerCookie);
             containerCookie.insertAdjacentHTML('afterbegin', createHtmlFormCookie('', '', ''));
 
@@ -135,11 +133,7 @@
         });
 
         document.getElementById('import-cookies').addEventListener('click', () => {
-            let pageTitle = document.getElementById('pageTitle');
-            if (pageTitle) {
-                pageTitle.textContent = 'Cookie Editor - Import Cookies from Json';
-            }
-
+            setPageTitle('Cookie Editor - Import Cookies');
             clearChildren(containerCookie);
             containerCookie.insertAdjacentHTML('afterbegin', createHtmlFormImport());
 
@@ -167,7 +161,7 @@
 
         document.getElementById('save-import-cookie').addEventListener('click', e => {
             let buttonIcon = document.getElementById('save-import-cookie').querySelector('use');
-            if (buttonIcon.getAttribute("xlink:href") !== "../sprites/solid.svg#file-export") {
+            if (buttonIcon.getAttribute("xlink:href") !== "../sprites/solid.svg#file-import") {
                 return;
             }
 
@@ -252,10 +246,8 @@
         cookieHandler.getAllCookies(function (cookies) {
             cookies = cookies.sort(sortCookiesByName);
             loadedCookies = cookies;
-            let pageTitle = document.getElementById('pageTitle');
-            if (pageTitle) {
-                pageTitle.textContent = 'Cookie Editor';
-            }
+
+            setPageTitle('Cookie Editor');
 
             document.getElementById('button-bar-add').classList.remove('active');
             document.getElementById('button-bar-import').classList.remove('active');
@@ -296,7 +288,7 @@
                     <svg class="icon arrow"><use xlink:href="../sprites/solid.svg#angle-down"></use></svg>
                     ${sanitarize(name)}
                     <div class="btns">
-                        <button class="delete">
+                        <button class="delete" data-tooltip-left="Delete">
                             <svg class="icon"><use xlink:href="../sprites/solid.svg#trash"></use></svg>
                         </button>
                     </div>
@@ -304,8 +296,12 @@
                 <div class="expando">
                     <div class="wrapper">
                         <div class="action-btns">
-                            <button class="delete"><svg class="icon"><use xlink:href="../sprites/solid.svg#trash"></use></svg></button>
-                            <button class="save"><svg class="icon"><use xlink:href="../sprites/solid.svg#check"></use></svg></button>
+                            <button class="delete" data-tooltip="Delete">
+                                <svg class="icon"><use xlink:href="../sprites/solid.svg#trash"></use></svg>
+                            </button>
+                            <button class="save" data-tooltip="Save">
+                                <svg class="icon"><use xlink:href="../sprites/solid.svg#save"></use></svg>
+                            </button>
                         </div>
                         ${formHtml}
                     </div>
@@ -446,6 +442,14 @@
         }
         notificationElement.classList.remove('fadeInUp');
         notificationElement.classList.add('fadeOutDown');
+    }
+
+    function setPageTitle(title) {
+        if (!pageTitleContainer) {
+            return;
+        }
+        
+        pageTitleContainer.querySelector('h1').textContent = title;
     }
 }());
 
