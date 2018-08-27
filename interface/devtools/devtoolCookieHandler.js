@@ -6,21 +6,19 @@ function CookieHandler() {
     const self = this;
     let isInit = false;
     let backgroundPageConnection;
+    const browserDetector = new BrowserDetector();
 
     updateCurrentTab(init);
 
     function init() {
         console.log('Devtool init');
         let tabId;
-        if (window.browser) {
-            backgroundPageConnection = browser.runtime.connect({name: "panel"});
-            tabId = browser.devtools.inspectedWindow.tabId;
-            //browser.cookies.onChanged.addListener(onCookiesChanged);
-            //browser.tabs.onUpdated.addListener(onTabsChanged);
-            //browser.tabs.onActivated.addListener(onTabActivated);
+        if (browserDetector.isFirefox()) {
+            backgroundPageConnection = browserDetector.getApi().runtime.connect({name: "panel"});
+            tabId = browserDetector.getApi().devtools.inspectedWindow.tabId;
         } else {
-            backgroundPageConnection = chrome.runtime.connect({name: "panel"});
-            tabId = chrome.devtools.inspectedWindow.tabId;
+            backgroundPageConnection = browserDetector.getApi().runtime.connect({name: "panel"});
+            tabId = browserDetector.getApi().devtools.inspectedWindow.tabId;
         }
 
         backgroundPageConnection.onMessage.addListener(onMessage);
@@ -107,11 +105,11 @@ function CookieHandler() {
     }
 
     function sendMessage(type, params, callback, errorCallback) {
-        if (window.browser) {
-            const sending = browser.runtime.sendMessage({type: type, params: params});
+        if (browserDetector.isFirefox()) {
+            const sending = browserDetector.getApi().runtime.sendMessage({type: type, params: params});
             sending.then(callback, errorCallback);  
         } else {
-            chrome.runtime.sendMessage({ type: type, params: params }, callback);
+            browserDetector.getApi().runtime.sendMessage({ type: type, params: params }, callback);
         }
     }
 }

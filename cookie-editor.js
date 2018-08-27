@@ -2,17 +2,20 @@
     'use strict';
 
     const connections = {};
+    const browserDetector = new BrowserDetector();
 
-    if (window.browser) {
-        browser.runtime.onConnect.addListener(onConnect);
-        browser.runtime.onMessage.addListener(handleMessage);
-        browser.cookies.onChanged.addListener(onCookiesChanged);
-        browser.tabs.onUpdated.addListener(onTabsChanged);
+    if (browserDetector.isFirefox()) {
+        browserDetector.getApi().runtime.onConnect.addListener(onConnect);
+        browserDetector.getApi().runtime.onMessage.addListener(handleMessage);
+        browserDetector.getApi().cookies.onChanged.addListener(onCookiesChanged);
+        browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
     } else {
-        chrome.runtime.onConnect.addListener(onConnect);
-        chrome.runtime.onMessage.addListener(handleMessage);
-        chrome.cookies.onChanged.addListener(onCookiesChanged);
-        chrome.tabs.onUpdated.addListener(onTabsChanged);
+        browserDetector.getApi().runtime.onConnect.addListener(onConnect);
+        browserDetector.getApi().runtime.onMessage.addListener(handleMessage);
+        browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
+        if (!browserDetector.isEdge()) {
+            browserDetector.getApi().cookies.onChanged.addListener(onCookiesChanged);
+        }
     }
     
     isFirefoxAndroid(function(response) {
@@ -22,10 +25,10 @@
         } else {
             popupOptions.popup = '/interface/popup/cookie-list.html';
         }
-        if (window.browser) {
-            browser.browserAction.setPopup(popupOptions);
+        if (browserDetector.isFirefox()) {
+            browserDetector.getApi().browserAction.setPopup(popupOptions);
         } else {
-            chrome.browserAction.setPopup(popupOptions);
+            browserDetector.getApi().browserAction.setPopup(popupOptions);
         }
     });
 
@@ -33,13 +36,13 @@
         console.log('message received: ' + (request.type || 'unknown'));
         switch (request.type) {
             case 'getTabs':
-                chrome.tabs.query({}, function (tabs) {
+                browserDetector.getApi().tabs.query({}, function (tabs) {
                     sendResponse(tabs);
                 });
                 return true;
 
             case 'getCurrentTab':
-                chrome.tabs.query({ active: true, currentWindow: true }, function (tabInfo) {
+                browserDetector.getApi().tabs.query({ active: true, currentWindow: true }, function (tabInfo) {
                     sendResponse(tabInfo);
                 });
                 return true;
@@ -48,27 +51,27 @@
                 const getAllCookiesParams = {
                     url: request.params.url
                 };
-                if (window.browser) {
-                    browser.cookies.getAll(getAllCookiesParams).then(sendResponse);
+                if (browserDetector.isFirefox()) {
+                    browserDetector.getApi().cookies.getAll(getAllCookiesParams).then(sendResponse);
                 } else {
-                    chrome.cookies.getAll(getAllCookiesParams, sendResponse);
+                    browserDetector.getApi().cookies.getAll(getAllCookiesParams, sendResponse);
                 }
                 return true;
 
             case 'saveCookie':
-                if (window.browser) {
-                    browser.cookies.set(request.params.cookie).then(cookie => {
+                if (browserDetector.isFirefox()) {
+                    browserDetector.getApi().cookies.set(request.params.cookie).then(cookie => {
                         sendResponse(null, cookie);
                     }, error => {
                         console.error('Failed to create cookie', error);
                         sendResponse(error.message, null);
                     });
                 } else {
-                    chrome.cookies.set(request.params.cookie, cookie => {
+                    browserDetector.getApi().cookies.set(request.params.cookie, cookie => {
                         if (cookie) {
                             sendResponse(null, cookie);
                         } else {
-                            let error = chrome.runtime.lastError;
+                            let error = browserDetector.getApi().runtime.lastError;
                             console.error('Failed to create cookie', error);
                             sendResponse(error.message, cookie);
                         }
@@ -81,10 +84,10 @@
                     name: request.params.name,
                     url: request.params.url
                 };
-                if (window.browser) {
-                    browser.cookies.remove(removeParams).then(sendResponse);
+                if (browserDetector.isFirefox()) {
+                    browserDetector.getApi().cookies.remove(removeParams).then(sendResponse);
                 } else {
-                    chrome.cookies.remove(removeParams, sendResponse);
+                    browserDetector.getApi().cookies.remove(removeParams, sendResponse);
                 }
                 return true;
         }
@@ -150,12 +153,12 @@
 
     function isFirefoxAndroid(callback) {
         const getPlatformInfoCallback = function (info) {
-            callback(info.os === 'android' && window.browser);
+            callback(info.os === 'android' && browserDetector.isFirefox());
         };
-        if (window.browser) {
-            browser.runtime.getPlatformInfo().then(getPlatformInfoCallback);
+        if (browserDetector.isFirefox()) {
+            browserDetector.getApi().runtime.getPlatformInfo().then(getPlatformInfoCallback);
         } else {
-            chrome.runtime.getPlatformInfo(getPlatformInfoCallback);
+            browserDetector.getApi().runtime.getPlatformInfo(getPlatformInfoCallback);
         }
     }
 

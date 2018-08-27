@@ -5,17 +5,18 @@ function GenericCookieHandler() {
 
     this.cookies = [];
     this.currentTab = null;
+    const browserDetector = new BrowserDetector();
 
     this.getAllCookies = function(callback) {
-        if (window.browser) {
-            browser.cookies.getAll({
+        if (browserDetector.isFirefox()) {
+            browserDetector.getApi().cookies.getAll({
                 url: this.currentTab.url,
                 storeId: this.currentTab.cookieStoreId
             }).then(callback, function (e) {
                 console.error('Failed to retrieve cookies', e);
             });
         } else {
-            chrome.cookies.getAll({
+            browserDetector.getApi().cookies.getAll({
                 url: this.currentTab.url,
                 storeId: this.currentTab.cookieStoreId
             }, callback);
@@ -39,8 +40,8 @@ function GenericCookieHandler() {
             newCookie.domain = null;
         }
         
-        if (window.browser) {
-            browser.cookies.set(newCookie).then(cookie => {
+        if (browserDetector.isFirefox()) {
+            browserDetector.getApi().cookies.set(newCookie).then(cookie => {
                 if (callback) {
                     callback(null, cookie);
                 }
@@ -51,14 +52,14 @@ function GenericCookieHandler() {
                 }
             });
         } else {
-            chrome.cookies.set(newCookie, cookie => {
+            browserDetector.getApi().cookies.set(newCookie, (cookie, a, b, c) => {
                 if (cookie) {
                     if (callback) {
                         return callback(null, cookie);
                     }
                     return;
                 } else {
-                    let error = chrome.runtime.lastError;
+                    let error = browserDetector.getApi().runtime.lastError;
                     console.error('Failed to create cookie', error);
                     if (callback) {
                         return callback(error.message, cookie);
@@ -70,8 +71,8 @@ function GenericCookieHandler() {
     };
 
     this.removeCookie = function(name, url, callback) {
-        if (window.browser) {
-            browser.cookies.remove({
+        if (browserDetector.isFirefox()) {
+            browserDetector.getApi().cookies.remove({
                 name: name,
                 url: url,
                 storeId: this.currentTab.cookieStoreId
@@ -79,7 +80,7 @@ function GenericCookieHandler() {
                 console.error('Failed to remove cookies', e);
             });
         } else {
-            chrome.cookies.remove({
+            browserDetector.getApi().cookies.remove({
                 name: name,
                 url: url,
                 storeId: this.currentTab.cookieStoreId

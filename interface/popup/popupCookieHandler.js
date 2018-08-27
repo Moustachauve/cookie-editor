@@ -5,25 +5,28 @@ function CookieHandler() {
 
     const self = this;
     let isInit = false;
+    const browserDetector = new BrowserDetector();
 
-    if (window.browser) {
-        browser.tabs.query({ active: true, currentWindow: true }).then(init);
+    if (browserDetector.isFirefox()) {
+        browserDetector.getApi().tabs.query({ active: true, currentWindow: true }).then(init);
     } else {
-        chrome.tabs.query({ active: true, currentWindow: true }, init);
+        browserDetector.getApi().tabs.query({ active: true, currentWindow: true }, init);
     }
 
     function init(tabInfo) {
         self.currentTabId = tabInfo[0].id;
         self.currentTab = tabInfo[0];
 
-        if (window.browser) {
-            browser.cookies.onChanged.addListener(onCookiesChanged);
-            browser.tabs.onUpdated.addListener(onTabsChanged);
-            browser.tabs.onActivated.addListener(onTabActivated);
+        if (browserDetector.isFirefox()) {
+            browserDetector.getApi().cookies.onChanged.addListener(onCookiesChanged);
+            browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
+            browserDetector.getApi().tabs.onActivated.addListener(onTabActivated);
         } else {
-            chrome.cookies.onChanged.addListener(onCookiesChanged);
-            chrome.tabs.onUpdated.addListener(onTabsChanged);
-            chrome.tabs.onActivated.addListener(onTabActivated);
+            browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
+            browserDetector.getApi().tabs.onActivated.addListener(onTabActivated);
+            if (!browserDetector.isEdge()) {
+                browserDetector.getApi().cookies.onChanged.addListener(onCookiesChanged);
+            }
         }
 
         isInit = true;
@@ -39,19 +42,19 @@ function CookieHandler() {
     function onTabsChanged(tabId, changeInfo, tab) {
         if (tabId === self.currentTabId && (changeInfo.url || changeInfo.status === 'complete')) {
             console.log('tabChanged!');
-            if (window.browser) {
-                browser.tabs.query({ active: true, currentWindow: true }).then(updateCurrentTab);
+            if (browserDetector.isFirefox()) {
+                browserDetector.getApi().tabs.query({ active: true, currentWindow: true }).then(updateCurrentTab);
             } else {
-                chrome.tabs.query({ active: true, currentWindow: true }, updateCurrentTab);
+                browserDetector.getApi().tabs.query({ active: true, currentWindow: true }, updateCurrentTab);
             }
         }
     }
 
     function onTabActivated(activeInfo) {
-        if (window.browser) {
-            browser.tabs.query({ active: true, currentWindow: true }).then(updateCurrentTab);
+        if (browserDetector.isFirefox()) {
+            browserDetector.getApi().tabs.query({ active: true, currentWindow: true }).then(updateCurrentTab);
         } else {
-            chrome.tabs.query({ active: true, currentWindow: true }, updateCurrentTab);
+            browserDetector.getApi().tabs.query({ active: true, currentWindow: true }, updateCurrentTab);
         }
     }
 

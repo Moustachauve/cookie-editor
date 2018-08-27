@@ -8,6 +8,7 @@
 
     let notificationQueue = [];
     let notificationTimeout;
+    const browserDetector = new BrowserDetector();
 
     const cookieHandler = new CookieHandler();
 
@@ -39,6 +40,7 @@
             if (form.classList.contains('create')) {
                 returnToList();
             }
+
             return false;
         }
 
@@ -58,7 +60,14 @@
             cookie.name = name;
             cookie.value = value;
             cookieHandler.removeCookie(oldName, getCurrentTabUrl(), function () {
-                cookieHandler.saveCookie(cookie, getCurrentTabUrl());
+                cookieHandler.saveCookie(cookie, getCurrentTabUrl(), function(error, cookie) {
+                    if (error) {
+                        sendNotification(error);
+                    }
+                    if (browserDetector.isEdge()) {
+                        onCookiesChanged();
+                    }
+                });
             });
         }
 
@@ -220,8 +229,8 @@
         initWindow();
         showCookiesForTab();
         adjustWidthIfSmaller();
-        
-        if (chrome.runtime.getBrowserInfo) {
+
+        if (chrome && chrome.runtime && chrome.runtime.getBrowserInfo) {
             chrome.runtime.getBrowserInfo(function (info) {
                 const mainVersion = info.version.split('.')[0];
                 if (mainVersion < 57) {
@@ -339,12 +348,16 @@
     }
 
     function removeCookie(name, url, callback) {
-        const removing = cookieHandler.removeCookie(name, url || getCurrentTabUrl(), function (e) {
+        cookieHandler.removeCookie(name, url || getCurrentTabUrl(), function (e) {
             console.log('success', e);
             if (callback) {
                 callback();
             }
         });
+
+        if (browserDetector.isEdge()) {
+            onCookiesChanged();
+        }
     }
 
     function onCookiesChanged(changeInfo) {
@@ -354,10 +367,6 @@
 
     function onCookieHandlerReady() {
         showCookiesForTab();
-    }
-
-    function onTabActivated(activeInfo) {
-        updateCurrentTab();
     }
 
     function sortCookiesByName(a, b) {
@@ -386,15 +395,6 @@
             return cookieHandler.currentTab.url;
         }
         return '';
-    }
-
-    function sendMessage(type, params, callback, errorCallback) {
-        if (window.browser) {
-            const sending = browser.runtime.sendMessage({type: type, params: params});
-            sending.then(callback, errorCallback);  
-        } else {
-            chrome.runtime.sendMessage({ type: type, params: params }, callback);
-        }
     }
 
     function getDomainFromUrl(url) {
@@ -451,110 +451,115 @@
         
         pageTitleContainer.querySelector('h1').textContent = title;
     }
-}());
 
-/** 
- * getHeight - for elements with display:none 
- * https://stackoverflow.com/a/29047447
- **/
-function getHeight(el) {
-    const elStyle = window.getComputedStyle(el);
-    const elMaxHeight = elStyle.maxHeight;
-    const elMaxHeightInt = elMaxHeight.replace('px', '').replace('%', '');
+    /**
+     * getHeight - for elements with display:none
+     * https://stackoverflow.com/a/29047447
+     **/
+    function getHeight(el) {
+        const elStyle = window.getComputedStyle(el);
+        const elMaxHeight = elStyle.maxHeight;
+        const elMaxHeightInt = elMaxHeight.replace('px', '').replace('%', '');
 
-    // if its not hidden we just return normal height
-    if (elMaxHeightInt !== '0') {
-        return el.offsetHeight;
+        // if its not hidden we just return normal height
+        if (elMaxHeightInt !== '0') {
+            return el.offsetHeight;
+        }
+
+        // the element is hidden so:
+        // making the el block so we can meassure its height but still be hidden
+        el.style.position = 'absolute';
+        el.style.visibility = 'hidden';
+        el.style.display = 'block';
+        el.style.maxHeight = 'none';
+
+        let wantedHeight = el.offsetHeight;
+
+        // reverting to the original values
+        el.style.display = '';
+        el.style.position = '';
+        el.style.visibility = '';
+        el.style.maxHeight = elMaxHeight;
+
+        return wantedHeight;
     }
 
-    // the element is hidden so:
-    // making the el block so we can meassure its height but still be hidden
-    el.style.position = 'absolute';
-    el.style.visibility = 'hidden';
-    el.style.display = 'block';
-    el.style.maxHeight = 'none';
+    function toggleSlide(el) {
+        let elMaxHeight = 0;
 
-    let wantedHeight = el.offsetHeight;
-
-    // reverting to the original values
-    el.style.display = '';
-    el.style.position = '';
-    el.style.visibility = '';
-    el.style.maxHeight = elMaxHeight;
-
-    return wantedHeight;
-}
-
-function toggleSlide(el) {
-    let elMaxHeight = 0;
-
-    if (el.getAttribute('data-max-height')) {
-        // we've already used this before, so everything is setup
-        if (el.style.maxHeight.replace('px', '').replace('%', '') === '0') {
-            el.style.maxHeight = el.getAttribute('data-max-height');
+        if (el.getAttribute('data-max-height')) {
+            // we've already used this before, so everything is setup
+            if (el.style.maxHeight.replace('px', '').replace('%', '') === '0') {
+                el.style.maxHeight = el.getAttribute('data-max-height');
+            } else {
+                elMaxHeight = getHeight(el) + 'px';
+                el.setAttribute('data-max-height', elMaxHeight);
+                el.style.maxHeight = '0';
+            }
         } else {
             elMaxHeight = getHeight(el) + 'px';
-            el.setAttribute('data-max-height', elMaxHeight);
+            el.style.transition = 'max-height 0.2s ease-in-out';
+            el.style.overflowY = 'hidden';
             el.style.maxHeight = '0';
+            el.setAttribute('data-max-height', elMaxHeight);
+            el.style.display = 'flex';
+
+            // we use setTimeout to modify maxHeight later than display (to we have the transition effect)
+            setTimeout(function () {
+                el.style.maxHeight = elMaxHeight;
+            }, 10);
         }
-    } else {
-        elMaxHeight = getHeight(el) + 'px';
-        el.style.transition = 'max-height 0.2s ease-in-out';
-        el.style.overflowY = 'hidden';
-        el.style.maxHeight = '0';
-        el.setAttribute('data-max-height', elMaxHeight);
-        el.style.display = 'flex';
-
-        // we use setTimeout to modify maxHeight later than display (to we have the transition effect)
-        setTimeout(function () {
-            el.style.maxHeight = elMaxHeight;
-        }, 10);
-    }
-}
-
-function copyText(text) {
-    const fakeText = document.createElement('textarea');
-    fakeText.classList.add('clipboardCopier');
-    fakeText.textContent = text;
-    document.body.appendChild(fakeText);
-    fakeText.focus();
-    fakeText.select();
-    document.execCommand('Copy');
-    document.body.removeChild(fakeText);
-}
-
-function isArray(value) {
-    return value && typeof value === 'object' && value.constructor === Array;
-}
-
-function clearChildren(element) {
-    while (element.firstChild) {
-        element.removeChild(element.firstChild);
-    }
-}
-
-function sanitarize(string) {
-    if (typeof string !== 'string') {
-        return string;
     }
 
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#x27;',
-        "/": '&#x2F;',
-    };
-    const reg = /[&<>"'/]/ig;
-    return string.replace(reg, (match) => (map[match]));
-}
-
-function adjustWidthIfSmaller() {
-    let realWidth = document.documentElement.clientWidth;
-    if (realWidth < 500) {
-        console.log('Editor is smaller than 500px!')
-        document.body.style.minWidth = '100%';
-        document.body.style.width = realWidth + 'px';
+    function copyText(text) {
+        const fakeText = document.createElement('textarea');
+        fakeText.classList.add('clipboardCopier');
+        fakeText.textContent = text;
+        document.body.appendChild(fakeText);
+        fakeText.focus();
+        fakeText.select();
+        document.execCommand('Copy');
+        document.body.removeChild(fakeText);
     }
-}
+
+    function isArray(value) {
+        return value && typeof value === 'object' && value.constructor === Array;
+    }
+
+    function clearChildren(element) {
+        while (element.firstChild) {
+            element.removeChild(element.firstChild);
+        }
+    }
+
+    function sanitarize(string) {
+        if (typeof string !== 'string') {
+            return string;
+        }
+
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#x27;',
+            "/": '&#x2F;',
+        };
+        const reg = /[&<>"'/]/ig;
+        return string.replace(reg, (match) => (map[match]));
+    }
+
+    function adjustWidthIfSmaller() {
+        // Firefox can have the window smaller if it is in the overflow menu
+        if (!browserDetector.isFirefox()) {
+            return;
+        }
+
+        let realWidth = document.documentElement.clientWidth;
+        if (realWidth < 500) {
+            console.log('Editor is smaller than 500px!');
+            document.body.style.minWidth = '100%';
+            document.body.style.width = realWidth + 'px';
+        }
+    }
+}());
