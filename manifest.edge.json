@@ -6,8 +6,8 @@
     "description": "Simple yet powerful Cookie Editor that allow you to quickly create, edit and delete cookies without leaving your tab.",
     "background": {
         "scripts": [
-            "cookie-editor.js",
-            "interface/lib/browserDetector.js"
+            "interface/lib/browserDetector.js",
+            "cookie-editor.js"
         ],
         "persistent": false
     },

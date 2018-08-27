@@ -152,14 +152,13 @@
     }
 
     function isFirefoxAndroid(callback) {
-        const getPlatformInfoCallback = function (info) {
-            callback(info.os === 'android' && browserDetector.isFirefox());
-        };
-        if (browserDetector.isFirefox()) {
-            browserDetector.getApi().runtime.getPlatformInfo().then(getPlatformInfoCallback);
-        } else {
-            browserDetector.getApi().runtime.getPlatformInfo(getPlatformInfoCallback);
+        if (!browserDetector.isFirefox()) {
+            return callback(false);
         }
+
+        return browserDetector.getApi().runtime.getPlatformInfo().then((info) => {
+            callback(info.os === 'android');
+        });
     }
 
 }());
