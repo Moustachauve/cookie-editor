@@ -84,14 +84,16 @@ button:focus {outline:0;}
 }
 
 #cookie-container li .header .btns {
-    display: none;
+    display: block;
+    opacity: 0;
     position: absolute;
     right: 16px;
     top: 4px;
+    transition: all 100ms ease;
 }
 
 #cookie-container li .header:hover .btns {
-    display: block;
+    opacity: 1;
 }
 
 #cookie-container li .header .icon.arrow {
@@ -157,6 +159,13 @@ label {
     flex: 1;
     padding-left: 4px;
 }
+.container.form label {
+    font-weight: 500;
+}
+
+.container.form div:last-child {
+    margin-top: 5px;
+}
 
 .action-btns {
     display: flex;
@@ -192,6 +201,11 @@ label {
     padding: 8px;
     transition: color 75ms;
     transition-timing-function: ease-in;
+}
+
+.action-btns button, .btns button {
+    transition: all 100ms ease;
+    fill: #000000;
 }
 
 .action-btns button:hover {
