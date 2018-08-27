@@ -52,19 +52,19 @@ function GenericCookieHandler() {
                 }
             });
         } else {
-            browserDetector.getApi().cookies.set(newCookie, (cookie, a, b, c) => {
-                if (cookie) {
-                    if (callback) {
-                        return callback(null, cookie);
-                    }
-                    return;
-                } else {
-                    let error = browserDetector.getApi().runtime.lastError;
+            browserDetector.getApi().cookies.set(newCookie, (cookieResponse) => {
+                let error = browserDetector.getApi().runtime.lastError;
+                if (!cookieResponse || error) {
                     console.error('Failed to create cookie', error);
                     if (callback) {
-                        return callback(error.message, cookie);
+                        let errorMessage = (error ? error.message : '') || 'Unknown error';
+                        return callback(errorMessage, cookieResponse);
                     }
                     return;
+                }
+
+                if (callback) {
+                    return callback(null, cookieResponse);
                 }
             });
         }
@@ -78,13 +78,30 @@ function GenericCookieHandler() {
                 storeId: this.currentTab.cookieStoreId
             }).then(callback, function (e) {
                 console.error('Failed to remove cookies', e);
+                if (callback) {
+                    callback();
+                }
             });
         } else {
             browserDetector.getApi().cookies.remove({
                 name: name,
                 url: url,
                 storeId: this.currentTab.cookieStoreId
-            }, callback);
+            }, (cookieResponse) => {
+                let error = browserDetector.getApi().runtime.lastError;
+                if (!cookieResponse || error) {
+                    console.error('Failed to remove cookie', error);
+                    if (callback) {
+                        let errorMessage = (error ? error.message : '') || 'Unknown error';
+                        return callback(errorMessage, cookieResponse);
+                    }
+                    return;
+                }
+
+                if (callback) {
+                    return callback(null, cookieResponse);
+                }
+            });
         }
     };
 }
