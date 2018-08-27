@@ -41,19 +41,29 @@ function GenericCookieHandler() {
         
         if (window.browser) {
             browser.cookies.set(newCookie).then(cookie => {
-                callback(null, cookie);
+                if (callback) {
+                    callback(null, cookie);
+                }
             }, error => {
                 console.error('Failed to create cookie', error);
-                callback(error.message, null);
+                if (callback) {
+                    callback(error.message, null);
+                }
             });
         } else {
             chrome.cookies.set(newCookie, cookie => {
                 if (cookie) {
-                    return callback(null, cookie);
+                    if (callback) {
+                        return callback(null, cookie);
+                    }
+                    return;
                 } else {
                     let error = chrome.runtime.lastError;
                     console.error('Failed to create cookie', error);
-                    return callback(error.message, cookie);
+                    if (callback) {
+                        return callback(error.message, cookie);
+                    }
+                    return;
                 }
             });
         }

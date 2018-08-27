@@ -30,11 +30,14 @@ svg.icon {
 }
 
 #pageTitle {
-    font-size: 16px;
     overflow: hidden;
+}
+
+#pageTitle h1 {
+    font-size: 16px;
     line-height: 16px;
     margin: 5px 0;
-    
+    overflow: hidden;    
     white-space: nowrap;
     text-overflow: ellipsis;
     min-width: 0;
@@ -48,6 +51,7 @@ h2 {
 button {
     cursor: pointer;
 }
+button:focus {outline:0;}
 
 #cookie-container {
     min-height: 100px;
@@ -115,6 +119,8 @@ button {
 #cookie-container textarea, #cookie-container input[type="text"] {
     width: 100%;
     margin: 0;
+    padding: 4px;
+    font-family: "Segoe UI", Tahoma, sans-serif;
 }
 
 #cookie-container textarea {
@@ -124,6 +130,7 @@ button {
 
 #cookie-container textarea.json {
     height: 360px;
+    font-family: Consolas,Monaco,monospace;
 }
 
 label {
@@ -158,6 +165,10 @@ label {
     padding: 4px;
 }
 
+.action-btns .tooltip {
+    display: none;
+}
+
 .btns button.delete {
     background-color: #fbfbfb;
     border: 1px solid #b1b1b1;
@@ -174,7 +185,7 @@ label {
 }
 
 .action-btns button {
-    flex: 1 1 auto;
+    flex: 1 1;
     border: none;
     background-color: transparent;
     cursor: pointer;
@@ -211,22 +222,56 @@ body, .expando, #cookie-container {
     padding: 0;
     -moz-user-select: none;
     user-select: none;
+    overflow: hidden;
 }
 .panel-section-footer-button {
-    flex: 1 1 auto;
-    height: 100%;
-    margin: 0 -1px;
+    flex: 1 1;
     padding: 12px;
     text-align: center;
     cursor: pointer;
+    transition: all 150ms ease;
 }
 .panel-section-footer-button:hover {
     background-color: rgba(0, 0, 0, 0.08);
 }
+.panel-section-footer-button.primary:hover {
+    background-color: #1b98f1;
+    color: #fff;
+    fill: #fff;
+}
+.panel-section-footer-button.danger:hover {
+    background-color: #f800002b;
+}
+
 .panel-section-footer-separator {
     background-color: rgba(0, 0, 0, 0.1);
     width: 1px;
     z-index: 99;
+}
+
+.panel-section-footer-button > div {
+    text-align: center;
+    transition: transform 100ms ease;
+}
+.panel-section-footer-button .tooltip {
+    text-align: center;
+    color: #888;
+    transition: all 200ms ease;
+    opacity: 0;
+}
+.panel-section-footer-button:hover > div {
+    transform: translateY(-6px);
+}
+.panel-section-footer-button:hover .tooltip {
+    color: #444;
+    opacity: 1;
+}
+
+.panel-section-footer-button.primary .tooltip {
+    color: #bfbfbf;
+}
+.panel-section-footer-button.primary:hover .tooltip { 
+    color: #efefef;
 }
 
 #notification-container {
@@ -313,4 +358,42 @@ body, .expando, #cookie-container {
         transform: translate3d(0,40px,0);
         opacity: 0;
     }
+}
+
+[data-tooltip], [data-tooltip-left] {
+    position: relative;
+}
+
+[data-tooltip]::after, [data-tooltip-left]::after {
+    position: absolute;
+    top: 49%;
+    padding: 3px 10px;
+    min-width: 40px;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    z-index: 50;
+    visibility: hidden;
+}
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+    left: 100%;
+    margin-left: 10px;
+    transform: translate(-30px, -50%);
+}
+[data-tooltip-left]::after {
+    content: attr(data-tooltip-left);
+    right: 100%;
+    margin-right: 7px;
+    transform: translate(20px, -50%);
+}
+
+[data-tooltip]:hover::after, [data-tooltip-left]:hover::after {
+    opacity: 1;
+    transition: all 0.1s ease 0.5s;
+    visibility: visible;
+    transform: translateY(-50%);
 }

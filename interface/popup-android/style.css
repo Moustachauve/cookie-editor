@@ -32,6 +32,8 @@ svg.icon {
 }
 
 #pageTitle {
+    display: flex;
+    align-items: center;
     flex: 0 0 auto;
     flex-shrink: 0;
     overflow: hidden;
@@ -64,12 +66,25 @@ svg.icon {
 #cookie-container {
     overflow-y: auto;
     background-color: #eaeaea;
-    flex: 1 1 auto;
+    flex: 1 1;
 }
+
 #cookie-container > .container {
-    margin-top: 2em;
-    text-align: center;
-    font-size: 1.2em;
+    padding: 15px;
+    height: 100%;
+}
+
+form.import, form.import > div {
+    height: 100%;
+    max-height: 100%;
+}
+form.import > div {
+    display: flex;
+    flex-direction: column;
+}
+#cookie-container form.import textarea {
+    flex: 1 1;
+    max-height: none;
 }
 
 #cookie-container ul {
@@ -161,7 +176,6 @@ label {
 
 .container.form {
     flex: 1;
-    padding-left: 4px;
 }
 
 .action-btns {
@@ -174,12 +188,14 @@ label {
 }
 
 .action-btns button {
-    flex: 1 1 auto;
+    flex: 1 1;
     text-align: center;
     border: none;
     background-color: transparent;
     padding: 18px;
 }
+
+.action-btns button:focus {outline:0;}
 
 .action-btns button:active {
     background-color: rgba(0, 0, 0, 0.1);
@@ -187,6 +203,16 @@ label {
 
 .action-btns button:last-child {
     border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.action-btns svg, .action-btns [data-tooltip]::after {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 16px;
+}
+.action-btns [data-tooltip]::after {
+    margin-left: 10px;
+    content: attr(data-tooltip);
 }
 
 .panel-section-footer {
@@ -200,15 +226,15 @@ label {
     padding: 0;
     -moz-user-select: none;
     user-select: none;
+    overflow: hidden;
 }
 .panel-section-footer-button {
-    flex: 1 1 auto;
-    height: 100%;
-    line-height: 36px;
+    flex: 1 1;
     font-size: 18px;
     margin: 0 -1px;
     padding: 12px;
     text-align: center;
+    overflow: hidden;
 }
 .panel-section-footer-button:active {
     background-color: rgba(0, 0, 0, 0.1);
@@ -217,6 +243,16 @@ label {
     background-color: rgba(0, 0, 0, 0.1);
     width: 1px;
     z-index: 99;
+}
+
+.panel-section-footer-button > div {
+    text-align: center;
+}
+.panel-section-footer-button .tooltip {
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+    line-height: 30px
 }
 
 
