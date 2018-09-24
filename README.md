@@ -18,7 +18,7 @@ Find this extension on the [Chrome Web Store](https://chrome.google.com/webstore
 Find this extension on the [Firefox Add-ons site](https://addons.mozilla.org/addon/cookie-editor?src=external-github-readme).
 
 ## Install on Opera
-Find this extension on the [Firefox Extensions site](https://addons.opera.com/en/extensions/details/cookie-editor-2/).
+Find this extension on the [Opera Extensions site](https://addons.opera.com/en/extensions/details/cookie-editor-2/).
 
 ## Feature Suggestions or Bug Reports
 To submit a feature suggestion or file a bug report, please [create a new issue here](https://github.com/Moustachauve/cookie-editor/issues).
