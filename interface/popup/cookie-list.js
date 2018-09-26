@@ -2,9 +2,10 @@
     'use strict';
 
     let containerCookie;
+    let cookiesListHtml;
     let pageTitleContainer;
     let notificationElement;
-    let loadedCookies;
+    let loadedCookies = {};
 
     let notificationQueue = [];
     let notificationTimeout;
@@ -113,11 +114,11 @@
             if (buttonIcon.getAttribute("xlink:href") === "../sprites/solid.svg#check") {
                 return;
             }
-            if (loadedCookies && loadedCookies.length) {
-                for (let i = 0; i < loadedCookies.length; i++) {
-                    removeCookie(loadedCookies[i].name);
+            if (loadedCookies && Object.keys(loadedCookies).length) {
+                for (var cookieId in loadedCookies) {
+                    removeCookie(loadedCookies[cookieId].cookie.name);
                 }
-                loadedCookies = null;
+                loadedCookies = {};
             }
             sendNotification('All cookies were deleted');
             buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#check");
@@ -254,7 +255,8 @@
         
         cookieHandler.getAllCookies(function (cookies) {
             cookies = cookies.sort(sortCookiesByName);
-            loadedCookies = cookies;
+
+            loadedCookies = {};
 
             setPageTitle('Cookie Editor');
 
@@ -263,17 +265,15 @@
             document.getElementById('button-bar-default').classList.add('active');
 
             if (cookies.length > 0) {
-                let cookiesHtml = '';
-                cookies.forEach(function (cookie, id) {
-                    cookiesHtml += createHtmlForCookie(cookie.name, cookie.value, id);
+                cookiesListHtml = document.createElement('ul');
+                cookies.forEach(function (cookie) {
+                    var id = Cookie.hashCode(cookie);
+                    loadedCookies[id] = new Cookie(id, cookie);
+                    cookiesListHtml.appendChild(loadedCookies[id].html);
                 });
 
                 clearChildren(containerCookie);
-                containerCookie.insertAdjacentHTML('afterbegin', `
-                    <ul>
-                        ${cookiesHtml}
-                    </ul>
-                `);
+                containerCookie.appendChild(cookiesListHtml);
             } else {
                 showNoCookies();
             }
@@ -282,6 +282,7 @@
 
     function showNoCookies() {
         clearChildren(containerCookie);
+        cookiesListHtml = null;
         containerCookie.insertAdjacentHTML('afterbegin', `
             <p class="container" id="no-cookies">
                 This page does not have any cookies
@@ -290,7 +291,13 @@
     }
 
     function createHtmlForCookie(name, value, id) {
-        let formHtml = createHtmlFormCookie(name, value, id);
+        var cookie = new Cookie(id, {
+            'name': name,
+            'value': value
+        });
+
+        return cookie.html;
+        /*let formHtml = createHtmlFormCookie(name, value, id);
         return `
             <li data-name="${sanitarize(name)}">
                 <div class="header container">
@@ -316,7 +323,7 @@
                     </div>
                 </div>
             </li>
-        `;
+        `;*/
     }
 
     function createHtmlFormCookie(name, value, id) {
@@ -349,7 +356,7 @@
 
     function removeCookie(name, url, callback) {
         cookieHandler.removeCookie(name, url || getCurrentTabUrl(), function (e) {
-            console.log('success', e);
+            console.log('removed successfuly', e);
             if (callback) {
                 callback();
             }
@@ -361,8 +368,42 @@
     }
 
     function onCookiesChanged(changeInfo) {
-        showCookiesForTab();
-        console.log('Cookies have changed!');
+        if (!changeInfo) {
+            showCookiesForTab();
+        }
+        var id = Cookie.hashCode(changeInfo.cookie);
+        if (changeInfo.removed) {
+            if (loadedCookies[id]) {
+                delete loadedCookies[id];
+            }
+            var element = document.getElementById(id);
+            if (element) {
+                element.remove();
+
+                if (!Object.keys(loadedCookies).length) {
+                    showNoCookies();
+                }
+            }
+            return;
+        }
+
+        if (loadedCookies[id]) {
+            loadedCookies[id].updateHtml(changeInfo.cookie);
+            return;
+        }
+
+        var newCookie = new Cookie(id, changeInfo.cookie);
+        loadedCookies[id] = newCookie;
+        if (!cookiesListHtml) {
+            clearChildren(containerCookie);
+            cookiesListHtml = document.createElement('ul');
+            containerCookie.appendChild(cookiesListHtml);
+        }
+
+        cookiesListHtml.appendChild(newCookie.html);
+
+        console.log();
+        console.log('Cookies have changed!', changeInfo, loadedCookies);
     }
 
     function onCookieHandlerReady() {

@@ -92,9 +92,46 @@
 
     <script src="../lib/event.js"></script>
     <script src="../lib/browserDetector.js"></script>
+    <script src="../lib/cookie.js"></script>
     <script src="../lib/genericCookieHandler.js"></script>
     <script src="popupCookieHandler.js"></script>
     <script src="cookie-list.js"></script>
+
+    <template id="tmp-cookie">
+        <li data-name="${sanitarize(name)}">
+            <div class="header container">
+                <svg class="icon arrow"><use xlink:href="../sprites/solid.svg#angle-down"></use></svg>
+                <span class="header-name">${sanitarize(name)}</span>
+                <div class="btns">
+                    <button class="delete" data-tooltip-left="Delete">
+                        <svg class="icon"><use xlink:href="../sprites/solid.svg#trash"></use></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="expando">
+                <div class="wrapper">
+                    <div class="action-btns">
+                        <button class="delete" data-tooltip="Delete">
+                            <svg class="icon"><use xlink:href="../sprites/solid.svg#trash"></use></svg>
+                        </button>
+                        <button class="save" data-tooltip="Save">
+                            <svg class="icon"><use xlink:href="../sprites/solid.svg#save"></use></svg>
+                        </button>
+                    </div>
+                    <form data-id="${sanitarize(id)}" class="form container">
+                        <div>
+                            <label class="label-name">Name</label>
+                            <input name="name" type="text" class="input-name" />
+                        </div>
+                        <div>
+                            <label class="label-value">Value</label>
+                            <textarea name="value" class="input-value"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </li>
+    </template>
 </body>
 
 </html>
