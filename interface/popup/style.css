@@ -425,7 +425,7 @@ body, .expando, #cookie-container {
 
 @keyframes changed-value {
     0% {background-color: #fff; }
-    50% {background-color: #fffc44; }
+    50% {background-color: #fdfb8e; }
     100% {background-color: #fff; }
 }
 

@@ -152,7 +152,15 @@
             }
 
             buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#check"); 
-            copyText(JSON.stringify(loadedCookies, null, 4));
+
+            var exportedCookies = [];
+            for (var cookieId in loadedCookies) {
+                var exportedCookie = loadedCookies[cookieId].cookie;
+                exportedCookie.storeId = null;
+                exportedCookies.push(exportedCookie);
+            }
+
+            copyText(JSON.stringify(exportedCookies, null, 4));
 
             sendNotification('Cookies exported to clipboard');
             setTimeout(() => {
@@ -222,6 +230,10 @@
             }
 
             cookies.forEach(cookie => {
+                // Make sure we are using the right store ID. This is in case we are importing from a basic store ID and the
+                // current user is using custom containers
+                cookie.storeId = cookieHandler.currentTab.cookieStoreId;
+
                 cookieHandler.saveCookie(cookie, getCurrentTabUrl(), function(error, cookie) {
                     if (error) {
                         sendNotification(error);
@@ -629,4 +641,4 @@
 }());
 
 // This should be handled better, like with a gulp script, in the future.
-console.log = function() {};
+//console.log = function() {};

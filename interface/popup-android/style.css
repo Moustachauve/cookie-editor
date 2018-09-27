@@ -341,3 +341,25 @@ label {
         opacity: 0;
     }
 }
+.anim-value-changed, #cookie-container .anim-value-changed {
+    animation-name: changed-value;
+    animation-duration: 0.5s;
+}
+
+@keyframes changed-value {
+    0% {background-color: #fff; }
+    50% {background-color: #fdfb8e; }
+    100% {background-color: #fff; }
+}
+
+.anim-success, #cookie-container .anim-success {
+    animation-name: success;
+    animation-duration: 0.5s;
+    border: 1px solid initial
+}
+
+@keyframes success {
+    0% {background-color: transparent; }
+    50% {background-color: #9ee7a8; }
+    100% {background-color: transparent; }
+}
