@@ -22,14 +22,16 @@ class Cookie {
         if (!this.isGenerated) {
             return;
         }
-        var oldCookie = this.cookie;
         this.cookie = cookie;
 
-        if (this.cookie.name !== oldCookie.name) {
+        var oldCookieName = this.baseHtml.querySelector('#name-' + this.guid).value;
+        var oldCookieValue = this.baseHtml.querySelector('#value-' + this.guid).value;
+
+        if (this.cookie.name !== oldCookieName) {
             this.updateName();
         }
-        if (this.cookie.value !== oldCookie.value) {
-            this.updateName();
+        if (this.cookie.value !== oldCookieValue) {
+            this.updateValue();
         }
     }
 
@@ -62,11 +64,39 @@ class Cookie {
     }
 
     updateName() {
+        var nameInput = this.baseHtml.querySelector('#name-' + this.guid);
+        var header = this.baseHtml.querySelector('.header');
         this.baseHtml.setAttribute('data-name', this.cookie.name);
-        this.baseHtml.querySelector('#name-' + this.guid).value = this.cookie.name;
+        nameInput.value = this.cookie.name;
+        
+        this.animateChangeOnNode(header);
+        this.animateChangeOnNode(nameInput);
     }
     updateValue() {
-        this.baseHtml.querySelector('#name-' + this.guid).value = this.cookie.value;
+        var valueInput = this.baseHtml.querySelector('#value-' + this.guid);
+        var header = this.baseHtml.querySelector('.header');
+        valueInput.value = this.cookie.value;
+
+        this.animateChangeOnNode(header);
+        this.animateChangeOnNode(valueInput);
+    }
+
+    animateChangeOnNode(node) {
+        node.classList.remove('anim-value-changed');
+        setTimeout(() => {
+            node.classList.add('anim-value-changed');
+        }, 20);
+    }
+
+    showSuccessAnimation() {
+        this.animateSuccessOnNode(this.baseHtml);
+    }
+
+    animateSuccessOnNode(node) {
+        node.classList.remove('anim-success');
+        setTimeout(() => {
+            node.classList.add('anim-success');
+        }, 20);
     }
 
     static guid() {

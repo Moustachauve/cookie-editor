@@ -48,7 +48,8 @@
         function saveCookie(id, name, value) {
             console.log('saving cookie...');
 
-            let cookie = loadedCookies[id];
+            let cookieContainer = loadedCookies[id];
+            let cookie = cookieContainer ? cookieContainer.cookie : null;
             let oldName;
 
             if (cookie) {
@@ -60,16 +61,33 @@
 
             cookie.name = name;
             cookie.value = value;
-            cookieHandler.removeCookie(oldName, getCurrentTabUrl(), function () {
+            if (oldName !== name) {
+                cookieHandler.removeCookie(oldName, getCurrentTabUrl(), function () {
+                    cookieHandler.saveCookie(cookie, getCurrentTabUrl(), function(error, cookie) {
+                        if (error) {
+                            sendNotification(error);
+                            return;
+                        }
+                        if (browserDetector.isEdge()) {
+                            onCookiesChanged();
+                        }
+                        cookieContainer.showSuccessAnimation();
+                    });
+                });
+            } else {
+                // Should probably put in a function to prevent duplication
                 cookieHandler.saveCookie(cookie, getCurrentTabUrl(), function(error, cookie) {
                     if (error) {
                         sendNotification(error);
+                        return;
                     }
                     if (browserDetector.isEdge()) {
                         onCookiesChanged();
                     }
+
+                    cookieContainer.showSuccessAnimation();
                 });
-            });
+            }
         }
 
         function returnToList() {
@@ -370,8 +388,16 @@
     function onCookiesChanged(changeInfo) {
         if (!changeInfo) {
             showCookiesForTab();
+            return;
         }
+        
+        console.log('Cookies have changed!', changeInfo.removed, changeInfo.cause);
         var id = Cookie.hashCode(changeInfo.cookie);
+
+        if (changeInfo.cause === 'overwrite') {
+            return;
+        }
+
         if (changeInfo.removed) {
             if (loadedCookies[id]) {
                 delete loadedCookies[id];
@@ -401,9 +427,6 @@
         }
 
         cookiesListHtml.appendChild(newCookie.html);
-
-        console.log();
-        console.log('Cookies have changed!', changeInfo, loadedCookies);
     }
 
     function onCookieHandlerReady() {
@@ -604,3 +627,6 @@
         }
     }
 }());
+
+// This should be handled better, like with a gulp script, in the future.
+console.log = function() {};
