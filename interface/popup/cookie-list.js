@@ -569,23 +569,6 @@
         }
     }
 
-    function sanitarize(string) {
-        if (typeof string !== 'string') {
-            return string;
-        }
-
-        const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#x27;',
-            "/": '&#x2F;',
-        };
-        const reg = /[&<>"'/]/ig;
-        return string.replace(reg, (match) => (map[match]));
-    }
-
     function adjustWidthIfSmaller() {
         // Firefox can have the window smaller if it is in the overflow menu
         if (!browserDetector.isFirefox()) {
