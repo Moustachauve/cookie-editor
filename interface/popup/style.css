@@ -25,6 +25,11 @@ svg.icon {
   pointer-events: none;
 }
 
+
+.header-name {
+  pointer-events: none;
+}
+
 .container {
     padding: 8px 16px;
 }
