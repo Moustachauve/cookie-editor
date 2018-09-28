@@ -120,7 +120,7 @@
         document.getElementById('create-cookie').addEventListener('click', () => {
             setPageTitle('Cookie Editor - Create a Cookie');
             clearChildren(containerCookie);
-            containerCookie.insertAdjacentHTML('afterbegin', createHtmlFormCookie('', '', ''));
+            containerCookie.insertAdjacentHTML('afterbegin', createHtmlFormCookie());
 
             document.getElementById('button-bar-default').classList.remove('active');
             document.getElementById('button-bar-add').classList.add('active');
@@ -327,58 +327,29 @@
         });
 
         return cookie.html;
-        /*let formHtml = createHtmlFormCookie(name, value, id);
-        return `
-            <li data-name="${sanitarize(name)}">
-                <div class="header container">
-                    <svg class="icon arrow"><use xlink:href="../sprites/solid.svg#angle-down"></use></svg>
-                    ${sanitarize(name)}
-                    <div class="btns">
-                        <button class="delete" data-tooltip-left="Delete">
-                            <svg class="icon"><use xlink:href="../sprites/solid.svg#trash"></use></svg>
-                        </button>
-                    </div>
-                </div>
-                <div class="expando">
-                    <div class="wrapper">
-                        <div class="action-btns">
-                            <button class="delete" data-tooltip="Delete">
-                                <svg class="icon"><use xlink:href="../sprites/solid.svg#trash"></use></svg>
-                            </button>
-                            <button class="save" data-tooltip="Save">
-                                <svg class="icon"><use xlink:href="../sprites/solid.svg#save"></use></svg>
-                            </button>
-                        </div>
-                        ${formHtml}
-                    </div>
-                </div>
-            </li>
-        `;*/
     }
 
-    function createHtmlFormCookie(name, value, id) {
-        const formId = guid();
+    function createHtmlFormCookie() {
         return `
-            <form data-id="${sanitarize(id)}" class="form container ${!id ? `create` : ''}" id="${formId}">
+            <form data-id="" class="form container create">
                 <div>
-                    <label for="name-${formId}">Name</label>
-                    <input name="name" type="text" value="${sanitarize(name)}" id="name-${formId}" />
+                    <label for="name-create">Name</label>
+                    <input name="name" type="text" value="" id="name-create" />
                 </div>
                 <div>
-                    <label for="value-${formId}">Value</label>
-                    <textarea name="value" id="value-${formId}">${sanitarize(value)}</textarea>
+                    <label for="value-create">Value</label>
+                    <textarea name="value" id="value-create"></textarea>
                 </div>
             </form>
         `;
     }
 
     function createHtmlFormImport() {
-        const formId = guid();
         return `
-            <form class="form container import" id="${formId}">
+            <form class="form container import">
                 <div>
-                    <label for="content-${formId}">Json</label>
-                    <textarea class="json" name="content" id="content-${formId}" placeholder="Paste your Json here"></textarea>
+                    <label for="content-import">Json</label>
+                    <textarea class="json" name="content" id="content-import" placeholder="Paste your Json here"></textarea>
                 </div>
             </form>
         `;
@@ -449,16 +420,6 @@
         const aName = a.name.toLowerCase();
         const bName = b.name.toLowerCase();
         return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
-    }
-
-    function guid() {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
     }
 
     function initWindow(tab) {
@@ -641,4 +602,5 @@
 }());
 
 // This should be handled better, like with a gulp script, in the future.
+// Make sure this is NOT commented before releasing a new version
 //console.log = function() {};

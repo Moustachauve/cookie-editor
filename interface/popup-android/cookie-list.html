@@ -102,12 +102,12 @@
     <script src="../popup/cookie-list.js"></script>
 
     <template id="tmp-cookie">
-        <li data-name="${sanitarize(name)}">
+        <li data-name="">
             <div class="header container">
                 <svg class="icon arrow">
                     <use xlink:href="../sprites/solid.svg#angle-down"></use>
                 </svg>
-                <span class="header-name">${sanitarize(name)}</span>
+                <span class="header-name"></span>
                 <div class="btns">
                     <button class="delete" data-tooltip-left="Delete">
                         <svg class="icon">
@@ -130,7 +130,7 @@
                             </svg>
                         </button>
                     </div>
-                    <form data-id="${sanitarize(id)}" class="form container">
+                    <form data-id="" class="form container">
                         <div>
                             <label class="label-name">Name</label>
                             <input name="name" type="text" class="input-name" />
