@@ -383,15 +383,12 @@
 
         if (changeInfo.removed) {
             if (loadedCookies[id]) {
+                loadedCookies[id].removeHtml(() => {
+                    if (!Object.keys(loadedCookies).length) {
+                        showNoCookies();
+                    }
+                });
                 delete loadedCookies[id];
-            }
-            var element = document.getElementById(id);
-            if (element) {
-                element.remove();
-
-                if (!Object.keys(loadedCookies).length) {
-                    showNoCookies();
-                }
             }
             return;
         }
@@ -487,65 +484,6 @@
         }
         
         pageTitleContainer.querySelector('h1').textContent = title;
-    }
-
-    /**
-     * getHeight - for elements with display:none
-     * https://stackoverflow.com/a/29047447
-     **/
-    function getHeight(el) {
-        const elStyle = window.getComputedStyle(el);
-        const elMaxHeight = elStyle.maxHeight;
-        const elMaxHeightInt = elMaxHeight.replace('px', '').replace('%', '');
-
-        // if its not hidden we just return normal height
-        if (elMaxHeightInt !== '0') {
-            return el.offsetHeight;
-        }
-
-        // the element is hidden so:
-        // making the el block so we can meassure its height but still be hidden
-        el.style.position = 'absolute';
-        el.style.visibility = 'hidden';
-        el.style.display = 'block';
-        el.style.maxHeight = 'none';
-
-        let wantedHeight = el.offsetHeight;
-
-        // reverting to the original values
-        el.style.display = '';
-        el.style.position = '';
-        el.style.visibility = '';
-        el.style.maxHeight = elMaxHeight;
-
-        return wantedHeight;
-    }
-
-    function toggleSlide(el) {
-        let elMaxHeight = 0;
-
-        if (el.getAttribute('data-max-height')) {
-            // we've already used this before, so everything is setup
-            if (el.style.maxHeight.replace('px', '').replace('%', '') === '0') {
-                el.style.maxHeight = el.getAttribute('data-max-height');
-            } else {
-                elMaxHeight = getHeight(el) + 'px';
-                el.setAttribute('data-max-height', elMaxHeight);
-                el.style.maxHeight = '0';
-            }
-        } else {
-            elMaxHeight = getHeight(el) + 'px';
-            el.style.transition = 'max-height 0.2s ease-in-out';
-            el.style.overflowY = 'hidden';
-            el.style.maxHeight = '0';
-            el.setAttribute('data-max-height', elMaxHeight);
-            el.style.display = 'flex';
-
-            // we use setTimeout to modify maxHeight later than display (to we have the transition effect)
-            setTimeout(function () {
-                el.style.maxHeight = elMaxHeight;
-            }, 10);
-        }
     }
 
     function copyText(text) {

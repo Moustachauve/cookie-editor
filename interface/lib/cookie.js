@@ -72,6 +72,7 @@ class Cookie {
         this.animateChangeOnNode(header);
         this.animateChangeOnNode(nameInput);
     }
+
     updateValue() {
         var valueInput = this.baseHtml.querySelector('#value-' + this.guid);
         var header = this.baseHtml.querySelector('.header');
@@ -79,6 +80,22 @@ class Cookie {
 
         this.animateChangeOnNode(header);
         this.animateChangeOnNode(valueInput);
+    }
+
+    removeHtml(callback = null) {
+        if (this.isRemoving) {
+            return;
+        }
+
+        this.isRemoving = true;
+        toggleSlide(this.baseHtml, () => {
+            this.baseHtml.remove();
+            this.baseHtml = null;
+            this.isRemoving = false;
+            if (callback) {
+                callback();
+            }
+        });
     }
 
     animateChangeOnNode(node) {
