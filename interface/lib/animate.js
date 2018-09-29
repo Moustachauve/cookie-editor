@@ -44,7 +44,6 @@ class Animate
 
     static transitionPage(container, oldPage, newPage, direction = 'left', callback = null) {
         let animationTime = '0.3s';
-        let oldPageHeight = this.getHeight(oldPage);
 
         container.addEventListener('transitionend', () => {
             container.style.maxHeight = '';
@@ -60,7 +59,6 @@ class Animate
             'once': true,
         });
 
-        container.style.maxHeight = oldPageHeight + 'px';
         container.style.overflowY = 'hidden';
         container.style.width = '200%';
         container.style.display = 'flex';
@@ -74,24 +72,28 @@ class Animate
             container.prepend(newPage);
         }
 
-        let newPageHeight = this.getHeight(newPage);
+        // This handle the resize of the window, only for the popup
+        if (window.isPopup) {
+            let newPageHeight = this.getHeight(newPage);            
+            let oldPageHeight = this.getHeight(oldPage);
+            container.style.maxHeight = oldPageHeight + 'px';
 
-        if (newPageHeight > 400) {
-            newPageHeight = 400;
-        }
-
-        // This handle the resize of the window
-        setTimeout(() => {
-            var transition = `max-height ${animationTime} ease-in-out`;
-            if (container.style.transition) {
-                transition = ', ' + transition;
+            if (newPageHeight > 400) {
+                newPageHeight = 400;
             }
-            container.style.transition += transition;
+
             setTimeout(() => {
-                container.style.maxHeight = newPageHeight + 'px';
-    
+                var transition = `max-height ${animationTime} ease-in-out`;
+                if (container.style.transition) {
+                    transition = ', ' + transition;
+                }
+                container.style.transition += transition;
+                setTimeout(() => {
+                    container.style.maxHeight = newPageHeight + 'px';
+        
+                }, 1);
             }, 1);
-        }, 1);
+        }
 
         if (direction === 'left') {
             var transition = `transform ${animationTime} ease-in-out`;

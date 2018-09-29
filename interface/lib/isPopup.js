@@ -1,0 +1,1 @@
+window.isPopup = true;
