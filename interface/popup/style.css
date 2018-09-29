@@ -166,7 +166,7 @@ label {
     display: block;
 }
 
-.container.form {
+.expando .container.form {
     flex: 1;
     padding-left: 4px;
 }
