@@ -88,7 +88,7 @@ class Cookie {
         }
 
         this.isRemoving = true;
-        toggleSlide(this.baseHtml, () => {
+        Animate.toggleSlide(this.baseHtml, () => {
             this.baseHtml.remove();
             this.baseHtml = null;
             this.isRemoving = false;
@@ -106,7 +106,9 @@ class Cookie {
     }
 
     showSuccessAnimation() {
-        this.animateSuccessOnNode(this.baseHtml);
+        if (this.baseHtml) {
+            this.animateSuccessOnNode(this.baseHtml);
+        }
     }
 
     animateSuccessOnNode(node) {

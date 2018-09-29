@@ -6,6 +6,7 @@
     let pageTitleContainer;
     let notificationElement;
     let loadedCookies = {};
+    let disableButtons = false;
 
     let notificationQueue = [];
     let notificationTimeout;
@@ -20,7 +21,7 @@
 
         function expandCookie(e) {
             const parent = e.target.closest('li');
-            toggleSlide(parent.querySelector('.expando'));
+            Animate.toggleSlide(parent.querySelector('.expando'));
             parent.querySelector('.header').classList.toggle('active');
         }
 
@@ -39,7 +40,7 @@
             saveCookie(id, name, value);
 
             if (form.classList.contains('create')) {
-                returnToList();
+                showCookiesForTab();
             }
 
             return false;
@@ -71,7 +72,9 @@
                         if (browserDetector.isEdge()) {
                             onCookiesChanged();
                         }
-                        cookieContainer.showSuccessAnimation();
+                        if (cookieContainer) {
+                            cookieContainer.showSuccessAnimation();
+                        }
                     });
                 });
             } else {
@@ -84,15 +87,12 @@
                     if (browserDetector.isEdge()) {
                         onCookiesChanged();
                     }
-
-                    cookieContainer.showSuccessAnimation();
+                    
+                    if (cookieContainer) {
+                        cookieContainer.showSuccessAnimation();
+                    }
                 });
             }
-        }
-
-        function returnToList() {
-            clearChildren(containerCookie);
-            showCookiesForTab();
         }
 
         if (containerCookie) {
@@ -118,9 +118,16 @@
         }
 
         document.getElementById('create-cookie').addEventListener('click', () => {
+            if (disableButtons) {
+                return;
+            }
+
             setPageTitle('Cookie Editor - Create a Cookie');
-            clearChildren(containerCookie);
-            containerCookie.insertAdjacentHTML('afterbegin', createHtmlFormCookie());
+            
+            disableButtons = true;
+            Animate.transitionPage(containerCookie, containerCookie.firstChild, createHtmlFormCookie(), 'left', () => {
+                disableButtons = false;
+            });
 
             document.getElementById('button-bar-default').classList.remove('active');
             document.getElementById('button-bar-add').classList.add('active');
@@ -136,7 +143,6 @@
                 for (var cookieId in loadedCookies) {
                     removeCookie(loadedCookies[cookieId].cookie.name);
                 }
-                loadedCookies = {};
             }
             sendNotification('All cookies were deleted');
             buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#check");
@@ -169,9 +175,16 @@
         });
 
         document.getElementById('import-cookies').addEventListener('click', () => {
+            if (disableButtons) {
+                return;
+            }
+
             setPageTitle('Cookie Editor - Import Cookies');
-            clearChildren(containerCookie);
-            containerCookie.insertAdjacentHTML('afterbegin', createHtmlFormImport());
+
+            disableButtons = true;
+            Animate.transitionPage(containerCookie, containerCookie.firstChild, createHtmlFormImport(), 'left', () => {
+                disableButtons = false;
+            });
 
             document.getElementById('button-bar-default').classList.remove('active');
             document.getElementById('button-bar-import').classList.add('active');
@@ -179,10 +192,10 @@
         });
 
         document.getElementById('return-list-add').addEventListener('click', () => {
-            returnToList();
+            showCookiesForTab();
         });
         document.getElementById('return-list-import').addEventListener('click', () => {
-            returnToList();
+            showCookiesForTab();
         });
 
         containerCookie.addEventListener('submit', e => {
@@ -277,6 +290,10 @@
         if (!cookieHandler.currentTab) {
             return;
         }
+        if (disableButtons) {
+            return;
+        }
+        
         const domain = getDomainFromUrl(cookieHandler.currentTab.url);
         const subtitleLine = document.querySelector('.titles h2');
         if (subtitleLine) {
@@ -302,8 +319,14 @@
                     cookiesListHtml.appendChild(loadedCookies[id].html);
                 });
 
-                clearChildren(containerCookie);
-                containerCookie.appendChild(cookiesListHtml);
+                if (containerCookie.firstChild) {
+                    disableButtons = true;
+                    Animate.transitionPage(containerCookie, containerCookie.firstChild, cookiesListHtml, 'right', () => {
+                        disableButtons = false;
+                    });
+                } else {
+                    containerCookie.append(cookiesListHtml);
+                }
             } else {
                 showNoCookies();
             }
@@ -311,13 +334,22 @@
     }
 
     function showNoCookies() {
-        clearChildren(containerCookie);
+        if (disableButtons) {
+            return;
+        }
         cookiesListHtml = null;
-        containerCookie.insertAdjacentHTML('afterbegin', `
-            <p class="container" id="no-cookies">
-                This page does not have any cookies
-            </p>
-        `);
+        let html = document.importNode(document.getElementById('tmp-empty').content, true).querySelector('p');
+        if (containerCookie.firstChild) {
+            if (containerCookie.firstChild.id === 'no-cookie') {
+                return;
+            }
+            disableButtons = true;
+            Animate.transitionPage(containerCookie, containerCookie.firstChild, html, 'right', () => {
+                disableButtons = false;
+            });
+        } else {
+            containerCookie.append(html);
+        }
     }
 
     function createHtmlForCookie(name, value, id) {
@@ -330,29 +362,13 @@
     }
 
     function createHtmlFormCookie() {
-        return `
-            <form data-id="" class="form container create">
-                <div>
-                    <label for="name-create">Name</label>
-                    <input name="name" type="text" value="" id="name-create" />
-                </div>
-                <div>
-                    <label for="value-create">Value</label>
-                    <textarea name="value" id="value-create"></textarea>
-                </div>
-            </form>
-        `;
+        let template = document.importNode(document.getElementById('tmp-create').content, true);
+        return template.querySelector('form');
     }
 
     function createHtmlFormImport() {
-        return `
-            <form class="form container import">
-                <div>
-                    <label for="content-import">Json</label>
-                    <textarea class="json" name="content" id="content-import" placeholder="Paste your Json here"></textarea>
-                </div>
-            </form>
-        `;
+        let template = document.importNode(document.getElementById('tmp-import').content, true);
+        return template.querySelector('form');
     }
 
     function removeCookie(name, url, callback) {
@@ -400,13 +416,16 @@
 
         var newCookie = new Cookie(id, changeInfo.cookie);
         loadedCookies[id] = newCookie;
-        if (!cookiesListHtml) {
+        
+        if (!cookiesListHtml && document.getElementById('no-cookies')) {
             clearChildren(containerCookie);
             cookiesListHtml = document.createElement('ul');
             containerCookie.appendChild(cookiesListHtml);
         }
 
-        cookiesListHtml.appendChild(newCookie.html);
+        if (cookiesListHtml) {
+            cookiesListHtml.appendChild(newCookie.html);
+        }
     }
 
     function onCookieHandlerReady() {
