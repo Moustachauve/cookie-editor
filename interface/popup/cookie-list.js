@@ -2,9 +2,11 @@
     'use strict';
 
     let containerCookie;
+    let cookiesListHtml;
     let pageTitleContainer;
     let notificationElement;
-    let loadedCookies;
+    let loadedCookies = {};
+    let disableButtons = false;
 
     let notificationQueue = [];
     let notificationTimeout;
@@ -19,7 +21,7 @@
 
         function expandCookie(e) {
             const parent = e.target.closest('li');
-            toggleSlide(parent.querySelector('.expando'));
+            Animate.toggleSlide(parent.querySelector('.expando'));
             parent.querySelector('.header').classList.toggle('active');
         }
 
@@ -38,7 +40,7 @@
             saveCookie(id, name, value);
 
             if (form.classList.contains('create')) {
-                returnToList();
+                showCookiesForTab();
             }
 
             return false;
@@ -47,7 +49,8 @@
         function saveCookie(id, name, value) {
             console.log('saving cookie...');
 
-            let cookie = loadedCookies[id];
+            let cookieContainer = loadedCookies[id];
+            let cookie = cookieContainer ? cookieContainer.cookie : null;
             let oldName;
 
             if (cookie) {
@@ -59,21 +62,37 @@
 
             cookie.name = name;
             cookie.value = value;
-            cookieHandler.removeCookie(oldName, getCurrentTabUrl(), function () {
+            if (oldName !== name) {
+                cookieHandler.removeCookie(oldName, getCurrentTabUrl(), function () {
+                    cookieHandler.saveCookie(cookie, getCurrentTabUrl(), function(error, cookie) {
+                        if (error) {
+                            sendNotification(error);
+                            return;
+                        }
+                        if (browserDetector.isEdge()) {
+                            onCookiesChanged();
+                        }
+                        if (cookieContainer) {
+                            cookieContainer.showSuccessAnimation();
+                        }
+                    });
+                });
+            } else {
+                // Should probably put in a function to prevent duplication
                 cookieHandler.saveCookie(cookie, getCurrentTabUrl(), function(error, cookie) {
                     if (error) {
                         sendNotification(error);
+                        return;
                     }
                     if (browserDetector.isEdge()) {
                         onCookiesChanged();
                     }
+                    
+                    if (cookieContainer) {
+                        cookieContainer.showSuccessAnimation();
+                    }
                 });
-            });
-        }
-
-        function returnToList() {
-            clearChildren(containerCookie);
-            showCookiesForTab();
+            }
         }
 
         if (containerCookie) {
@@ -99,9 +118,16 @@
         }
 
         document.getElementById('create-cookie').addEventListener('click', () => {
+            if (disableButtons) {
+                return;
+            }
+
             setPageTitle('Cookie Editor - Create a Cookie');
-            clearChildren(containerCookie);
-            containerCookie.insertAdjacentHTML('afterbegin', createHtmlFormCookie('', '', ''));
+            
+            disableButtons = true;
+            Animate.transitionPage(containerCookie, containerCookie.firstChild, createHtmlFormCookie(), 'left', () => {
+                disableButtons = false;
+            });
 
             document.getElementById('button-bar-default').classList.remove('active');
             document.getElementById('button-bar-add').classList.add('active');
@@ -113,11 +139,10 @@
             if (buttonIcon.getAttribute("xlink:href") === "../sprites/solid.svg#check") {
                 return;
             }
-            if (loadedCookies && loadedCookies.length) {
-                for (let i = 0; i < loadedCookies.length; i++) {
-                    removeCookie(loadedCookies[i].name);
+            if (loadedCookies && Object.keys(loadedCookies).length) {
+                for (var cookieId in loadedCookies) {
+                    removeCookie(loadedCookies[cookieId].cookie.name);
                 }
-                loadedCookies = null;
             }
             sendNotification('All cookies were deleted');
             buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#check");
@@ -133,7 +158,15 @@
             }
 
             buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#check"); 
-            copyText(JSON.stringify(loadedCookies, null, 4));
+
+            var exportedCookies = [];
+            for (var cookieId in loadedCookies) {
+                var exportedCookie = loadedCookies[cookieId].cookie;
+                exportedCookie.storeId = null;
+                exportedCookies.push(exportedCookie);
+            }
+
+            copyText(JSON.stringify(exportedCookies, null, 4));
 
             sendNotification('Cookies exported to clipboard');
             setTimeout(() => {
@@ -142,9 +175,16 @@
         });
 
         document.getElementById('import-cookies').addEventListener('click', () => {
+            if (disableButtons) {
+                return;
+            }
+
             setPageTitle('Cookie Editor - Import Cookies');
-            clearChildren(containerCookie);
-            containerCookie.insertAdjacentHTML('afterbegin', createHtmlFormImport());
+
+            disableButtons = true;
+            Animate.transitionPage(containerCookie, containerCookie.firstChild, createHtmlFormImport(), 'left', () => {
+                disableButtons = false;
+            });
 
             document.getElementById('button-bar-default').classList.remove('active');
             document.getElementById('button-bar-import').classList.add('active');
@@ -152,10 +192,10 @@
         });
 
         document.getElementById('return-list-add').addEventListener('click', () => {
-            returnToList();
+            showCookiesForTab();
         });
         document.getElementById('return-list-import').addEventListener('click', () => {
-            returnToList();
+            showCookiesForTab();
         });
 
         containerCookie.addEventListener('submit', e => {
@@ -203,6 +243,10 @@
             }
 
             cookies.forEach(cookie => {
+                // Make sure we are using the right store ID. This is in case we are importing from a basic store ID and the
+                // current user is using custom containers
+                cookie.storeId = cookieHandler.currentTab.cookieStoreId;
+
                 cookieHandler.saveCookie(cookie, getCurrentTabUrl(), function(error, cookie) {
                     if (error) {
                         sendNotification(error);
@@ -246,6 +290,10 @@
         if (!cookieHandler.currentTab) {
             return;
         }
+        if (disableButtons) {
+            return;
+        }
+        
         const domain = getDomainFromUrl(cookieHandler.currentTab.url);
         const subtitleLine = document.querySelector('.titles h2');
         if (subtitleLine) {
@@ -254,7 +302,8 @@
         
         cookieHandler.getAllCookies(function (cookies) {
             cookies = cookies.sort(sortCookiesByName);
-            loadedCookies = cookies;
+
+            loadedCookies = {};
 
             setPageTitle('Cookie Editor');
 
@@ -263,17 +312,21 @@
             document.getElementById('button-bar-default').classList.add('active');
 
             if (cookies.length > 0) {
-                let cookiesHtml = '';
-                cookies.forEach(function (cookie, id) {
-                    cookiesHtml += createHtmlForCookie(cookie.name, cookie.value, id);
+                cookiesListHtml = document.createElement('ul');
+                cookies.forEach(function (cookie) {
+                    var id = Cookie.hashCode(cookie);
+                    loadedCookies[id] = new Cookie(id, cookie);
+                    cookiesListHtml.appendChild(loadedCookies[id].html);
                 });
 
-                clearChildren(containerCookie);
-                containerCookie.insertAdjacentHTML('afterbegin', `
-                    <ul>
-                        ${cookiesHtml}
-                    </ul>
-                `);
+                if (containerCookie.firstChild) {
+                    disableButtons = true;
+                    Animate.transitionPage(containerCookie, containerCookie.firstChild, cookiesListHtml, 'right', () => {
+                        disableButtons = false;
+                    });
+                } else {
+                    containerCookie.append(cookiesListHtml);
+                }
             } else {
                 showNoCookies();
             }
@@ -281,75 +334,46 @@
     }
 
     function showNoCookies() {
-        clearChildren(containerCookie);
-        containerCookie.insertAdjacentHTML('afterbegin', `
-            <p class="container" id="no-cookies">
-                This page does not have any cookies
-            </p>
-        `);
+        if (disableButtons) {
+            return;
+        }
+        cookiesListHtml = null;
+        let html = document.importNode(document.getElementById('tmp-empty').content, true).querySelector('p');
+        if (containerCookie.firstChild) {
+            if (containerCookie.firstChild.id === 'no-cookie') {
+                return;
+            }
+            disableButtons = true;
+            Animate.transitionPage(containerCookie, containerCookie.firstChild, html, 'right', () => {
+                disableButtons = false;
+            });
+        } else {
+            containerCookie.append(html);
+        }
     }
 
     function createHtmlForCookie(name, value, id) {
-        let formHtml = createHtmlFormCookie(name, value, id);
-        return `
-            <li data-name="${sanitarize(name)}">
-                <div class="header container">
-                    <svg class="icon arrow"><use xlink:href="../sprites/solid.svg#angle-down"></use></svg>
-                    ${sanitarize(name)}
-                    <div class="btns">
-                        <button class="delete" data-tooltip-left="Delete">
-                            <svg class="icon"><use xlink:href="../sprites/solid.svg#trash"></use></svg>
-                        </button>
-                    </div>
-                </div>
-                <div class="expando">
-                    <div class="wrapper">
-                        <div class="action-btns">
-                            <button class="delete" data-tooltip="Delete">
-                                <svg class="icon"><use xlink:href="../sprites/solid.svg#trash"></use></svg>
-                            </button>
-                            <button class="save" data-tooltip="Save">
-                                <svg class="icon"><use xlink:href="../sprites/solid.svg#save"></use></svg>
-                            </button>
-                        </div>
-                        ${formHtml}
-                    </div>
-                </div>
-            </li>
-        `;
+        var cookie = new Cookie(id, {
+            'name': name,
+            'value': value
+        });
+
+        return cookie.html;
     }
 
-    function createHtmlFormCookie(name, value, id) {
-        const formId = guid();
-        return `
-            <form data-id="${sanitarize(id)}" class="form container ${!id ? `create` : ''}" id="${formId}">
-                <div>
-                    <label for="name-${formId}">Name</label>
-                    <input name="name" type="text" value="${sanitarize(name)}" id="name-${formId}" />
-                </div>
-                <div>
-                    <label for="value-${formId}">Value</label>
-                    <textarea name="value" id="value-${formId}">${sanitarize(value)}</textarea>
-                </div>
-            </form>
-        `;
+    function createHtmlFormCookie() {
+        let template = document.importNode(document.getElementById('tmp-create').content, true);
+        return template.querySelector('form');
     }
 
     function createHtmlFormImport() {
-        const formId = guid();
-        return `
-            <form class="form container import" id="${formId}">
-                <div>
-                    <label for="content-${formId}">Json</label>
-                    <textarea class="json" name="content" id="content-${formId}" placeholder="Paste your Json here"></textarea>
-                </div>
-            </form>
-        `;
+        let template = document.importNode(document.getElementById('tmp-import').content, true);
+        return template.querySelector('form');
     }
 
     function removeCookie(name, url, callback) {
         cookieHandler.removeCookie(name, url || getCurrentTabUrl(), function (e) {
-            console.log('success', e);
+            console.log('removed successfuly', e);
             if (callback) {
                 callback();
             }
@@ -361,8 +385,47 @@
     }
 
     function onCookiesChanged(changeInfo) {
-        showCookiesForTab();
-        console.log('Cookies have changed!');
+        if (!changeInfo) {
+            showCookiesForTab();
+            return;
+        }
+        
+        console.log('Cookies have changed!', changeInfo.removed, changeInfo.cause);
+        var id = Cookie.hashCode(changeInfo.cookie);
+
+        if (changeInfo.cause === 'overwrite') {
+            return;
+        }
+
+        if (changeInfo.removed) {
+            if (loadedCookies[id]) {
+                loadedCookies[id].removeHtml(() => {
+                    if (!Object.keys(loadedCookies).length) {
+                        showNoCookies();
+                    }
+                });
+                delete loadedCookies[id];
+            }
+            return;
+        }
+
+        if (loadedCookies[id]) {
+            loadedCookies[id].updateHtml(changeInfo.cookie);
+            return;
+        }
+
+        var newCookie = new Cookie(id, changeInfo.cookie);
+        loadedCookies[id] = newCookie;
+        
+        if (!cookiesListHtml && document.getElementById('no-cookies')) {
+            clearChildren(containerCookie);
+            cookiesListHtml = document.createElement('ul');
+            containerCookie.appendChild(cookiesListHtml);
+        }
+
+        if (cookiesListHtml) {
+            cookiesListHtml.appendChild(newCookie.html);
+        }
     }
 
     function onCookieHandlerReady() {
@@ -373,16 +436,6 @@
         const aName = a.name.toLowerCase();
         const bName = b.name.toLowerCase();
         return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
-    }
-
-    function guid() {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
     }
 
     function initWindow(tab) {
@@ -452,65 +505,6 @@
         pageTitleContainer.querySelector('h1').textContent = title;
     }
 
-    /**
-     * getHeight - for elements with display:none
-     * https://stackoverflow.com/a/29047447
-     **/
-    function getHeight(el) {
-        const elStyle = window.getComputedStyle(el);
-        const elMaxHeight = elStyle.maxHeight;
-        const elMaxHeightInt = elMaxHeight.replace('px', '').replace('%', '');
-
-        // if its not hidden we just return normal height
-        if (elMaxHeightInt !== '0') {
-            return el.offsetHeight;
-        }
-
-        // the element is hidden so:
-        // making the el block so we can meassure its height but still be hidden
-        el.style.position = 'absolute';
-        el.style.visibility = 'hidden';
-        el.style.display = 'block';
-        el.style.maxHeight = 'none';
-
-        let wantedHeight = el.offsetHeight;
-
-        // reverting to the original values
-        el.style.display = '';
-        el.style.position = '';
-        el.style.visibility = '';
-        el.style.maxHeight = elMaxHeight;
-
-        return wantedHeight;
-    }
-
-    function toggleSlide(el) {
-        let elMaxHeight = 0;
-
-        if (el.getAttribute('data-max-height')) {
-            // we've already used this before, so everything is setup
-            if (el.style.maxHeight.replace('px', '').replace('%', '') === '0') {
-                el.style.maxHeight = el.getAttribute('data-max-height');
-            } else {
-                elMaxHeight = getHeight(el) + 'px';
-                el.setAttribute('data-max-height', elMaxHeight);
-                el.style.maxHeight = '0';
-            }
-        } else {
-            elMaxHeight = getHeight(el) + 'px';
-            el.style.transition = 'max-height 0.2s ease-in-out';
-            el.style.overflowY = 'hidden';
-            el.style.maxHeight = '0';
-            el.setAttribute('data-max-height', elMaxHeight);
-            el.style.display = 'flex';
-
-            // we use setTimeout to modify maxHeight later than display (to we have the transition effect)
-            setTimeout(function () {
-                el.style.maxHeight = elMaxHeight;
-            }, 10);
-        }
-    }
-
     function copyText(text) {
         const fakeText = document.createElement('textarea');
         fakeText.classList.add('clipboardCopier');
@@ -532,23 +526,6 @@
         }
     }
 
-    function sanitarize(string) {
-        if (typeof string !== 'string') {
-            return string;
-        }
-
-        const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#x27;',
-            "/": '&#x2F;',
-        };
-        const reg = /[&<>"'/]/ig;
-        return string.replace(reg, (match) => (map[match]));
-    }
-
     function adjustWidthIfSmaller() {
         // Firefox can have the window smaller if it is in the overflow menu
         if (!browserDetector.isFirefox()) {
@@ -563,3 +540,7 @@
         }
     }
 }());
+
+// This should be handled better, like with a gulp script, in the future.
+// Make sure this is NOT commented before releasing a new version
+//console.log = function() {};

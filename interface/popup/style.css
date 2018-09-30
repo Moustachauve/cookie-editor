@@ -25,6 +25,11 @@ svg.icon {
   pointer-events: none;
 }
 
+
+.header-name {
+  pointer-events: none;
+}
+
 .container {
     padding: 8px 16px;
 }
@@ -123,6 +128,12 @@ button:focus {outline:0;}
     margin: 0;
     padding: 4px;
     font-family: "Segoe UI", Tahoma, sans-serif;
+    border: 1px solid rgb(150,150,150);
+}
+
+#cookie-container textarea:hover, #cookie-container input[type="text"]:hover {
+    border-color: rgb(82, 130, 192);
+    box-shadow: 1px 1px 5px rgba(150, 150, 150, 0.4);
 }
 
 #cookie-container textarea {
@@ -155,7 +166,7 @@ label {
     display: block;
 }
 
-.container.form {
+.expando .container.form {
     flex: 1;
     padding-left: 4px;
 }
@@ -410,4 +421,27 @@ body, .expando, #cookie-container {
     transition: all 0.1s ease 0.5s;
     visibility: visible;
     transform: translateY(-50%);
+}
+
+.anim-value-changed, #cookie-container .anim-value-changed {
+    animation-name: changed-value;
+    animation-duration: 0.5s;
+}
+
+@keyframes changed-value {
+    0% {background-color: #fff; }
+    50% {background-color: #fdfb8e; }
+    100% {background-color: #fff; }
+}
+
+.anim-success, #cookie-container .anim-success {
+    animation-name: success;
+    animation-duration: 0.5s;
+    border: 1px solid initial
+}
+
+@keyframes success {
+    0% {background-color: transparent; }
+    50% {background-color: #9ee7a8; }
+    100% {background-color: transparent; }
 }

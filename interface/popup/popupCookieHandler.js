@@ -36,7 +36,7 @@ function CookieHandler() {
     function onCookiesChanged(changeInfo) {
         const domain = changeInfo.cookie.domain.substring(1);
         if (self.currentTab.url.indexOf(domain) !== -1 && changeInfo.cookie.storeId === (self.currentTab.cookieStoreId || '0')) {
-            self.emit('cookiesChanged');
+            self.emit('cookiesChanged', changeInfo);
         }
     }
     function onTabsChanged(tabId, changeInfo, tab) {

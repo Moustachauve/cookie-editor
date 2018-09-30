@@ -80,7 +80,7 @@ function CookieHandler() {
     function onCookiesChanged(changeInfo) {
         const domain = changeInfo.cookie.domain.substring(1);
         if (self.currentTab.url.indexOf(domain) !== -1) {
-            self.emit('cookiesChanged');
+            self.emit('cookiesChanged', changeInfo);
         }
     }
     function onTabsChanged(changeInfo) {
