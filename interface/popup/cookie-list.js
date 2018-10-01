@@ -540,7 +540,3 @@
         }
     }
 }());
-
-// This should be handled better, like with a gulp script, in the future.
-// Make sure this is NOT commented before releasing a new version
-//console.log = function() {};

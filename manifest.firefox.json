@@ -1,58 +1,58 @@
 {
-    "manifest_version": 2,
-    "name": "Cookie-Editor",
-    "version": "1.7.0",
-    "description": "Simple yet powerful Cookie Editor that allow you to quickly create, edit and delete cookies without leaving your tab.",
-    "background": {
-        "scripts": [
-          "interface/lib/browserDetector.js",
-          "cookie-editor.js"
-        ]
-    },
-    "browser_action": {
-        "default_icon": {
-            "16": "icons/cookie-filled-small.svg",
-            "32": "icons/cookie-filled-small.svg",
-            "48": "icons/cookie-filled.svg",
-            "128": "icons/cookie-filled.svg"
-        },
-        "theme_icons": [
-            {
-                "light": "icons/cookie-light-small.svg",
-                "dark": "icons/cookie-small.svg",
-                "size": 16
-            },
-            {
-                "light": "icons/cookie-light-small.svg",
-                "dark": "icons/cookie-small.svg",
-                "size": 32
-            },
-            {
-                "light": "icons/cookie-light.svg",
-                "dark": "icons/cookie.svg",
-                "size": 128
-            }
-        ],
-        "default_title": "Cookie-Editor",
-        "default_popup": "interface/popup/cookie-list.html"
-    },
-    "devtools_page": "interface/devtools/devtool.html",
-    "permissions": [
-        "cookies",
-        "<all_urls>",
-        "tabs"
-    ],
-    "icons": {
-        "16": "icons/cookie-filled-small.svg",
-        "19": "icons/cookie-filled-small.svg",
-        "32": "icons/cookie-filled-small.svg",
-        "48": "icons/cookie-filled.svg",
-        "128": "icons/cookie-filled.svg"
-    },
-    "applications": {
-        "gecko": {
-            "id": "{c3c10168-4186-445c-9c5b-63f12b8e2c87}",
-            "strict_min_version": "57.0"
-        }
-    }
+	"manifest_version": 2,
+	"name": "Cookie-Editor",
+	"version": "1.7.0",
+	"description": "Simple yet powerful Cookie Editor that allow you to quickly create, edit and delete cookies without leaving your tab.",
+	"background": {
+		"scripts": [
+			"interface/lib/browserDetector.js",
+			"cookie-editor.js"
+		]
+	},
+	"browser_action": {
+		"default_icon": {
+			"16": "icons/cookie-filled-small.svg",
+			"32": "icons/cookie-filled-small.svg",
+			"48": "icons/cookie-filled.svg",
+			"128": "icons/cookie-filled.svg"
+		},
+		"theme_icons": [
+			{
+				"light": "icons/cookie-light-small.svg",
+				"dark": "icons/cookie-small.svg",
+				"size": 16
+			},
+			{
+				"light": "icons/cookie-light-small.svg",
+				"dark": "icons/cookie-small.svg",
+				"size": 32
+			},
+			{
+				"light": "icons/cookie-light.svg",
+				"dark": "icons/cookie.svg",
+				"size": 128
+			}
+		],
+		"default_title": "Cookie-Editor",
+		"default_popup": "interface/popup/cookie-list.html"
+	},
+	"devtools_page": "interface/devtools/devtool.html",
+	"permissions": [
+		"cookies",
+		"<all_urls>",
+		"tabs"
+	],
+	"icons": {
+		"16": "icons/cookie-filled-small.svg",
+		"19": "icons/cookie-filled-small.svg",
+		"32": "icons/cookie-filled-small.svg",
+		"48": "icons/cookie-filled.svg",
+		"128": "icons/cookie-filled.svg"
+	},
+	"applications": {
+		"gecko": {
+			"id": "{c3c10168-4186-445c-9c5b-63f12b8e2c87}",
+			"strict_min_version": "57.0"
+		}
+	}
 }
