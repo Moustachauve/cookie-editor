@@ -125,9 +125,11 @@
             setPageTitle('Cookie Editor - Create a Cookie');
             
             disableButtons = true;
+            console.log('strart transition');
             Animate.transitionPage(containerCookie, containerCookie.firstChild, createHtmlFormCookie(), 'left', () => {
                 disableButtons = false;
             });
+            console.log('after transition');
 
             document.getElementById('button-bar-default').classList.remove('active');
             document.getElementById('button-bar-add').classList.add('active');
@@ -325,7 +327,7 @@
                         disableButtons = false;
                     });
                 } else {
-                    containerCookie.append(cookiesListHtml);
+                    containerCookie.appendChild(cookiesListHtml);
                 }
             } else {
                 showNoCookies();
@@ -348,7 +350,7 @@
                 disableButtons = false;
             });
         } else {
-            containerCookie.append(html);
+            containerCookie.appendChild(html);
         }
     }
 
