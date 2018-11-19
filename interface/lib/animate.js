@@ -52,7 +52,9 @@ class Animate
             container.style.width = '';
             container.style.transform = '';
             container.style.overflowY = 'auto';
-            oldPage.remove();
+            if (oldPage) {
+                oldPage.remove();
+            }
             callback();
         }, {
             'passive': true,
@@ -63,19 +65,22 @@ class Animate
         container.style.width = '200%';
         container.style.display = 'flex';
 
-        oldPage.style.flex = '0 0 50%';
+        if (oldPage) {
+            oldPage.style.flex = '0 0 50%';
+        }
         newPage.style.flex = '0 0 50%';
 
         if (direction === 'left') {
-            container.append(newPage);
+            container.appendChild(newPage);
         } else {
-            container.prepend(newPage);
+            container.insertBefore(newPage, container.firstChild);
+            //container.prepend(newPage);
         }
 
         // This handle the resize of the window, only for the popup
         if (window.isPopup) {
-            let newPageHeight = this.getHeight(newPage);            
-            let oldPageHeight = this.getHeight(oldPage);
+            let newPageHeight = this.getHeight(newPage);  
+            let oldPageHeight = oldPage ? this.getHeight(oldPage) : 0;
             container.style.maxHeight = oldPageHeight + 'px';
 
             if (newPageHeight > 400) {
