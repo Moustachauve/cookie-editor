@@ -1,9 +1,10 @@
 class Cookie {
-    constructor (id, cookie) {
+    constructor (id, cookie, showAdvancedForm) {
         this.id = id;
         this.cookie = cookie;
         this.guid = Cookie.guid();
         this.baseHtml = false;
+        this.showAdvancedForm = showAdvancedForm;
     }
 
     get isGenerated() {
@@ -164,6 +165,11 @@ class Cookie {
             }
             Animate.resizeSlide(form.parentElement.parentElement);
         });
+
+        if (this.showAdvancedForm) {
+            advancedForm.classList.add('show');
+            advancedToggleButton.textContent = 'Hide Advanced';
+        }
     }
 
     updateName() {

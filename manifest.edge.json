@@ -23,7 +23,10 @@
     },
     "devtools_page": "interface/devtools/devtool.html",
     "permissions": [
-        "cookies", "<all_urls>", "tabs"
+        "cookies", 
+        "<all_urls>", 
+        "tabs",
+        "storage"
     ],
 	"icons": {
 		"16": "icons/cookie-16-filled.png",

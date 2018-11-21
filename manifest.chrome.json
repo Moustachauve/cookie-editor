@@ -25,7 +25,8 @@
 	"permissions": [
 		"cookies",
 		"<all_urls>",
-		"tabs"
+		"tabs",
+		"storage"
 	],
 	"icons": {
 		"16": "icons/cookie-16-filled.png",

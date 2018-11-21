@@ -474,3 +474,18 @@ body, .expando, #cookie-container {
 .advanced-toggle:hover {
     color: #888;
 }
+
+#advanced-toggle-all {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    user-select: none;
+}
+#advanced-toggle-all label {
+    cursor: pointer;
+}
+#advanced-toggle-all input {
+    vertical-align: middle;
+    position: relative;
+    bottom: 2px;
+}

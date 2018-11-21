@@ -8,6 +8,8 @@
     let loadedCookies = {};
     let disableButtons = false;
 
+    let showAllAdvanced;
+
     let notificationQueue = [];
     let notificationTimeout;
     const browserDetector = new BrowserDetector();
@@ -300,6 +302,12 @@
             showCookiesForTab();
         });
 
+        document.querySelector('#advanced-toggle-all input').addEventListener('change', function() {
+            showAllAdvanced = this.checked;
+            browserDetector.getApi().storage.local.set({showAllAdvanced: showAllAdvanced});
+            showCookiesForTab();
+        });
+
         notificationElement.addEventListener('animationend', e => {
             if (notificationElement.classList.contains('fadeInUp')) {
                 return;
@@ -335,6 +343,22 @@
         if (disableButtons) {
             return;
         }
+        if (showAllAdvanced === undefined) {
+            if (browserDetector.isFirefox()) {
+                browserDetector.getApi().storage.local.get('showAllAdvanced').then(function (onGot) {
+                    showAllAdvanced = onGot.showAllAdvanced || false;
+                    document.querySelector('#advanced-toggle-all input').checked = showAllAdvanced;
+                    return showCookiesForTab();
+                });
+            } else {
+                browserDetector.getApi().storage.local.get('showAllAdvanced', function (onGot) {
+                    showAllAdvanced = onGot.showAllAdvanced || false;
+                    document.querySelector('#advanced-toggle-all input').checked = showAllAdvanced;
+                    return showCookiesForTab();
+                });
+            }
+            return;
+        }
         
         const domain = getDomainFromUrl(cookieHandler.currentTab.url);
         const subtitleLine = document.querySelector('.titles h2');
@@ -357,7 +381,7 @@
                 cookiesListHtml = document.createElement('ul');
                 cookies.forEach(function (cookie) {
                     var id = Cookie.hashCode(cookie);
-                    loadedCookies[id] = new Cookie(id, cookie);
+                    loadedCookies[id] = new Cookie(id, cookie, showAllAdvanced);
                     cookiesListHtml.appendChild(loadedCookies[id].html);
                 });
 
