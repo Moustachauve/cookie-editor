@@ -36,17 +36,31 @@
         }
 
         function saveCookieForm(form) {
+            let isCreateForm = form.classList.contains('create');
+
             const id = form.dataset.id;
             const name = form.querySelector('input[name="name"]').value;
             const value = form.querySelector('textarea[name="value"]').value;
-            const domain = form.querySelector('input[name="domain"]').value;
-            const path = form.querySelector('input[name="path"]').value;
-            const expiration = form.querySelector('input[name="expiration"]').value;
-            const sameSite = form.querySelector('select[name="sameSite"]').value;
-            const hostOnly = form.querySelector('input[name="hostOnly"]').checked;
-            const session = form.querySelector('input[name="session"]').checked;
-            const secure = form.querySelector('input[name="secure"]').checked;
-            const httpOnly = form.querySelector('input[name="httpOnly"]').checked;
+
+            let domain;
+            let path;
+            let expiration;
+            let sameSite;
+            let hostOnly;
+            let session;
+            let secure;
+            let httpOnly;
+
+            if (!isCreateForm) {
+                domain = form.querySelector('input[name="domain"]').value;
+                path = form.querySelector('input[name="path"]').value;
+                expiration = form.querySelector('input[name="expiration"]').value;
+                sameSite = form.querySelector('select[name="sameSite"]').value;
+                hostOnly = form.querySelector('input[name="hostOnly"]').checked;
+                session = form.querySelector('input[name="session"]').checked;
+                secure = form.querySelector('input[name="secure"]').checked;
+                httpOnly = form.querySelector('input[name="httpOnly"]').checked;
+            }
             saveCookie(
                 id, 
                 name, 
@@ -87,15 +101,23 @@
 
             cookie.name = name;
             cookie.value = value;
-            cookie.domain = domain;
-            cookie.path = path;
-            cookie.sameSite = sameSite;
-            cookie.hostOnly = hostOnly;
-            cookie.session = session;
-            cookie.secure = secure;
-            cookie.httpOnly = httpOnly;
+
+            if (domain !== undefined)
+                cookie.domain = domain;
+            if (path !== undefined)
+                cookie.path = path;
+            if (sameSite !== undefined)
+                cookie.sameSite = sameSite;
+            if (hostOnly !== undefined)
+                cookie.hostOnly = hostOnly;
+            if (session !== undefined)
+                cookie.session = session;
+            if (secure !== undefined)
+                cookie.secure = secure;
+            if (httpOnly !== undefined)
+                cookie.httpOnly = httpOnly;
             
-            if (session) {
+            if (cookie.session) {
                 cookie.expirationDate = null;
             } else {
                 cookie.expirationDate = new Date(expiration).getTime() / 1000;

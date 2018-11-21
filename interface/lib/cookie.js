@@ -36,6 +36,9 @@ class Cookie {
         var oldCookieHttpOnly = this.baseHtml.querySelector('#httpOnly-' + this.guid).checked;
         var oldCookieExpiration = this.baseHtml.querySelector('#expiration-' + this.guid).value;
         oldCookieExpiration = new Date(oldCookieExpiration).getTime() / 1000;
+        if (isNaN(oldCookieExpiration)) {
+            oldCookieExpiration = undefined;
+        }
 
         if (this.cookie.name !== oldCookieName) {
             this.updateName();
