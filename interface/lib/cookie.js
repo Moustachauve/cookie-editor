@@ -29,12 +29,13 @@ class Cookie {
         var oldCookieValue = this.baseHtml.querySelector('#value-' + this.guid).value;
         var oldCookieDomain = this.baseHtml.querySelector('#domain-' + this.guid).value;
         var oldCookiePath = this.baseHtml.querySelector('#path-' + this.guid).value;
-        var oldCookieExpiration = this.baseHtml.querySelector('#expiration-' + this.guid).value;
         var oldCookieSameSite = this.baseHtml.querySelector('#sameSite-' + this.guid).value;
         var oldCookieHostOnly = this.baseHtml.querySelector('#hostOnly-' + this.guid).checked;
         var oldCookieSession = this.baseHtml.querySelector('#session-' + this.guid).checked;
         var oldCookieSecure = this.baseHtml.querySelector('#secure-' + this.guid).checked;
         var oldCookieHttpOnly = this.baseHtml.querySelector('#httpOnly-' + this.guid).checked;
+        var oldCookieExpiration = this.baseHtml.querySelector('#expiration-' + this.guid).value;
+        oldCookieExpiration = new Date(oldCookieExpiration).getTime() / 1000;
 
         if (this.cookie.name !== oldCookieName) {
             this.updateName();
