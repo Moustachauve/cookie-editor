@@ -1,9 +1,10 @@
 class Cookie {
-    constructor (id, cookie) {
+    constructor (id, cookie, showAdvancedForm) {
         this.id = id;
         this.cookie = cookie;
         this.guid = Cookie.guid();
         this.baseHtml = false;
+        this.showAdvancedForm = showAdvancedForm;
     }
 
     get isGenerated() {
@@ -26,12 +27,48 @@ class Cookie {
 
         var oldCookieName = this.baseHtml.querySelector('#name-' + this.guid).value;
         var oldCookieValue = this.baseHtml.querySelector('#value-' + this.guid).value;
+        var oldCookieDomain = this.baseHtml.querySelector('#domain-' + this.guid).value;
+        var oldCookiePath = this.baseHtml.querySelector('#path-' + this.guid).value;
+        var oldCookieSameSite = this.baseHtml.querySelector('#sameSite-' + this.guid).value;
+        var oldCookieHostOnly = this.baseHtml.querySelector('#hostOnly-' + this.guid).checked;
+        var oldCookieSession = this.baseHtml.querySelector('#session-' + this.guid).checked;
+        var oldCookieSecure = this.baseHtml.querySelector('#secure-' + this.guid).checked;
+        var oldCookieHttpOnly = this.baseHtml.querySelector('#httpOnly-' + this.guid).checked;
+        var oldCookieExpiration = this.baseHtml.querySelector('#expiration-' + this.guid).value;
+        oldCookieExpiration = new Date(oldCookieExpiration).getTime() / 1000;
+        if (isNaN(oldCookieExpiration)) {
+            oldCookieExpiration = undefined;
+        }
 
         if (this.cookie.name !== oldCookieName) {
             this.updateName();
         }
         if (this.cookie.value !== oldCookieValue) {
             this.updateValue();
+        }
+        if (this.cookie.domain !== oldCookieDomain) {
+            this.updateDomain();
+        }
+        if (this.cookie.path !== oldCookiePath) {
+            this.updatePath();
+        }
+        if (this.cookie.expirationDate !== oldCookieExpiration) {
+            this.updateExpiration();
+        }
+        if (this.cookie.sameSite !== oldCookieSameSite) {
+            this.updateSameSite();
+        }
+        if (this.cookie.hostOnly !== oldCookieHostOnly) {
+            this.updateHostOnly();
+        }
+        if (this.cookie.session !== oldCookieSession) {
+            this.updateSession();
+        }
+        if (this.cookie.secure !== oldCookieSecure) {
+            this.updateSecure();
+        }
+        if (this.cookie.httpOnly !== oldCookieHttpOnly) {
+            this.updateHttpOnly();
         }
     }
 
@@ -61,6 +98,82 @@ class Cookie {
         var inputValue = form.querySelector('.input-value');
         inputValue.id = 'value-' + this.guid;
         inputValue.value = this.cookie.value;
+
+        var labelDomain = form.querySelector('.label-domain');
+        labelDomain.setAttribute('for', 'domain-' + this.guid);
+        var inputDomain = form.querySelector('.input-domain');
+        inputDomain.id = 'domain-' + this.guid;
+        inputDomain.value = this.cookie.domain;
+
+        var labelPath = form.querySelector('.label-path');
+        labelPath.setAttribute('for', 'path-' + this.guid);
+        var inputPath = form.querySelector('.input-path');
+        inputPath.id = 'path-' + this.guid;
+        inputPath.value = this.cookie.path;
+
+        var labelExpiration = form.querySelector('.label-expiration');
+        labelExpiration.setAttribute('for', 'expiration-' + this.guid);
+        var inputExpiration = form.querySelector('.input-expiration');
+        inputExpiration.id = 'expiration-' + this.guid;
+        inputExpiration.value = this.cookie.expirationDate ? new Date(this.cookie.expirationDate * 1000) : '';
+
+        var labelSameSite = form.querySelector('.label-sameSite');
+        labelSameSite.setAttribute('for', 'sameSite-' + this.guid);
+        var inputSameSite = form.querySelector('.input-sameSite');
+        inputSameSite.id = 'sameSite-' + this.guid;
+        inputSameSite.value = this.cookie.sameSite;
+
+        var labelHostOnly = form.querySelector('.label-hostOnly');
+        labelHostOnly.setAttribute('for', 'hostOnly-' + this.guid);
+        var inputHostOnly = form.querySelector('.input-hostOnly');
+        inputHostOnly.id = 'hostOnly-' + this.guid;
+        inputHostOnly.checked = this.cookie.hostOnly;
+
+        inputDomain.disabled = this.cookie.hostOnly;
+
+        var labelSession = form.querySelector('.label-session');
+        labelSession.setAttribute('for', 'session-' + this.guid);
+        var inputSession = form.querySelector('.input-session');
+        inputSession.id = 'session-' + this.guid;
+        inputSession.checked = !this.cookie.expirationDate;
+
+        inputExpiration.disabled = !this.cookie.expirationDate;
+
+        var labelSecure = form.querySelector('.label-secure');
+        labelSecure.setAttribute('for', 'secure-' + this.guid);
+        var inputSecure = form.querySelector('.input-secure');
+        inputSecure.id = 'secure-' + this.guid;
+        inputSecure.checked = this.cookie.secure;
+
+        var labelHttpOnly = form.querySelector('.label-httpOnly');
+        labelHttpOnly.setAttribute('for', 'httpOnly-' + this.guid);
+        var inputHttpOnly = form.querySelector('.input-httpOnly');
+        inputHttpOnly.id = 'httpOnly-' + this.guid;
+        inputHttpOnly.checked = this.cookie.httpOnly;
+
+        inputHostOnly.addEventListener('change', function () {
+            inputDomain.disabled = this.checked;
+        });
+        inputSession.addEventListener('change', function () {
+            inputExpiration.disabled = this.checked;
+        });
+
+        var advancedToggleButton = form.querySelector('.advanced-toggle');
+        var advancedForm = form.querySelector('.advanced-form');
+        advancedToggleButton.addEventListener('click', function() {
+            advancedForm.classList.toggle('show');
+            if (advancedForm.classList.contains('show')) {
+                advancedToggleButton.textContent = 'Hide Advanced';
+            } else {
+                advancedToggleButton.textContent = 'Show Advanced';
+            }
+            Animate.resizeSlide(form.parentElement.parentElement);
+        });
+
+        if (this.showAdvancedForm) {
+            advancedForm.classList.add('show');
+            advancedToggleButton.textContent = 'Hide Advanced';
+        }
     }
 
     updateName() {
@@ -77,6 +190,84 @@ class Cookie {
         var valueInput = this.baseHtml.querySelector('#value-' + this.guid);
         var header = this.baseHtml.querySelector('.header');
         valueInput.value = this.cookie.value;
+
+        this.animateChangeOnNode(header);
+        this.animateChangeOnNode(valueInput);
+    }
+
+    updateDomain() {
+        var valueInput = this.baseHtml.querySelector('#domain-' + this.guid);
+        var header = this.baseHtml.querySelector('.header');
+        valueInput.value = this.cookie.domain;
+
+        this.animateChangeOnNode(header);
+        this.animateChangeOnNode(valueInput);
+    }
+
+    updatePath() {
+        var valueInput = this.baseHtml.querySelector('#path-' + this.guid);
+        var header = this.baseHtml.querySelector('.header');
+        valueInput.value = this.cookie.path;
+
+        this.animateChangeOnNode(header);
+        this.animateChangeOnNode(valueInput);
+    }
+
+    updateExpiration() {
+        var valueInput = this.baseHtml.querySelector('#expiration-' + this.guid);
+        var header = this.baseHtml.querySelector('.header');
+        valueInput.value = this.cookie.expirationDate ? new Date(this.cookie.expirationDate * 1000) : '';
+
+        this.animateChangeOnNode(header);
+        this.animateChangeOnNode(valueInput);
+    }
+
+    updateSameSite() {
+        var valueInput = this.baseHtml.querySelector('#sameSite-' + this.guid);
+        var header = this.baseHtml.querySelector('.header');
+        valueInput.value = this.cookie.sameSite;
+
+        this.animateChangeOnNode(header);
+        this.animateChangeOnNode(valueInput);
+    }
+
+    updateHostOnly() {
+        var valueInput = this.baseHtml.querySelector('#hostOnly-' + this.guid);
+        var domainInput = this.baseHtml.querySelector('#domain-' + this.guid);
+        var header = this.baseHtml.querySelector('.header');
+        valueInput.checked = this.cookie.hostOnly;
+
+        domainInput.disabled = this.cookie.hostOnly;
+
+        this.animateChangeOnNode(header);
+        this.animateChangeOnNode(valueInput);
+    }
+
+    updateSession() {
+        var valueInput = this.baseHtml.querySelector('#session-' + this.guid);
+        var expirationInput = this.baseHtml.querySelector('#expiration-' + this.guid);
+        var header = this.baseHtml.querySelector('.header');
+        valueInput.checked = !this.cookie.expirationDate;
+
+        expirationInput.disabled = !this.cookie.expirationDate;
+
+        this.animateChangeOnNode(header);
+        this.animateChangeOnNode(valueInput);
+    }
+
+    updateSecure() {
+        var valueInput = this.baseHtml.querySelector('#secure-' + this.guid);
+        var header = this.baseHtml.querySelector('.header');
+        valueInput.checked = this.cookie.secure;
+
+        this.animateChangeOnNode(header);
+        this.animateChangeOnNode(valueInput);
+    }
+
+    updateHttpOnly() {
+        var valueInput = this.baseHtml.querySelector('#httpOnly-' + this.guid);
+        var header = this.baseHtml.querySelector('.header');
+        valueInput.checked = this.cookie.httpOnly;
 
         this.animateChangeOnNode(header);
         this.animateChangeOnNode(valueInput);

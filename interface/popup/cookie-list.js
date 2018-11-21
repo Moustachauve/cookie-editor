@@ -8,6 +8,8 @@
     let loadedCookies = {};
     let disableButtons = false;
 
+    let showAllAdvanced;
+
     let notificationQueue = [];
     let notificationTimeout;
     const browserDetector = new BrowserDetector();
@@ -34,10 +36,44 @@
         }
 
         function saveCookieForm(form) {
+            let isCreateForm = form.classList.contains('create');
+
             const id = form.dataset.id;
             const name = form.querySelector('input[name="name"]').value;
             const value = form.querySelector('textarea[name="value"]').value;
-            saveCookie(id, name, value);
+
+            let domain;
+            let path;
+            let expiration;
+            let sameSite;
+            let hostOnly;
+            let session;
+            let secure;
+            let httpOnly;
+
+            if (!isCreateForm) {
+                domain = form.querySelector('input[name="domain"]').value;
+                path = form.querySelector('input[name="path"]').value;
+                expiration = form.querySelector('input[name="expiration"]').value;
+                sameSite = form.querySelector('select[name="sameSite"]').value;
+                hostOnly = form.querySelector('input[name="hostOnly"]').checked;
+                session = form.querySelector('input[name="session"]').checked;
+                secure = form.querySelector('input[name="secure"]').checked;
+                httpOnly = form.querySelector('input[name="httpOnly"]').checked;
+            }
+            saveCookie(
+                id, 
+                name, 
+                value,
+                domain,
+                path,
+                expiration,
+                sameSite,
+                hostOnly,
+                session,
+                secure,
+                httpOnly
+            );
 
             if (form.classList.contains('create')) {
                 showCookiesForTab();
@@ -46,23 +82,51 @@
             return false;
         }
 
-        function saveCookie(id, name, value) {
+        function saveCookie(id, name, value, domain, path, expiration, sameSite, hostOnly, session, secure, httpOnly) {
             console.log('saving cookie...');
 
             let cookieContainer = loadedCookies[id];
             let cookie = cookieContainer ? cookieContainer.cookie : null;
             let oldName;
+            let oldHostOnly;
 
             if (cookie) {
                 oldName = cookie.name;
+                oldHostOnly = cookie.hostOnly;
             } else {
                 cookie = {};
                 oldName = name;
+                oldHostOnly = hostOnly;
             }
 
             cookie.name = name;
             cookie.value = value;
-            if (oldName !== name) {
+
+            if (domain !== undefined)
+                cookie.domain = domain;
+            if (path !== undefined)
+                cookie.path = path;
+            if (sameSite !== undefined)
+                cookie.sameSite = sameSite;
+            if (hostOnly !== undefined)
+                cookie.hostOnly = hostOnly;
+            if (session !== undefined)
+                cookie.session = session;
+            if (secure !== undefined)
+                cookie.secure = secure;
+            if (httpOnly !== undefined)
+                cookie.httpOnly = httpOnly;
+            
+            if (cookie.session) {
+                cookie.expirationDate = null;
+            } else {
+                cookie.expirationDate = new Date(expiration).getTime() / 1000;
+                if (!cookie.expirationDate) {
+                    cookie.session = true;
+                }
+            }
+
+            if (oldName !== name || oldHostOnly !== hostOnly) {
                 cookieHandler.removeCookie(oldName, getCurrentTabUrl(), function () {
                     cookieHandler.saveCookie(cookie, getCurrentTabUrl(), function(error, cookie) {
                         if (error) {
@@ -260,6 +324,12 @@
             showCookiesForTab();
         });
 
+        document.querySelector('#advanced-toggle-all input').addEventListener('change', function() {
+            showAllAdvanced = this.checked;
+            browserDetector.getApi().storage.local.set({showAllAdvanced: showAllAdvanced});
+            showCookiesForTab();
+        });
+
         notificationElement.addEventListener('animationend', e => {
             if (notificationElement.classList.contains('fadeInUp')) {
                 return;
@@ -295,6 +365,22 @@
         if (disableButtons) {
             return;
         }
+        if (showAllAdvanced === undefined) {
+            if (browserDetector.isFirefox()) {
+                browserDetector.getApi().storage.local.get('showAllAdvanced').then(function (onGot) {
+                    showAllAdvanced = onGot.showAllAdvanced || false;
+                    document.querySelector('#advanced-toggle-all input').checked = showAllAdvanced;
+                    return showCookiesForTab();
+                });
+            } else {
+                browserDetector.getApi().storage.local.get('showAllAdvanced', function (onGot) {
+                    showAllAdvanced = onGot.showAllAdvanced || false;
+                    document.querySelector('#advanced-toggle-all input').checked = showAllAdvanced;
+                    return showCookiesForTab();
+                });
+            }
+            return;
+        }
         
         const domain = getDomainFromUrl(cookieHandler.currentTab.url);
         const subtitleLine = document.querySelector('.titles h2');
@@ -317,7 +403,7 @@
                 cookiesListHtml = document.createElement('ul');
                 cookies.forEach(function (cookie) {
                     var id = Cookie.hashCode(cookie);
-                    loadedCookies[id] = new Cookie(id, cookie);
+                    loadedCookies[id] = new Cookie(id, cookie, showAllAdvanced);
                     cookiesListHtml.appendChild(loadedCookies[id].html);
                 });
 

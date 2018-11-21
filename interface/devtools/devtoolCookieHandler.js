@@ -51,6 +51,7 @@ function CookieHandler() {
             expirationDate: cookie.expirationDate || null,
             storeId: cookie.storeId || this.currentTab.cookieStoreId || null,
             url: url,
+            sameSite: cookie.sameSite || undefined,
         };
 
         sendMessage("saveCookie", {cookie: newCookie}, callback);

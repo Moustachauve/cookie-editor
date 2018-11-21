@@ -123,7 +123,7 @@ button:focus {outline:0;}
     display: flex;
 }
 
-#cookie-container textarea, #cookie-container input[type="text"] {
+#cookie-container textarea, #cookie-container input[type="text"], #cookie-container select {
     width: 100%;
     margin: 0;
     padding: 4px;
@@ -131,9 +131,25 @@ button:focus {outline:0;}
     border: 1px solid rgb(150,150,150);
 }
 
-#cookie-container textarea:hover, #cookie-container input[type="text"]:hover {
+#cookie-container textarea:hover, #cookie-container input:not([disabled])[type="text"]:hover {
     border-color: rgb(82, 130, 192);
     box-shadow: 1px 1px 5px rgba(150, 150, 150, 0.4);
+}
+
+.checkbox-list {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 7px;
+}
+
+.checkbox-list label, .checkbox-list input {
+    cursor: pointer;
+}
+
+.checkbox-list input {
+    vertical-align: middle;
+    position: relative;
+    bottom: 2px;
 }
 
 #cookie-container textarea {
@@ -172,10 +188,6 @@ label {
 }
 .container.form label {
     font-weight: 500;
-}
-
-.container.form div:last-child {
-    margin-top: 5px;
 }
 
 .action-btns {
@@ -444,4 +456,36 @@ body, .expando, #cookie-container {
     0% {background-color: transparent; }
     50% {background-color: #9ee7a8; }
     100% {background-color: transparent; }
+}
+
+.advanced-form {
+    display: none;
+}
+.advanced-form.show {
+    display: block;
+}
+.advanced-toggle {
+    text-align: right;
+    font-size: 10px;
+    text-decoration: underline;
+    cursor: pointer;
+    user-select: none;
+}
+.advanced-toggle:hover {
+    color: #888;
+}
+
+#advanced-toggle-all {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    user-select: none;
+}
+#advanced-toggle-all label {
+    cursor: pointer;
+}
+#advanced-toggle-all input {
+    vertical-align: middle;
+    position: relative;
+    bottom: 2px;
 }
