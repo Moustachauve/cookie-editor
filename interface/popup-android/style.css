@@ -43,6 +43,7 @@ svg.icon {
 }
 #pageTitle .titles {
     display: inline-block;
+    flex: 1;
 }
 #pageTitle img {
     margin-right: 10px;
@@ -136,7 +137,7 @@ form.import > div {
     margin-bottom: 0.75em;
 }
 
-#cookie-container textarea, #cookie-container input[type="text"] {
+#cookie-container textarea, #cookie-container input[type="text"], #cookie-container select {
     width: 100%;
     font-size: 1em;
     font-family: inherit;
@@ -362,4 +363,59 @@ label {
     0% {background-color: transparent; }
     50% {background-color: #9ee7a8; }
     100% {background-color: transparent; }
+}
+
+#advanced-toggle-all {
+    float: right;
+    display: none;
+}
+
+.advanced-form {
+    display: none;
+}
+.advanced-form.show {
+    display: block;
+}
+.advanced-toggle-container {
+    text-align: center;
+}
+
+.advanced-toggle {
+    padding: 10px;
+    margin: 6px;
+    border: 1px solid #888;
+    color: #777;
+    user-select: none;
+    display: inline-block;
+}
+
+#advanced-toggle-all {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    user-select: none;
+}
+#advanced-toggle-all label {
+    cursor: pointer;
+}
+#advanced-toggle-all input {
+    vertical-align: middle;
+    position: relative;
+    bottom: 2px;
+}
+
+.checkbox-list {
+    margin-top: 7px;
+}
+.checkbox-list label {
+    padding: 15px 0;
+    margin: 10px 0;
+    border: 1px solid #aaa;
+    background-color: #ffffff;
+}
+.checkbox-list input {
+    vertical-align: middle;
+    position: relative;
+    bottom: 2px;
+    margin-left: 15px;
 }
