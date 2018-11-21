@@ -33,7 +33,8 @@ function GenericCookieHandler() {
             httpOnly: cookie.httpOnly || null,
             expirationDate: cookie.expirationDate || null,
             storeId: cookie.storeId || this.currentTab.cookieStoreId || null,
-            url: url
+            url: url,
+            sameSite: cookie.sameSite || undefined,
         };
 
         if (cookie.hostOnly) {
