@@ -37,7 +37,27 @@
             const id = form.dataset.id;
             const name = form.querySelector('input[name="name"]').value;
             const value = form.querySelector('textarea[name="value"]').value;
-            saveCookie(id, name, value);
+            const domain = form.querySelector('input[name="domain"]').value;
+            const path = form.querySelector('input[name="path"]').value;
+            const expiration = form.querySelector('input[name="expiration"]').value;
+            const sameSite = form.querySelector('select[name="sameSite"]').value;
+            const hostOnly = form.querySelector('input[name="hostOnly"]').checked;
+            const session = form.querySelector('input[name="session"]').checked;
+            const secure = form.querySelector('input[name="secure"]').checked;
+            const httpOnly = form.querySelector('input[name="httpOnly"]').checked;
+            saveCookie(
+                id, 
+                name, 
+                value,
+                domain,
+                path,
+                expiration,
+                sameSite,
+                hostOnly,
+                session,
+                secure,
+                httpOnly
+            );
 
             if (form.classList.contains('create')) {
                 showCookiesForTab();
@@ -46,23 +66,43 @@
             return false;
         }
 
-        function saveCookie(id, name, value) {
+        function saveCookie(id, name, value, domain, path, expiration, sameSite, hostOnly, session, secure, httpOnly) {
             console.log('saving cookie...');
 
             let cookieContainer = loadedCookies[id];
             let cookie = cookieContainer ? cookieContainer.cookie : null;
             let oldName;
+            let oldHostOnly;
 
             if (cookie) {
                 oldName = cookie.name;
+                oldHostOnly = cookie.hostOnly;
             } else {
                 cookie = {};
                 oldName = name;
+                oldHostOnly = hostOnly;
             }
 
             cookie.name = name;
             cookie.value = value;
-            if (oldName !== name) {
+            cookie.domain = domain;
+            cookie.path = path;
+            cookie.sameSite = sameSite;
+            cookie.hostOnly = hostOnly;
+            cookie.session = session;
+            cookie.secure = secure;
+            cookie.httpOnly = httpOnly;
+            
+            if (session) {
+                cookie.expirationDate = null;
+            } else {
+                cookie.expirationDate = new Date(expiration).getTime() / 1000;
+                if (!cookie.expirationDate) {
+                    cookie.session = true;
+                }
+            }
+
+            if (oldName !== name || oldHostOnly !== hostOnly) {
                 cookieHandler.removeCookie(oldName, getCurrentTabUrl(), function () {
                     cookieHandler.saveCookie(cookie, getCurrentTabUrl(), function(error, cookie) {
                         if (error) {

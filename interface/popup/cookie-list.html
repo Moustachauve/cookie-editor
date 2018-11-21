@@ -11,6 +11,13 @@
 <body>
     <div id="pageTitle">
         <h1 class="container">Cookie Editor</h1>
+
+        <div>
+            <label>
+                <input type="checkbox" />
+                Show Advanced
+            </label>
+        </div>
     </div>
     <div id="cookie-container"></div>
 
@@ -128,6 +135,45 @@
                         <div>
                             <label class="label-value">Value</label>
                             <textarea name="value" class="input-value"></textarea>
+                        </div>
+                        <div class="advanced-toggle">
+                            Show Advanced
+                        </div>
+                        <div class="advanced-form">
+                            <div>
+                                <label class="label-domain">Domain</label>
+                                <input name="domain" type="text" class="input-domain" />
+                            </div>
+                            <div>
+                                <label class="label-path">Path</label>
+                                <input name="path" type="text" class="input-path" />
+                            </div>
+                            <div>
+                                <label class="label-expiration">Expiration</label>
+                                <input name="expiration" type="text" class="input-expiration" />
+                            </div>
+                            <div>
+                                <label class="label-sameSite">Same Site</label>
+                                <select name="sameSite" class="input-sameSite">
+                                    <option value="no_restriction">No Restriction</option>
+                                    <option value="lax">Lax</option>
+                                    <option value="strict">Strict</option>
+                                </select>
+                            </div>
+                            <div class="checkbox-list">
+                                <label class="label-hostOnly">
+                                    <input type="checkbox" name="hostOnly" class="input-hostOnly" /> Host Only
+                                </label>
+                                <label class="label-session">
+                                    <input type="checkbox" name="session" class="input-session" /> Session
+                                </label>
+                                <label class="label-secure">
+                                    <input type="checkbox" name="secure" class="input-secure" /> Secure
+                                </label>
+                                <label class="label-httpOnly">
+                                    <input type="checkbox" name="httpOnly" class="input-httpOnly" /> Http Only
+                                </label>
+                            </div>
                         </div>
                     </form>
                 </div>
