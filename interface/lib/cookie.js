@@ -162,6 +162,7 @@ class Cookie {
             } else {
                 advancedToggleButton.textContent = 'Show Advanced';
             }
+            Animate.resizeSlide(form.parentElement.parentElement);
         });
     }
 

@@ -41,6 +41,31 @@ class Animate
             }, 10);
         }
     }
+    
+    static resizeSlide(el, callback = null) {
+        let elMaxHeight = 0;
+
+        if (callback) {
+            el.addEventListener('transitionend', function () {
+                callback();
+            }, {
+                    'once': true,
+                });
+        }
+        elMaxHeight = this.getHeight(el, true) + 'px';
+        el.style.transition = 'max-height 0.25s ease-in-out';
+        el.style.overflowY = 'hidden';
+        //el.style.maxHeight = '0';
+        el.setAttribute('data-max-height', elMaxHeight);
+
+        var nextMaxHeight = elMaxHeight;
+        el.style.maxHeight = el.offsetHeight;
+        
+        // we use setTimeout to modify maxHeight later than display (to we have the transition effect)
+        setTimeout(function () {
+            el.style.maxHeight = nextMaxHeight;
+        }, 10);
+    }
 
     static transitionPage(container, oldPage, newPage, direction = 'left', callback = null) {
         let animationTime = '0.3s';
@@ -128,13 +153,13 @@ class Animate
      * getHeight - for elements with display:none
      * https://stackoverflow.com/a/29047447
      **/
-    static getHeight(el) {
+    static getHeight(el, ignoreMaxHeight) {
         const elStyle = window.getComputedStyle(el);
         const elMaxHeight = elStyle.maxHeight;
         const elMaxHeightInt = elMaxHeight.replace('px', '').replace('%', '');
 
         // if its not hidden we just return normal height
-        if (elMaxHeightInt !== '0' && elMaxHeight !== 'none') {
+        if (!ignoreMaxHeight && elMaxHeightInt !== '0' && elMaxHeight !== 'none') {
             return el.offsetHeight;
         }
 
