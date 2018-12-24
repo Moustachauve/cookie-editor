@@ -401,6 +401,10 @@ footer.block {
     color: #bababa;
 }
 
+footer.block p {
+	margin-top: 5px;
+}
+
 #img-preview {
     display: grid;
     position: fixed;

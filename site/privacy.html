@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-32262555-5"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-32262555-5');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+	<meta name="description" content="Cookie-Editor is a browser extension/add-on that lets you efficiently create, edit and delete cookies for the current tab. Perfect for developing, quickly testing or even manually managing your cookies for your privacy.">
+	<link rel="canonical" href="https://cookie-editor.cgagnier.ca/privacy.html">
+
+    <title>Privacy Policy - Cookie-Editor</title>
+    <link href="style/main.css?cache=1" rel="stylesheet" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <header id="main-header">
+        <div class="overlay"></div>
+        <div class="wrapper">
+            <img src="img/cookie-filled.svg" id="logo" alt="Cookie-Editor Logo" />
+            <h1>Cookie-Editor</h1>
+            <h2>Simple, yet Powerful Browser Extension</h2>
+            <a href="index.html#download" class="btn-cta" id="download-cta">Install Now</a>
+        </div>
+    </header>
+
+    <nav id="main-nav">
+        <div class="mobile">
+            <div class="hamburger">
+                <svg class="icon"><use xlink:href="img/fa-solid.svg#bars"></use></svg>
+            </div>
+            <img src="img/cookie-filled.svg" alt="Logo" />
+            <h2>Cookie-Editor</h2>
+        </div>
+        <ul id="nav-list">
+            <li>
+                <a href="index.html#access">Features</a>
+            </li>
+            <li>
+                <a href="index.html#download">Download</a>
+            </li>
+            <li>
+                <a href="index.html#source-code">Source Code</a>
+            </li>
+            <li>
+                <a href="index.html#suggestions">Suggestions</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div id="main-content">
+        <div id="access" class="block" >
+            <h2>Privacy Policy</h2>
+            <p>It's simple: the Cookie-Editor extension does not collect any data at all.</p>
+        </div>
+
+        <footer class="block">
+            <p>
+                Cookie-Editor by <a href="https://cgagnier.ca/" title="Personal Site">Christophe Gagnier</a>, known as 
+                <a href="https://github.com/Moustachauve/" title="Github Profile">
+                    <svg class="github-logo"><use xlink:href="img/github-logo.svg#github"></use></svg>Moustachauve
+                </a>
+            </p>
+			<p>Read our <a href="privacy.html" title="Privacy Policy">Privacy Policy</a>.</p>
+        </footer>
+    </div>
+
+    <div id="img-preview">
+	    <div class="container">
+		    <img src="img/cookie-list.png" alt="Image Preview" />
+		    <div class="description"></div>
+	    </div>
+    </div>
+
+    <script>
+        const imgPreview = document.getElementById('img-preview');
+        const navList = document.getElementById('nav-list');
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        document.querySelectorAll('a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                if (anchor.href.indexOf(window.location.href) > -1) {
+                    return;
+                }
+
+                trackOutboundLink(anchor.href);
+            });
+        });
+
+        document.querySelectorAll('.img-preview').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const parent = e.target.closest('div');
+                const imgUrl = parent.querySelector('img').src;
+                const description = parent.querySelector('.description').textContent.trim();
+
+                imgPreview.querySelector('img').src = imgUrl;
+                imgPreview.querySelector('.description').textContent = description;
+                imgPreview.classList.add('visible');
+
+                gtag('event', 'open', {
+                    event_category: 'image-preview',
+                    event_label: description
+                });
+            });
+        });
+
+        document.querySelector('.hamburger').addEventListener('click', function (e) {
+            navList.classList.toggle('open');
+        });
+
+        navList.addEventListener('click', function (e) {
+            navList.classList.remove('open');
+        });
+
+        imgPreview.addEventListener('click', function (e) {
+            if (e.target !== imgPreview) {
+                return;
+            }
+            hideImgPreview();
+        });
+
+        imgPreview.addEventListener('transitionend', function (e) {
+            console.log('transition over');
+            if (imgPreview.classList.contains('hiding')) {
+                imgPreview.classList.remove('hiding');
+            }
+        });
+
+        document.getElementById('download-cta').addEventListener("click", function () {
+            gtag('event', 'download-cta', {
+                event_category: 'click',
+                event_label: 'Big Button'
+            });
+        });
+
+        document.getElementById('nav-list').querySelectorAll('a').forEach(anchor => {
+			anchor.addEventListener('click', function () {
+                gtag('event', 'menu-item', {
+                    event_category: 'click',
+                    event_label: anchor.textContent
+                });
+            });
+        });
+
+	    function hideImgPreview() {
+            imgPreview.classList.add('hiding');
+            imgPreview.classList.remove('visible');
+            gtag('event', 'dismiss', {
+                event_category: 'image-preview',
+                event_label: 'image'
+            });
+	    }
+
+        function trackOutboundLink(url) {
+            gtag('event', 'outbound', {
+                event_category: 'click',
+                event_label: url,
+	            transport: 'beacon',
+                hitCallback: function(){document.location = url;}
+            });
+        }
+    </script>
+    <script src="script/stickyHeader.js"></script>
+</body>
+</html>

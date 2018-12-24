@@ -16,7 +16,11 @@
             "16": "icons/cookie-16-filled.png",
             "19": "icons/cookie-19-filled.png",
             "32": "icons/cookie-32-filled.png",
-            "48": "icons/cookie-48-filled.png"
+            "44": "icons/cookie-44-filled.png",
+            "48": "icons/cookie-48-filled.png",
+            "50": "icons/cookie-50-filled.png",
+            "128": "icons/cookie-128-filled.png",
+            "150": "icons/cookie-150-filled.png"
         },
         "default_title": "Cookie-Editor",
         "default_popup": "interface/popup/cookie-list.html"
@@ -32,7 +36,10 @@
 		"16": "icons/cookie-16-filled.png",
 		"19": "icons/cookie-19-filled.png",
         "32": "icons/cookie-32-filled.png",
+		"44": "icons/cookie-44-filled.png",
 		"48": "icons/cookie-48-filled.png",
-		"128": "icons/cookie-128-filled.png"
+		"50": "icons/cookie-50-filled.png",
+		"128": "icons/cookie-128-filled.png",
+		"150": "icons/cookie-150-filled.png"
 	}
 }
