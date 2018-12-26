@@ -20,6 +20,9 @@ Find this extension on the [Firefox Add-ons site](https://addons.mozilla.org/add
 ## Install on Opera
 Find this extension on the [Opera Extensions site](https://addons.opera.com/en/extensions/details/cookie-editor-2/).
 
+## Install on Microsoft Edge
+Find this extension on the [Microsoft Store](https://www.microsoft.com/en-ca/p/cookie-editor/9pbbp0rcwzbc).
+
 ## Feature Suggestions or Bug Reports
 To submit a feature suggestion or file a bug report, please [create a new issue here](https://github.com/Moustachauve/cookie-editor/issues).
 
