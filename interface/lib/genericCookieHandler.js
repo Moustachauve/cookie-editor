@@ -33,12 +33,15 @@ function GenericCookieHandler() {
             httpOnly: cookie.httpOnly || null,
             expirationDate: cookie.expirationDate || null,
             storeId: cookie.storeId || this.currentTab.cookieStoreId || null,
-            url: url,
-            sameSite: cookie.sameSite || undefined,
+            url: url
         };
 
         if (cookie.hostOnly) {
             newCookie.domain = null;
+        }
+
+        if (browserDetector.supportSameSiteCookie()) {
+            newCookie.sameSite = cookie.sameSite || undefined;
         }
         
         if (browserDetector.isFirefox()) {

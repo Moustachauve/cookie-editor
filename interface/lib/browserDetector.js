@@ -2,6 +2,7 @@ function BrowserDetector() {
     'use strict';
     let namespace = window.browser || window.chrome;
     let browserName;
+    let doesSupportSameSiteCookie = null;
 
     if (namespace === window.chrome) {
         browserName = 'chrome';
@@ -39,4 +40,45 @@ function BrowserDetector() {
     this.isEdge = function () {
         return browserName === 'edge';
     };
+
+    this.supportSameSiteCookie = function () {
+        if (doesSupportSameSiteCookie !== null) {
+            return doesSupportSameSiteCookie;
+        }
+
+        const newCookie = {
+            url: 'https://fakeDomain.com/',
+            name: 'testSameSite',
+            value: 'someValue',
+            sameSite: 'strict',
+        };
+
+        try {
+            if (this.isFirefox()) {
+                this.getApi().cookies.set(newCookie).then(cookie => {
+                    doesSupportSameSiteCookie = true;
+                }, error => {
+                    console.error('Failed to create cookie', error);
+                    doesSupportSameSiteCookie = false;
+                });
+            } else {
+                this.getApi().cookies.set(newCookie, (cookieResponse) => {
+                    let error = this.getApi().runtime.lastError;
+                    if (!cookieResponse || error) {
+                        console.error('Failed to create cookie', error);
+                        doesSupportSameSiteCookie = false;
+                        return;
+                    }
+                    doesSupportSameSiteCookie = true;
+                });
+            }
+        } catch(e) {
+            doesSupportSameSiteCookie = false;
+        }
+
+        return doesSupportSameSiteCookie;
+    }
+
+    // We call it right away to make sure the value of doesSupportSameSiteCookie is initialized 
+    this.supportSameSiteCookie();
 }
