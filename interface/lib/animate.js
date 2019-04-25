@@ -3,13 +3,19 @@ class Animate
     static toggleSlide(el, callback = null) {
         let elMaxHeight = 0;
     
-        if (callback) {
-            el.addEventListener('transitionend', function() {
+        el.addEventListener('transitionend', function() {
+            if (callback) {
                 callback();
-            }, {
-                'once': true,
-            });
-        }
+            }
+
+            // Hack to force firefox to resize the popup window after the animation is done
+            document.body.style.height = '100%';
+            setTimeout(function () {
+                document.body.style.height = '';
+            }, 10);
+        }, {
+            'once': true,
+        });
     
         if (el.getAttribute('data-max-height')) {
             // we've already used this before, so everything is setup
