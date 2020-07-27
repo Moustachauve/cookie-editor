@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-32262555-5"></script>
@@ -63,7 +63,7 @@
 
         <footer class="block">
             <p>
-                Cookie-Editor by <a href="https://cgagnier.ca/" title="Personal Site">Christophe Gagnier</a>, known as 
+                Cookie-Editor by <a href="https://cgagnier.ca/" title="Personal Site">Christophe Gagnier</a>, known as
                 <a href="https://github.com/Moustachauve/" title="Github Profile">
                     <svg class="github-logo"><use xlink:href="img/github-logo.svg#github"></use></svg>Moustachauve
                 </a>
@@ -94,7 +94,7 @@
         });
 
         document.querySelectorAll('a').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+            anchor.addEventListener('click', function () {
                 if (anchor.href.indexOf(window.location.href) > -1) {
                     return;
                 }
@@ -120,11 +120,11 @@
             });
         });
 
-        document.querySelector('.hamburger').addEventListener('click', function (e) {
+        document.querySelector('.hamburger').addEventListener('click', function () {
             navList.classList.toggle('open');
         });
 
-        navList.addEventListener('click', function (e) {
+        navList.addEventListener('click', function () {
             navList.classList.remove('open');
         });
 
@@ -135,7 +135,7 @@
             hideImgPreview();
         });
 
-        imgPreview.addEventListener('transitionend', function (e) {
+        imgPreview.addEventListener('transitionend', function () {
             console.log('transition over');
             if (imgPreview.classList.contains('hiding')) {
                 imgPreview.classList.remove('hiding');

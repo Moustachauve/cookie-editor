@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-32262555-5"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-32262555-5');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+	<link rel="canonical" href="https://cookie-editor.cgagnier.ca/404">
+	<meta name="robots" content="noindex">
+
+    <title>404 Page not found - Cookie-Editor</title>
+    <link href="style/main.css?cache=1" rel="stylesheet" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <header id="main-header">
+        <div class="overlay"></div>
+        <div class="wrapper">
+            <img src="img/cookie-filled.svg" id="logo" alt="Cookie-Editor Logo" />
+            <h1>Cookie-Editor</h1>
+            <h2>Simple, yet Powerful Browser Extension</h2>
+        </div>
+    </header>
+
+    <nav id="main-nav">
+        <div class="mobile">
+            <div class="hamburger">
+                <svg class="icon"><use xlink:href="img/fa-solid.svg#bars"></use></svg>
+            </div>
+            <img src="img/cookie-filled.svg" alt="Logo" />
+            <h2>Cookie-Editor</h2>
+        </div>
+        <ul id="nav-list">
+            <li>
+                <a href="/#access">Features</a>
+            </li>
+            <li>
+                <a href="/#download">Download</a>
+            </li>
+            <li>
+                <a href="/#source-code">Source Code</a>
+            </li>
+            <li>
+                <a href="/#suggestions">Suggestions</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div id="main-content">
+        <div class="block" id="download">
+            <h2>404 page not found</h2>
+	        Oops, seems like this page doesn't exists. <a href="/" title="Home page">Go back to the home page.</a>
+        </div>
+
+        <footer class="block">
+            <p>
+                Cookie-Editor by <a href="https://cgagnier.ca/" title="Personal Site">Christophe Gagnier</a>, known as
+                <a href="https://github.com/Moustachauve/" title="Github Profile">
+                    <svg class="github-logo"><use xlink:href="img/github-logo.svg#github"></use></svg>Moustachauve
+                </a>
+            </p>
+			<p>Read our <a href="privacy.html" title="Privacy Policy">Privacy Policy</a>.</p>
+        </footer>
+    </div>
+
+    <script>
+        const navList = document.getElementById('nav-list');
+
+        document.querySelector('.hamburger').addEventListener('click', function () {
+            navList.classList.toggle('open');
+        });
+
+        navList.addEventListener('click', function () {
+            navList.classList.remove('open');
+        });
+    </script>
+    <script src="script/stickyHeader.js"></script>
+</body>
+</html>
