@@ -1,6 +1,6 @@
 {
   "name": "cookie-editor",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "devDependencies": {
     "grunt": "~1.0.3",
     "grunt-contrib-clean": "^2.0.0",

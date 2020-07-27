@@ -160,6 +160,8 @@ button:focus {outline:0;}
 #cookie-container textarea.json {
     height: 360px;
     font-family: Consolas,Monaco,monospace;
+    white-space:nowrap;
+    overflow:auto;
 }
 
 label {

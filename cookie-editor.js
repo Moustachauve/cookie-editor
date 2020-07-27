@@ -4,18 +4,12 @@
     const connections = {};
     const browserDetector = new BrowserDetector();
 
-    if (browserDetector.isFirefox()) {
-        browserDetector.getApi().runtime.onConnect.addListener(onConnect);
-        browserDetector.getApi().runtime.onMessage.addListener(handleMessage);
+	browserDetector.getApi().runtime.onConnect.addListener(onConnect);
+	browserDetector.getApi().runtime.onMessage.addListener(handleMessage);
+	browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
+	
+    if (!browserDetector.isEdge()) {
         browserDetector.getApi().cookies.onChanged.addListener(onCookiesChanged);
-        browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
-    } else {
-        browserDetector.getApi().runtime.onConnect.addListener(onConnect);
-        browserDetector.getApi().runtime.onMessage.addListener(handleMessage);
-        browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
-        if (!browserDetector.isEdge()) {
-            browserDetector.getApi().cookies.onChanged.addListener(onCookiesChanged);
-        }
     }
     
     isFirefoxAndroid(function(response) {
@@ -25,11 +19,7 @@
         } else {
             popupOptions.popup = '/interface/popup/cookie-list.html';
         }
-        if (browserDetector.isFirefox()) {
-            browserDetector.getApi().browserAction.setPopup(popupOptions);
-        } else {
-            browserDetector.getApi().browserAction.setPopup(popupOptions);
-        }
+		browserDetector.getApi().browserAction.setPopup(popupOptions);
     });
 
     function handleMessage(request, sender, sendResponse) {
