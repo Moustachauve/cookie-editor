@@ -62,8 +62,8 @@
                 httpOnly = form.querySelector('input[name="httpOnly"]').checked;
             }
             saveCookie(
-                id, 
-                name, 
+                id,
+                name,
                 value,
                 domain,
                 path,
@@ -116,7 +116,7 @@
                 cookie.secure = secure;
             if (httpOnly !== undefined)
                 cookie.httpOnly = httpOnly;
-            
+
             if (cookie.session) {
                 cookie.expirationDate = null;
             } else {
@@ -151,7 +151,7 @@
                     if (browserDetector.isEdge()) {
                         onCookiesChanged();
                     }
-                    
+
                     if (cookieContainer) {
                         cookieContainer.showSuccessAnimation();
                     }
@@ -187,7 +187,7 @@
             }
 
             setPageTitle('Cookie Editor - Create a Cookie');
-            
+
             disableButtons = true;
             console.log('strart transition');
             Animate.transitionPage(containerCookie, containerCookie.firstChild, createHtmlFormCookie(), 'left', () => {
@@ -202,7 +202,7 @@
 
         document.getElementById('delete-all-cookies').addEventListener('click', () => {
             let buttonIcon = document.getElementById('delete-all-cookies').querySelector('use');
-            if (buttonIcon.getAttribute("xlink:href") === "../sprites/solid.svg#check") {
+            if (buttonIcon.getAttribute("href") === "../sprites/solid.svg#check") {
                 return;
             }
             if (loadedCookies && Object.keys(loadedCookies).length) {
@@ -211,19 +211,19 @@
                 }
             }
             sendNotification('All cookies were deleted');
-            buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#check");
+            buttonIcon.setAttribute("href", "../sprites/solid.svg#check");
             setTimeout(() => {
-                buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#trash");
+                buttonIcon.setAttribute("href", "../sprites/solid.svg#trash");
             }, 1500);
         });
 
         document.getElementById('export-cookies').addEventListener('click', () => {
             let buttonIcon = document.getElementById('export-cookies').querySelector('use');
-            if (buttonIcon.getAttribute("xlink:href") === "../sprites/solid.svg#check") {
+            if (buttonIcon.getAttribute("href") === "../sprites/solid.svg#check") {
                 return;
             }
 
-            buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#check"); 
+            buttonIcon.setAttribute("href", "../sprites/solid.svg#check");
 
             var exportedCookies = [];
             for (var cookieId in loadedCookies) {
@@ -236,7 +236,7 @@
 
             sendNotification('Cookies exported to clipboard');
             setTimeout(() => {
-                buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#file-export");
+                buttonIcon.setAttribute("href", "../sprites/solid.svg#file-export");
             }, 1500);
         });
 
@@ -276,7 +276,7 @@
 
         document.getElementById('save-import-cookie').addEventListener('click', e => {
             let buttonIcon = document.getElementById('save-import-cookie').querySelector('use');
-            if (buttonIcon.getAttribute("xlink:href") !== "../sprites/solid.svg#file-import") {
+            if (buttonIcon.getAttribute("href") !== "../sprites/solid.svg#file-import") {
                 return;
             }
 
@@ -291,9 +291,9 @@
             } catch (error) {
                 console.log("Couldn't parse Json", error);
                 sendNotification("Could not parse the Json value");
-                buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#times");
+                buttonIcon.setAttribute("href", "../sprites/solid.svg#times");
                 setTimeout(() => {
-                    buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#file-export");
+                    buttonIcon.setAttribute("href", "../sprites/solid.svg#file-export");
                 }, 1500);
                 return;
             }
@@ -301,9 +301,9 @@
             if (!isArray(cookies)) {
                 console.log("Invalid Json");
                 sendNotification("The Json is not valid");
-                buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#times");
+                buttonIcon.setAttribute("href", "../sprites/solid.svg#times");
                 setTimeout(() => {
-                    buttonIcon.setAttribute("xlink:href", "../sprites/solid.svg#file-export");
+                    buttonIcon.setAttribute("href", "../sprites/solid.svg#file-export");
                 }, 1500);
                 return;
             }
@@ -381,13 +381,13 @@
             }
             return;
         }
-        
+
         const domain = getDomainFromUrl(cookieHandler.currentTab.url);
         const subtitleLine = document.querySelector('.titles h2');
         if (subtitleLine) {
             subtitleLine.textContent = domain || cookieHandler.currentTab.url;
         }
-        
+
         cookieHandler.getAllCookies(function (cookies) {
             cookies = cookies.sort(sortCookiesByName);
 
@@ -477,7 +477,7 @@
             showCookiesForTab();
             return;
         }
-        
+
         console.log('Cookies have changed!', changeInfo.removed, changeInfo.cause);
         var id = Cookie.hashCode(changeInfo.cookie);
 
@@ -504,7 +504,7 @@
 
         var newCookie = new Cookie(id, changeInfo.cookie);
         loadedCookies[id] = newCookie;
-        
+
         if (!cookiesListHtml && document.getElementById('no-cookies')) {
             clearChildren(containerCookie);
             cookiesListHtml = document.createElement('ul');
@@ -589,7 +589,7 @@
         if (!pageTitleContainer) {
             return;
         }
-        
+
         pageTitleContainer.querySelector('h1').textContent = title;
     }
 
