@@ -46,11 +46,11 @@ module.exports = function(grunt) {
                     { expand: true, src: ['cookie-editor.js'], dest: 'build/<%= grunt.task.current.target %>/', filter: 'isFile' },
                     { expand: true, src: ['interface/**'], dest: 'build/<%= grunt.task.current.target %>/' },
                     { expand: true, src: ['icons/**'], dest: 'build/<%= grunt.task.current.target %>/' },
-                    { 
-                        expand: true, 
-                        src: 'manifest.<%= grunt.task.current.target %>.json', 
-                        dest: 'build/<%= grunt.task.current.target %>/', 
-                        filter: 'isFile', 
+                    {
+                        expand: true,
+                        src: 'manifest.<%= grunt.task.current.target %>.json',
+                        dest: 'build/<%= grunt.task.current.target %>/',
+                        filter: 'isFile',
                         rename: function(dest, src) {
                             return dest + src.replace('.' + grunt.task.current.target,'');
                         }
@@ -62,11 +62,11 @@ module.exports = function(grunt) {
                     { expand: true, src: ['cookie-editor.js'], dest: 'build/<%= grunt.task.current.target %>/', filter: 'isFile' },
                     { expand: true, src: ['interface/**'], dest: 'build/<%= grunt.task.current.target %>/' },
                     { expand: true, src: ['icons/**'], dest: 'build/<%= grunt.task.current.target %>/' },
-                    { 
-                        expand: true, 
-                        src: 'manifest.<%= grunt.task.current.target %>.json', 
-                        dest: 'build/<%= grunt.task.current.target %>/', 
-                        filter: 'isFile', 
+                    {
+                        expand: true,
+                        src: 'manifest.<%= grunt.task.current.target %>.json',
+                        dest: 'build/<%= grunt.task.current.target %>/',
+                        filter: 'isFile',
                         rename: function(dest, src) {
                             return dest + src.replace('.' + grunt.task.current.target,'');
                         }
@@ -78,18 +78,18 @@ module.exports = function(grunt) {
                     { expand: true, src: ['cookie-editor.js'], dest: 'build/<%= grunt.task.current.target %>/', filter: 'isFile' },
                     { expand: true, src: ['interface/**'], dest: 'build/<%= grunt.task.current.target %>/' },
                     { expand: true, src: ['icons/**'], dest: 'build/<%= grunt.task.current.target %>/' },
-                    { 
-                        expand: true, 
-                        src: 'manifest.<%= grunt.task.current.target %>.json', 
-                        dest: 'build/<%= grunt.task.current.target %>/', 
-                        filter: 'isFile', 
+                    {
+                        expand: true,
+                        src: 'manifest.<%= grunt.task.current.target %>.json',
+                        dest: 'build/<%= grunt.task.current.target %>/',
+                        filter: 'isFile',
                         rename: function(dest, src) {
                             return dest + src.replace('.' + grunt.task.current.target,'');
                         }
                     },
                 ]
             },
-            
+
         },
         removelogging: {
             dist: {
@@ -133,11 +133,5 @@ module.exports = function(grunt) {
 
     // Default task(s).
     grunt.registerTask('default', ['json-replace', 'jshint', 'clean', 'copy', 'removelogging', 'compress']);
-
-
-    //grunt.registerTask('copy-to-build', 'Copy the application files to the build folder', function() {
-    //    console.log('hey guys'); 
-    //});
-  
 
 };

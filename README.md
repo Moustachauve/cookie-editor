@@ -26,3 +26,8 @@ Find this extension on the [Microsoft Store](https://www.microsoft.com/en-ca/p/c
 ## Feature Suggestions or Bug Reports
 To submit a feature suggestion or file a bug report, please [create a new issue here](https://github.com/Moustachauve/cookie-editor/issues).
 
+## How to build
+
+1. Run npm install to make sure you have all the required packages installed.
+2. Run the command `grunt`
+3. All the files are in the `dist` directory created
