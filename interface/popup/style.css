@@ -7,6 +7,7 @@ body {
     font-size: 12px;
     overflow: hidden;
     font-family: "Segoe UI", Tahoma, sans-serif;
+    color: #000000;
     background-color: #ffffff;
 }
 
@@ -42,7 +43,7 @@ svg.icon {
     font-size: 16px;
     line-height: 16px;
     margin: 5px 0;
-    overflow: hidden;    
+    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     min-width: 0;
@@ -160,7 +161,7 @@ button:focus {outline:0;}
 #cookie-container textarea.json {
     height: 360px;
     font-family: Consolas,Monaco,monospace;
-    white-space:nowrap;
+    white-space: pre;
     overflow:auto;
 }
 
@@ -309,7 +310,7 @@ body, .expando, #cookie-container {
 .panel-section-footer-button.primary .tooltip {
     color: #bfbfbf;
 }
-.panel-section-footer-button.primary:hover .tooltip { 
+.panel-section-footer-button.primary:hover .tooltip {
     color: #efefef;
 }
 
@@ -318,7 +319,7 @@ body, .expando, #cookie-container {
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 50px; 
+    bottom: 50px;
     text-align: center;
     opacity: 1;
     transition: opacity 150ms ease-in 0s;
