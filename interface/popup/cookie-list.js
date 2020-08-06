@@ -229,6 +229,9 @@
             for (var cookieId in loadedCookies) {
                 var exportedCookie = loadedCookies[cookieId].cookie;
                 exportedCookie.storeId = null;
+                if (exportedCookie.sameSite === 'unspecified') {
+                    exportedCookie.sameSite = null;
+                }
                 exportedCookies.push(exportedCookie);
             }
 
@@ -312,6 +315,10 @@
                 // Make sure we are using the right store ID. This is in case we are importing from a basic store ID and the
                 // current user is using custom containers
                 cookie.storeId = cookieHandler.currentTab.cookieStoreId;
+
+                if (cookie.sameSite && cookie.sameSite === 'unspecified') {
+                    cookie.sameSite = null;
+                }
 
                 cookieHandler.saveCookie(cookie, getCurrentTabUrl(), function(error, cookie) {
                     if (error) {
