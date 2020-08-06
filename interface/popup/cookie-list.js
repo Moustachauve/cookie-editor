@@ -354,6 +354,12 @@
                 }
             });
         }
+
+        // Bugfix/hotfix for Chrome 84. Let's remove this once Chrome 90 or later is released
+        if (browserDetector.isChrome()) {
+            console.log('chrome 84 hotfix');
+            document.querySelectorAll('svg').forEach(x => {x.innerHTML = x.innerHTML});
+        }
     });
 
     // == End document ready == //
@@ -417,6 +423,12 @@
                 }
             } else {
                 showNoCookies();
+            }
+
+            // Bugfix/hotfix for Chrome 84. Let's remove this once Chrome 90 or later is released
+            if (browserDetector.isChrome()) {
+                console.log('chrome 84 hotfix');
+                document.querySelectorAll('svg').forEach(x => {x.innerHTML = x.innerHTML});
             }
         });
     }
