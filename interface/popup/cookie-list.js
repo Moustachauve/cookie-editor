@@ -37,9 +37,7 @@
         }
 
         function filterCookies(filterText) {
-            console.log('filtering cookie list...');
-            console.log('filtering by: ', filterExpression);
-            console.error('cookies: ', loadedCookies);
+            console.log('filtering cookie list by: ', filterExpression);
             Array.from(document.getElementById('cookie-container').children[0].children).forEach(cookieElement => {
                 if (cookieElement.textContent.toLowerCase().match(filterText.toLowerCase())) {
                     cookieElement.classList.remove('hide');
