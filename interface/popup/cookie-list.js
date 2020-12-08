@@ -39,7 +39,6 @@
             Array.from(document.getElementById('cookie-container').children[0].children)
             .map(cookieElement => {
                 const cookieName = cookieElement.children[0].getElementsByTagName('span')[0].textContent.toLocaleLowerCase();
-                console.log('checking cookie named:', cookieName);
                 if (cookieName.match(filterText.toLowerCase())) {
                     cookieElement.classList.remove('hide');
                 } else {
