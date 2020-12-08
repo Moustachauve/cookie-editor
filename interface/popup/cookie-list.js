@@ -36,8 +36,11 @@
         }
 
         function filterCookies(filterText) {
-            Array.from(document.getElementById('cookie-container').children[0].children).forEach(cookieElement => {
-                if (cookieElement.textContent.toLowerCase().contains(filterText.toLowerCase())) {
+            Array.from(document.getElementById('cookie-container').children[0].children)
+            .map(cookieElement => {
+                const cookieName = cookieElement.children[0].getElementsByTagName('span')[0].textContent.toLocaleLowerCase();
+                console.log('checking cookie named:', cookieName);
+                if (cookieName.match(filterText.toLowerCase())) {
                     cookieElement.classList.remove('hide');
                 } else {
                     cookieElement.classList.add('hide');
