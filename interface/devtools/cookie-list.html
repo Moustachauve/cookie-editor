@@ -108,7 +108,7 @@
 <script src="../popup/cookie-list.js"></script>
 
 <template id="tmp-cookie">
-	<li data-name="">
+	<li data-name="" class="cookie">
 		<div class="header container">
 			<svg class="icon arrow">
 				<use href="../sprites/solid.svg#angle-down"></use>
@@ -216,6 +216,15 @@
 	<p class="container" id="no-cookies">
 		This page does not have any cookies
 	</p>
+</template>
+
+<template id="tmp-search-bar">
+	<li>
+		<div id="searchContainer">
+			<svg class="icon search"><use href="../sprites/solid.svg#search"></use></svg>
+			<input id="searchField" type="text" placeholder="Search" />
+		</div>
+	</li>
 </template>
 </body>
 

@@ -64,6 +64,32 @@ svg.icon {
     font-weight: normal;
 }
 
+#searchContainer {
+    display: flex;
+    position: relative;
+}
+  
+#cookie-container .search {
+    position: absolute;
+    left: 1em;
+    top: 1.05em;
+}
+
+#cookie-container #searchField {
+    background-color: transparent;
+    padding: 1em;
+    padding-left: 2.7em;
+    transition: background-color 100ms linear;
+    border: 1px solid rgb(150,150,150);
+}
+
+#cookie-container #searchField:hover, #cookie-container #searchField:focus {
+    background-color: #ffffec;
+}
+#cookie-container #searchField.content {
+    background-color: gold;
+}
+
 #cookie-container {
     overflow-y: auto;
     background-color: #eaeaea;

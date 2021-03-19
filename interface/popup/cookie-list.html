@@ -19,6 +19,7 @@
             </label>
         </div>
     </div>
+
     <div id="cookie-container"></div>
 
     <div class="panel button-bar active" id="button-bar-default">
@@ -107,7 +108,7 @@
     <script src="cookie-list.js"></script>
 
     <template id="tmp-cookie">
-        <li data-name="">
+        <li data-name="" class="cookie">
             <div class="header container">
                 <svg class="icon arrow"><use href="../sprites/solid.svg#angle-down"></use></svg>
                 <span class="header-name"></span>
@@ -207,6 +208,15 @@
         <p class="container" id="no-cookies">
             This page does not have any cookies
         </p>
+    </template>
+
+    <template id="tmp-search-bar">
+        <li>
+            <div id="searchContainer">
+                <svg class="icon search"><use href="../sprites/solid.svg#search"></use></svg>
+                <input id="searchField" type="text" placeholder="Search" />
+            </div>
+        </li>
     </template>
 </body>
 

@@ -59,6 +59,31 @@ button {
 }
 button:focus {outline:0;}
 
+#searchContainer {
+  display: flex;
+  position: relative;
+}
+
+#cookie-container .search {
+    position: absolute;
+    left: 15px;
+    top: 10px;
+}
+
+#cookie-container #searchField {
+    background-color: transparent;
+    padding: 8px;
+    padding-left: 40px;
+    transition: background-color 100ms linear;
+}
+
+#cookie-container #searchField:hover, #cookie-container #searchField:focus {
+    background-color: #ffffec;
+}
+#cookie-container #searchField.content {
+    background-color: gold;
+}
+
 #cookie-container {
     min-height: 100px;
     min-width: 300px;
@@ -78,6 +103,10 @@ button:focus {outline:0;}
     padding: 0;
     padding-bottom: 15px;
     list-style-type: none;
+}
+
+#cookie-container li.hide {
+    display: none;
 }
 
 #cookie-container .header {
