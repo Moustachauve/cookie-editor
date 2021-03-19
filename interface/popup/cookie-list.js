@@ -35,18 +35,6 @@
             return false;
         }
 
-        function filterCookies(filterText) {
-            Array.from(document.getElementById('cookie-container').children[0].children)
-            .map(cookieElement => {
-                const cookieName = cookieElement.children[0].getElementsByTagName('span')[0].textContent.toLocaleLowerCase();
-                if (cookieName.match(filterText.toLowerCase())) {
-                    cookieElement.classList.remove('hide');
-                } else {
-                    cookieElement.classList.add('hide');
-                }
-            });
-        }
-
         function saveCookieForm(form) {
             let isCreateForm = form.classList.contains('create');
 
@@ -192,8 +180,6 @@
                 }
             });
         }
-
-        document.getElementById('searchField').addEventListener('keyup', e => filterCookies(e.target.value));
 
         document.getElementById('create-cookie').addEventListener('click', () => {
             if (disableButtons) {
@@ -428,6 +414,7 @@
 
             if (cookies.length > 0) {
                 cookiesListHtml = document.createElement('ul');
+                cookiesListHtml.appendChild(generateSearchBar());
                 cookies.forEach(function (cookie) {
                     var id = Cookie.hashCode(cookie);
                     loadedCookies[id] = new Cookie(id, cookie, showAllAdvanced);
@@ -541,6 +528,7 @@
         if (!cookiesListHtml && document.getElementById('no-cookies')) {
             clearChildren(containerCookie);
             cookiesListHtml = document.createElement('ul');
+            cookiesListHtml.appendChild(generateSearchBar());
             containerCookie.appendChild(cookiesListHtml);
         }
 
@@ -579,6 +567,12 @@
     function sendNotification(message) {
         notificationQueue.push(message);
         triggerNotification();
+    }
+
+    function generateSearchBar() {
+        var searchBarContainer = document.importNode(document.getElementById('tmp-search-bar').content, true);
+        searchBarContainer.getElementById('searchField').addEventListener('keyup', e => filterCookies(e.target, e.target.value));
+        return searchBarContainer;
     }
 
     function triggerNotification() {
@@ -659,5 +653,27 @@
             document.body.style.minWidth = '100%';
             document.body.style.width = realWidth + 'px';
         }
+    }
+
+    function filterCookies(target, filterText) {
+        console.log('test');
+        var cookies = cookiesListHtml.querySelectorAll('.cookie');
+        filterText = filterText.toLowerCase();
+
+        if (filterText) {
+            target.classList.add('content');
+        } else {
+            target.classList.remove('content');
+        }
+
+        for (var i = 0; i < cookies.length; i++) {
+            var cookieElement = cookies[i];
+            const cookieName = cookieElement.children[0].getElementsByTagName('span')[0].textContent.toLocaleLowerCase();
+            if (!filterText || cookieName.indexOf(filterText) > -1) {
+                cookieElement.classList.remove('hide');
+            } else {
+                cookieElement.classList.add('hide');
+            }
+        };
     }
 }());

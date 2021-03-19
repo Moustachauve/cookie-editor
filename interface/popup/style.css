@@ -60,13 +60,28 @@ button {
 button:focus {outline:0;}
 
 #searchContainer {
-  width: 100%;
-  margin: auto;
-  padding: 5px 20px;
+  display: flex;
+  position: relative;
 }
 
-#searchField {
-  width: 100%;
+#cookie-container .search {
+    position: absolute;
+    left: 15px;
+    top: 10px;
+}
+
+#cookie-container #searchField {
+    background-color: transparent;
+    padding: 8px;
+    padding-left: 40px;
+    transition: background-color 100ms linear;
+}
+
+#cookie-container #searchField:hover, #cookie-container #searchField:focus {
+    background-color: #ffffec;
+}
+#cookie-container #searchField.content {
+    background-color: gold;
 }
 
 #cookie-container {
