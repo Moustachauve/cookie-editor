@@ -22,6 +22,12 @@ module.exports = function(grunt) {
                     dest: "manifest.<%= grunt.task.current.target %>.json"
                 }]
             },
+            edge: {
+                files: [{
+                    src: "manifest.<%= grunt.task.current.target %>.json",
+                    dest: "manifest.<%= grunt.task.current.target %>.json"
+                }]
+            },
             opera: {
                 files: [{
                     src: "manifest.<%= grunt.task.current.target %>.json",
@@ -38,6 +44,7 @@ module.exports = function(grunt) {
         clean: {
             firefox: ['build/firefox'],
             chrome: ['build/chrome'],
+            edge: ['build/edge'],
             opera: ['build/opera']
         },
         copy: {
@@ -58,6 +65,22 @@ module.exports = function(grunt) {
                 ]
             },
             chrome: {
+                files: [
+                    { expand: true, src: ['cookie-editor.js'], dest: 'build/<%= grunt.task.current.target %>/', filter: 'isFile' },
+                    { expand: true, src: ['interface/**'], dest: 'build/<%= grunt.task.current.target %>/' },
+                    { expand: true, src: ['icons/**'], dest: 'build/<%= grunt.task.current.target %>/' },
+                    {
+                        expand: true,
+                        src: 'manifest.<%= grunt.task.current.target %>.json',
+                        dest: 'build/<%= grunt.task.current.target %>/',
+                        filter: 'isFile',
+                        rename: function(dest, src) {
+                            return dest + src.replace('.' + grunt.task.current.target,'');
+                        }
+                    },
+                ]
+            },
+            edge: {
                 files: [
                     { expand: true, src: ['cookie-editor.js'], dest: 'build/<%= grunt.task.current.target %>/', filter: 'isFile' },
                     { expand: true, src: ['interface/**'], dest: 'build/<%= grunt.task.current.target %>/' },
@@ -106,6 +129,14 @@ module.exports = function(grunt) {
                 ]
             },
             chrome: {
+                options: {
+                    archive: 'dist/<%= pkg.name %>-<%= grunt.task.current.target %>-<%= pkg.version %>.zip'
+                },
+                files: [
+                    {expand: true, cwd: 'build/<%= grunt.task.current.target %>/', src: ['**'], dest: '/'}
+                ]
+            },
+            edge: {
                 options: {
                     archive: 'dist/<%= pkg.name %>-<%= grunt.task.current.target %>-<%= pkg.version %>.zip'
                 },
