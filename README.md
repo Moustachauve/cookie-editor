@@ -21,6 +21,9 @@ Find this extension on the [Firefox Add-ons site](https://addons.mozilla.org/add
 Find this extension on the [Opera Extensions site](https://addons.opera.com/en/extensions/details/cookie-editor-2/).
 
 ## Install on Microsoft Edge
+Find this extension on the [Microsoft Store](https://microsoftedge.microsoft.com/addons/detail/cookieeditor/neaplmfkghagebokkhpjpoebhdledlfi).
+
+## Legacy Microsoft Edge
 Find this extension on the [Microsoft Store](https://www.microsoft.com/en-ca/p/cookie-editor/9pbbp0rcwzbc).
 
 ## Feature Suggestions or Bug Reports
