@@ -197,6 +197,7 @@
 
             document.getElementById('button-bar-default').classList.remove('active');
             document.getElementById('button-bar-add').classList.add('active');
+            document.getElementById('name-create').focus();
             return false;
         });
 
