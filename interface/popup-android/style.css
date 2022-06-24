@@ -31,6 +31,10 @@ svg.icon {
   pointer-events: none;
 }
 
+.header-name {
+    pointer-events: none;
+}
+
 #pageTitle {
     display: flex;
     align-items: center;
@@ -68,7 +72,7 @@ svg.icon {
     display: flex;
     position: relative;
 }
-  
+
 #cookie-container .search {
     position: absolute;
     left: 1em;
@@ -122,6 +126,7 @@ form.import > div {
 }
 
 #cookie-container li .header {
+    display: block;
     padding: 1.25em 1em;
     font-weight: bold;
     border: 1px solid #cacaca;
@@ -132,6 +137,15 @@ form.import > div {
 }
 #cookie-container li .header .btns {
     display: none;
+}
+
+/* Firefox display outlines in a strange way */
+@-moz-document url-prefix() {
+    #cookie-container li .header:focus {
+        outline-offset: -3px;
+        outline: 2px solid #444;
+        border-radius: 3px;
+    }
 }
 
 #cookie-container li .header .icon {
@@ -147,7 +161,7 @@ form.import > div {
 
 #cookie-container li .expando {
     max-height: 0;
-    display: flex;
+    display: none;
     overflow: hidden;
 }
 
@@ -222,7 +236,10 @@ label {
     padding: 18px;
 }
 
-.action-btns button:focus {outline:0;}
+.action-btns button:focus {
+    outline: 2px solid #444;
+    border-radius: 4px;
+}
 
 .action-btns button:active {
     background-color: rgba(0, 0, 0, 0.1);
@@ -284,11 +301,11 @@ label {
 
 
 #notification-container {
-    display: block;
+    display: none;
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 90px; 
+    bottom: 90px;
     text-align: center;
     opacity: 1;
     transition: opacity 150ms ease-in 0s;
@@ -299,8 +316,7 @@ label {
 #notification {
     position: relative;
     display: inline-block;
-    padding: 10px 20px;
-    padding-right: 25px;
+    padding: 10px 25px 10px 20px;
     margin: auto;
     background-color: rgba(0, 0, 0, 0.87);
     border-radius: 5px;

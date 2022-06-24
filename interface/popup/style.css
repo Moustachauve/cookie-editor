@@ -26,7 +26,6 @@ svg.icon {
   pointer-events: none;
 }
 
-
 .header-name {
   pointer-events: none;
 }
@@ -110,6 +109,7 @@ button:focus {outline:0;}
 }
 
 #cookie-container .header {
+    display: block;
     border: 1px solid #cacaca;
     position: relative;
     cursor: pointer;
@@ -125,6 +125,15 @@ button:focus {outline:0;}
     right: 16px;
     top: 4px;
     transition: all 100ms ease;
+}
+
+/* Firefox display outlines in a strange way */
+@-moz-document url-prefix() {
+    #cookie-container li .header:focus {
+        outline-offset: -3px;
+        outline: 2px solid #444;
+        border-radius: 3px;
+    }
 }
 
 #cookie-container li .header:hover .btns {
@@ -144,7 +153,7 @@ button:focus {outline:0;}
 
 #cookie-container .expando {
     max-height: 0;
-    display: flex;
+    display: none;
     overflow: hidden;
 }
 
@@ -266,11 +275,18 @@ label {
 .action-btns button:hover {
     opacity: 0.5;
 }
-button.delete:hover {
+
+
+.action-btns button:focus {
+    outline: 2px solid #444;
+    border-radius: 4px;
+}
+
+button.delete:hover, button.delete:focus {
     fill: #CF000F;
     opacity: 0.8;
 }
-.action-btns button.save:hover {
+.action-btns button.save:hover, .action-btns button.save:focus {
     fill: #1E824C;
     opacity: 0.8;
 }
@@ -299,16 +315,18 @@ body, .expando, #cookie-container {
     text-align: center;
     cursor: pointer;
     transition: all 150ms ease;
+    border: 1px solid transparent;
 }
-.panel-section-footer-button:hover {
+.panel-section-footer-button:hover, .panel-section-footer-button:focus {
     background-color: rgba(0, 0, 0, 0.08);
+    border: 1px solid #444;
 }
-.panel-section-footer-button.primary:hover {
+.panel-section-footer-button.primary:hover, .panel-section-footer-button.primary:focus {
     background-color: #1b98f1;
     color: #fff;
     fill: #fff;
 }
-.panel-section-footer-button.danger:hover {
+.panel-section-footer-button.danger:hover, .panel-section-footer-button.danger:focus {
     background-color: #f800002b;
 }
 
@@ -328,10 +346,10 @@ body, .expando, #cookie-container {
     transition: all 200ms ease;
     opacity: 0;
 }
-.panel-section-footer-button:hover > div {
+.panel-section-footer-button:hover > div, .panel-section-footer-button:focus > div {
     transform: translateY(-6px);
 }
-.panel-section-footer-button:hover .tooltip {
+.panel-section-footer-button:hover .tooltip, .panel-section-footer-button:focus .tooltip {
     color: #444;
     opacity: 1;
 }
@@ -339,12 +357,12 @@ body, .expando, #cookie-container {
 .panel-section-footer-button.primary .tooltip {
     color: #bfbfbf;
 }
-.panel-section-footer-button.primary:hover .tooltip {
+.panel-section-footer-button.primary:hover .tooltip, .panel-section-footer-button.primary:focus .tooltip {
     color: #efefef;
 }
 
 #notification-container {
-    display: block;
+    display: none;
     position: absolute;
     left: 0;
     right: 0;
@@ -403,8 +421,13 @@ body, .expando, #cookie-container {
 #notification:hover #notification-dismiss {
     fill: #aaa;
 }
-#notification:hover #notification-dismiss:hover {
+#notification:hover #notification-dismiss:hover, #notification #notification-dismiss:focus {
     fill: #fafafa;
+}
+
+#notification #notification-dismiss:focus {
+    outline: 2px solid #aaa;
+    border-radius: 3px;
 }
 
 @keyframes fadeInUp {
@@ -460,7 +483,8 @@ body, .expando, #cookie-container {
     transform: translate(20px, -50%);
 }
 
-[data-tooltip]:hover::after, [data-tooltip-left]:hover::after {
+[data-tooltip]:hover::after, [data-tooltip-left]:hover::after,
+[data-tooltip]:focus::after, [data-tooltip-left]:focus::after {
     opacity: 1;
     transition: all 0.1s ease 0.5s;
     visibility: visible;
@@ -497,14 +521,22 @@ body, .expando, #cookie-container {
     display: block;
 }
 .advanced-toggle {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: none;
     text-align: right;
     font-size: 10px;
     text-decoration: underline;
     cursor: pointer;
     user-select: none;
 }
-.advanced-toggle:hover {
+.advanced-toggle:hover, .advanced-toggle:focus {
     color: #888;
+}
+.advanced-toggle:focus {
+    outline: 2px solid #444;
+    border-radius: 4px;
 }
 
 #advanced-toggle-all {

@@ -84,6 +84,13 @@ class Cookie {
             form.classList.add('create');
         }
 
+        const expandoId = 'exp_' + this.guid;
+        var expando = this.baseHtml.querySelector('.expando');
+        expando.id = expandoId;
+        
+        var header = this.baseHtml.querySelector('.header');
+        header.setAttribute('aria-controls', expandoId);
+
         var headerName = this.baseHtml.querySelector('.header-name');
         headerName.textContent = this.cookie.name;
 

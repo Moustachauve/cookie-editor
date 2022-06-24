@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css" />
+	<title>Cookie-Editor</title>
 </head>
 
 <body>
@@ -24,77 +25,83 @@
 
     <div class="panel button-bar active" id="button-bar-default">
         <div class="panel-section panel-section-footer">
-            <div class="panel-section-footer-button" id="create-cookie">
+            <button class="panel-section-footer-button" id="create-cookie">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#plus"></use></svg>
-                    <div class="tooltip">Add</div>
+                    <div class="tooltip" role="tooltip">Add</div>
                 </div>
-            </div>
+            </button>
             <div class="panel-section-footer-separator"></div>
-            <div class="panel-section-footer-button danger" id="delete-all-cookies">
+
+            <button class="panel-section-footer-button danger" id="delete-all-cookies">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#trash"></use></svg>
-                    <div class="tooltip">Delete All</div>
+                    <div class="tooltip" role="tooltip">Delete All</div>
                 </div>
-            </div>
+            </button>
             <div class="panel-section-footer-separator"></div>
-            <div class="panel-section-footer-button" id="import-cookies">
+
+            <button class="panel-section-footer-button" id="import-cookies">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#file-import"></use></svg>
-                    <div class="tooltip">Import</div>
+                    <div class="tooltip" role="tooltip">Import</div>
                 </div>
-            </div>
+            </button>
             <div class="panel-section-footer-separator"></div>
-            <div class="panel-section-footer-button" id="export-cookies">
+
+            <button class="panel-section-footer-button" id="export-cookies">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#file-export"></use></svg>
-                    <div class="tooltip">Export</div>
+                    <div class="tooltip" role="tooltip">Export</div>
                 </div>
-            </div>
+            </button>
         </div>
     </div>
 
     <div class="panel button-bar" id="button-bar-add">
         <div class="panel-section panel-section-footer">
-            <div class="panel-section-footer-button" id="return-list-add">
+            <button class="panel-section-footer-button" id="return-list-add">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#arrow-left"></use></svg>
-                    <div class="tooltip">Cancel</div>
+                    <div class="tooltip" role="tooltip">Cancel</div>
                 </div>
-            </div>
+            </button>
             <div class="panel-section-footer-separator"></div>
-            <div class="panel-section-footer-button primary" id="save-create-cookie">
+
+            <button class="panel-section-footer-button primary" id="save-create-cookie">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#save"></use></svg>
-                    <div class="tooltip">Add</div>
+                    <div class="tooltip" role="tooltip">Add</div>
                 </div>
-            </div>
-            </div>
+            </button>
         </div>
     </div>
 
     <div class="panel button-bar" id="button-bar-import">
         <div class="panel-section panel-section-footer">
-            <div class="panel-section-footer-button" id="return-list-import">
+            <button class="panel-section-footer-button" id="return-list-import">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#arrow-left"></use></svg>
-                    <div class="tooltip">Cancel</div>
+                    <div class="tooltip" role="tooltip">Cancel</div>
                 </div>
-            </div>
+            </button>
             <div class="panel-section-footer-separator"></div>
-            <div class="panel-section-footer-button primary" id="save-import-cookie">
+
+            <button class="panel-section-footer-button primary" id="save-import-cookie">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#file-import"></use></svg>
-                    <div class="tooltip">Import</div>
+                    <div class="tooltip" role="tooltip">Import</div>
                 </div>
-            </div>
+            </button>
         </div>
     </div>
 
     <div id="notification-container">
         <div id="notification">
             <span></span>
-            <button id="notification-dismiss"><svg class="icon"><use href="../sprites/solid.svg#times"></use></svg></button>
+            <button id="notification-dismiss" aria-label="Dismiss Notification">
+                <svg class="icon"><use href="../sprites/solid.svg#times"></use></svg>
+            </button>
         </div>
     </div>
 
@@ -109,22 +116,22 @@
 
     <template id="tmp-cookie">
         <li data-name="" class="cookie">
-            <div class="header container">
+            <div class="header container" tabindex="0" role="button" aria-expanded="false">
                 <svg class="icon arrow"><use href="../sprites/solid.svg#angle-down"></use></svg>
                 <span class="header-name"></span>
                 <div class="btns">
-                    <button class="delete" data-tooltip-left="Delete">
+                    <button class="delete" data-tooltip-left="Delete" aria-label="Delete" tabindex="-1">
                         <svg class="icon"><use href="../sprites/solid.svg#trash"></use></svg>
                     </button>
                 </div>
             </div>
-            <div class="expando">
+            <div class="expando" aria-hidden="true" role="region">
                 <div class="wrapper">
                     <div class="action-btns">
-                        <button class="delete" data-tooltip="Delete">
+                        <button class="delete" data-tooltip="Delete" aria-label="Delete">
                             <svg class="icon"><use href="../sprites/solid.svg#trash"></use></svg>
                         </button>
-                        <button class="save" data-tooltip="Save">
+                        <button class="save" data-tooltip="Save" aria-label="Save">
                             <svg class="icon"><use href="../sprites/solid.svg#save"></use></svg>
                         </button>
                     </div>
@@ -137,9 +144,9 @@
                             <label class="label-value">Value</label>
                             <textarea name="value" class="input-value"></textarea>
                         </div>
-                        <div class="advanced-toggle">
+                        <button class="advanced-toggle">
                             Show Advanced
-                        </div>
+                        </button>
                         <div class="advanced-form">
                             <div>
                                 <label class="label-domain">Domain</label>

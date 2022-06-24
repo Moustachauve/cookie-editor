@@ -23,8 +23,13 @@
 
         function expandCookie(e) {
             const parent = e.target.closest('li');
-            Animate.toggleSlide(parent.querySelector('.expando'));
-            parent.querySelector('.header').classList.toggle('active');
+            const header = parent.querySelector('.header');
+            const expando = parent.querySelector('.expando');
+
+            Animate.toggleSlide(expando);
+            header.classList.toggle('active');
+            header.ariaExpanded = header.classList.contains('active');
+            expando.ariaHidden = !header.classList.contains('active');
         }
 
         function deleteButton(e) {
@@ -179,6 +184,15 @@
                     return saveCookieForm(e.target.closest('li').querySelector('form'));
                 }
             });
+            document.addEventListener('keydown', e => {
+                if (e.code === 'Space' || e.code === 'Enter') {
+                    let target = e.target;
+                    if (target.classList.contains('header')) {
+                        e.preventDefault();
+                        return expandCookie(e);
+                    }
+                }
+            });
         }
 
         document.getElementById('create-cookie').addEventListener('click', () => {
@@ -258,6 +272,8 @@
 
             document.getElementById('button-bar-default').classList.remove('active');
             document.getElementById('button-bar-import').classList.add('active');
+
+            document.getElementById('content-import').focus();
             return false;
         });
 
@@ -297,7 +313,7 @@
                 sendNotification("Could not parse the Json value");
                 buttonIcon.setAttribute("href", "../sprites/solid.svg#times");
                 setTimeout(() => {
-                    buttonIcon.setAttribute("href", "../sprites/solid.svg#file-export");
+                    buttonIcon.setAttribute("href", "../sprites/solid.svg#file-import");
                 }, 1500);
                 return;
             }
@@ -307,7 +323,7 @@
                 sendNotification("The Json is not valid");
                 buttonIcon.setAttribute("href", "../sprites/solid.svg#times");
                 setTimeout(() => {
-                    buttonIcon.setAttribute("href", "../sprites/solid.svg#file-export");
+                    buttonIcon.setAttribute("href", "../sprites/solid.svg#file-import");
                 }, 1500);
                 return;
             }
@@ -595,7 +611,10 @@
             return;
         }
 
+        notificationElement.parentElement.style.display = 'block';
+        notificationElement.querySelector('#notification-dismiss').style.display = 'block';
         notificationElement.querySelector('span').textContent = notificationQueue.shift();
+        notificationElement.querySelector('span').setAttribute('role', 'alert');
         notificationElement.classList.add('fadeInUp');
         notificationElement.classList.remove('fadeOutDown');
 
@@ -609,8 +628,11 @@
             clearTimeout(notificationTimeout);
             notificationTimeout = null;
         }
+
+        notificationElement.querySelector('span').setAttribute('role', '');
         notificationElement.classList.remove('fadeInUp');
         notificationElement.classList.add('fadeOutDown');
+        notificationElement.querySelector('#notification-dismiss').style.display = 'none';
     }
 
     function setPageTitle(title) {
@@ -675,6 +697,6 @@
             } else {
                 cookieElement.classList.add('hide');
             }
-        };
+        }
     }
 }());
