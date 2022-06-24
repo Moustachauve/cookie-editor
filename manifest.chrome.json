@@ -31,5 +31,6 @@
 		"32": "icons/cookie-32-filled.png",
 		"48": "icons/cookie-48-filled.png",
 		"128": "icons/cookie-128-filled.png"
-	}
+	},
+	"incognito": "split"
 }
