@@ -1,3 +1,7 @@
+if (typeof importScripts === 'function') {
+    importScripts('interface/lib/browserDetector.js');
+}
+
 (function () {
     'use strict';
 
@@ -7,19 +11,17 @@
 	browserDetector.getApi().runtime.onConnect.addListener(onConnect);
 	browserDetector.getApi().runtime.onMessage.addListener(handleMessage);
 	browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
-	
+
     if (!browserDetector.isEdge()) {
         browserDetector.getApi().cookies.onChanged.addListener(onCookiesChanged);
     }
-    
+
     isFirefoxAndroid(function(response) {
-        const popupOptions = {};
         if (response) {
+            const popupOptions = {};
             popupOptions.popup = '/interface/popup-android/cookie-list.html';
-        } else {
-            popupOptions.popup = '/interface/popup/cookie-list.html';
+            browserDetector.getApi().browserAction.setPopup(popupOptions);
         }
-		browserDetector.getApi().browserAction.setPopup(popupOptions);
     });
 
     function handleMessage(request, sender, sendResponse) {

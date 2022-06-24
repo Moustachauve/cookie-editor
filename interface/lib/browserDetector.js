@@ -1,10 +1,10 @@
 function BrowserDetector() {
     'use strict';
-    let namespace = window.browser || window.chrome;
+    let namespace = chrome || window.browser || window.chrome;
     let browserName;
     let doesSupportSameSiteCookie = null;
 
-    if (namespace === window.chrome) {
+    if (namespace === chrome || namespace === window.chrome) {
         browserName = 'chrome';
     }
     else if (namespace === window.browser) {
@@ -79,6 +79,6 @@ function BrowserDetector() {
         return doesSupportSameSiteCookie;
     }
 
-    // We call it right away to make sure the value of doesSupportSameSiteCookie is initialized 
+    // We call it right away to make sure the value of doesSupportSameSiteCookie is initialized
     this.supportSameSiteCookie();
 }
