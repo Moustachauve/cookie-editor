@@ -47,7 +47,7 @@ function BrowserDetector() {
         }
 
         const newCookie = {
-            url: 'https://fakeDomain.com/',
+            url: 'https://example.com/',
             name: 'testSameSite',
             value: 'someValue',
             sameSite: 'strict',
