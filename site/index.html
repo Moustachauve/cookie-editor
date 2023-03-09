@@ -1,14 +1,15 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-32262555-5"></script>
+    <link href="style/main.css?cache=4" rel="stylesheet" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CYQRH9EK28"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-32262555-5');
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-CYQRH9EK28');
     </script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,59 +17,53 @@
 	<meta name="description" content="Cookie-Editor is a browser extension/add-on that lets you efficiently create, edit and delete cookies for the current tab. Perfect for developing, quickly testing or even manually managing your cookies for your privacy.">
 	<link rel="canonical" href="https://cookie-editor.cgagnier.ca/">
 
-    <title>Cookie-Editor - The Best Cookie Editor for Chrome, Firefox, Opera and Edge</title>
-    <link href="style/main.css?cache=1" rel="stylesheet" />
+    <title>Cookie-Editor - A safe cookie editor for Chrome, Firefox, Opera and Edge</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+    <link rel="preload" src="./img/cookie-filled.svg" as="image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Roboto&display=swap" as="style">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
 </head>
 <body>
-    <header id="main-header">
-        <div class="overlay"></div>
+    <header>
         <div class="wrapper">
-            <img src="img/cookie-filled.svg" id="logo" alt="Cookie-Editor Logo" />
-            <h1>Cookie-Editor</h1>
-            <h2>Simple, yet Powerful Browser Extension</h2>
-            <a href="#download" class="btn-cta" id="download-cta">Install Now</a>
+            <a href="/" title="Go to homepage" class="logo">
+                <img src="img/cookie-filled.svg" alt="Cookie-Editor Logo" height="70" width="70" />
+                <h1>Cookie-Editor</h1>
+            </a>
+            <a href="./#download" class="btn-cta btn-md" id="download-cta-med">Install Now</a>
         </div>
     </header>
 
-    <nav id="main-nav">
-        <div class="mobile">
-            <div class="hamburger">
-                <svg class="icon"><use xlink:href="img/fa-solid.svg#bars"></use></svg>
-            </div>
-            <img src="img/cookie-filled.svg" alt="Logo" />
-            <h2>Cookie-Editor</h2>
-        </div>
-        <ul id="nav-list">
-            <li>
-                <a href="#access">Features</a>
-            </li>
-            <li>
-                <a href="#download">Download</a>
-            </li>
-            <li>
-                <a href="#source-code">Source Code</a>
-            </li>
-            <li>
-                <a href="#suggestions">Suggestions</a>
-            </li>
-        </ul>
-    </nav>
-
     <div id="main-content">
-        <div id="access" class="block" >
-            <h2>Develop Faster, Save Time</h2>
+        <div id="catch" class="block">
+            <h1>Cookie-Editor - Simple, secure and open-source.</h1>
+            <h2>Your privacy is important.</h2>
+            <div class="catch-btns">
+                <div>
+                    <a href="#download" class="btn-cta" id="download-cta">Install Now</a>
+                    <p id="cur-version"> </p>
+                </div>
+                <div>
+                    <a href="https://github.com/moustachauve/cookie-editor" class="btn-cta secondary" id="source-cta">View Source</a>
+                    <p>Github (moustachauve/cookie-editor)</p>
+                </div>
+            </div>
+        </div>
+        <div id="access" class="block block-small">
             <div id="access-list">
                 <div>
-                    <img src="img/from-toolbar.png" alt="Access your cookies directly from your toolbar" />
+                    <img src="img/from-toolbar.png" alt="Access your cookies directly from your toolbar" width="230" height="220" />
                     <div class="description">From your Toolbar</div>
                 </div>
                 <div>
-                    <img src="img/from-devtools.png" alt="Access your cookies directly from your DevTools" />
+                    <img src="img/from-devtools.png" alt="Access your cookies directly from your DevTools" width="230" height="220" />
                     <div class="description">From your DevTools</div>
                 </div>
                 <div>
-                    <img src="img/from-android.png" alt="Access your cookies directly from your Android phone" />
+                    <img src="img/from-android.png" alt="Access your cookies directly from your Android phone" width="230" height="220" />
                     <div class="description">From your Phone</div>
                 </div>
             </div>
@@ -92,45 +87,45 @@
 		    </p>
 	    </div>
 
-        <div id="features" class="block" >
-            <h2>Simply the Best Cookie Editor</h2>
+        <div id="features" class="block block-small">
+            <h2>Cookie-Editor Is Really Simple to Use</h2>
             <div class="grid">
                 <div>
-                    <a class="img-preview">
-                        <img src="img/cookie-list.png" alt="View a list of all your cookies in a simple interface" />
-                    </a>
+                    <button class="img-preview">
+                        <img src="img/cookie-list.png" alt="View a list of all your cookies in a simple interface" width="400" height="197" />
+                    </button>
                     <div class="description">
                         View a list of all the cookies
                     </div>
                 </div>
                 <div>
-                    <a class="img-preview">
-                        <img src="img/cookie-add.png" alt="Quickly create a new cookie for the current page" />
-                    </a>
+                    <button class="img-preview">
+                        <img src="img/cookie-add.png" alt="Quickly create a new cookie for the current page" width="400" height="200" />
+                    </button>
                     <div class="description">
                         Create a new Cookie
                     </div>
                 </div>
                 <div>
-                    <a class="img-preview">
-                        <img src="img/cookie-edit.png" alt="Edit the information of an existing cookie on the current page" />
-                    </a>
+                    <button class="img-preview">
+                        <img src="img/cookie-edit.png" alt="Edit the information of an existing cookie on the current page" width="400" height="200" />
+                    </button>
                     <div class="description">
                         Edit an existing cookie
                     </div>
                 </div>
                 <div>
-                    <a class="img-preview">
-                        <img src="img/cookie-delete.png" alt="Easily delete a cookie from the current page" />
-                    </a>
+                    <button class="img-preview">
+                        <img src="img/cookie-delete.png" alt="Easily delete a cookie from the current page" width="400" height="197" />
+                    </button>
                     <div class="description">
                         Delete one or all cookies
                     </div>
                 </div>
                 <div>
-                    <a class="img-preview">
-                        <img src="img/cookie-import.png" alt="Import and export your cookies to a file" />
-                    </a>
+                    <button class="img-preview">
+                        <img src="img/cookie-import.png" alt="Import and export your cookies to a file" width="400" height="197" />
+                    </button>
                     <div class="description">
                         Export and Import Cookies
                     </div>
@@ -139,29 +134,29 @@
         </div>
 
         <div id="download" class="block" >
-            <h2>Download</h2>
+            <h2>Get Cookie-Editor Now</h2>
              Cookie-Editor is available on Google Chrome, Opera, Microsoft Edge, Firefox and Firefox for Android.
             <div id="browser-install-list">
                 <div>
-                    <img src="img/chrome-logo.svg" alt="Available for Chrome" />
+                    <img src="img/chrome-logo.svg" alt="Available for Chrome" width="215" height="150" />
                     <a href="https://chrome.google.com/webstore/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm" class="btn-cta">
                         Chrome
                     </a>
                 </div>
                 <div>
-                    <img src="img/opera-logo.svg" alt="Available for Opera" />
+                    <img src="img/opera-logo.svg" alt="Available for Opera" width="215" height="150" />
                     <a href="https://addons.opera.com/en/extensions/details/cookie-editor-2/" class="btn-cta">
                         Opera
                     </a>
                 </div>
                 <div>
-                    <img src="img/firefox-logo.svg" alt="Available for Firefox" />
+                    <img src="img/firefox-logo.svg" alt="Available for Firefox" width="215" height="150" />
                     <a href="https://addons.mozilla.org/addon/cookie-editor?src=external-cookie-editor.cgagnier.ca" class="btn-cta">
                         Firefox
                     </a>
                 </div>
                 <div>
-                    <img src="img/edge-logo.svg" alt="Available for Edge" />
+                    <img src="img/edge-logo.svg" alt="Available for Edge" width="215" height="150" />
                     <a href="https://microsoftedge.microsoft.com/addons/detail/cookieeditor/neaplmfkghagebokkhpjpoebhdledlfi" class="btn-cta">
                         Edge
                     </a>
@@ -202,6 +197,14 @@
             </div>
         </div>
 
+        <!--
+            <div class="block sponsor">
+                <h2>Special Thanks To</h2>
+                <p><a href="https://www.facebook.com/elevageceliray" target="_blank">Élevage Céliray</a>, a local welsh corgi pembroke breeder.</p>
+                <p><a href="https://www.facebook.com/elevageceliray" target="_blank">Élevage Céliray</a>, un élevage de Corgis gallois Pembroke situé à Upton, Québec.</p>
+            </div>
+        -->
+
         <footer class="block">
             <p>
                 Cookie-Editor by <a href="https://cgagnier.ca/" title="Personal Site">Christophe Gagnier</a>, known as
@@ -215,14 +218,13 @@
 
     <div id="img-preview">
 	    <div class="container">
-		    <img src="img/cookie-list.png" alt="Image Preview" />
+		    <img src="img/cookie-list.png" alt="Image Preview" width="516" height="250" />
 		    <div class="description"></div>
 	    </div>
     </div>
 
     <script>
         const imgPreview = document.getElementById('img-preview');
-        const navList = document.getElementById('nav-list');
 
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -246,6 +248,7 @@
 
         document.querySelectorAll('.img-preview').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
+
                 const parent = e.target.closest('div');
                 const imgUrl = parent.querySelector('img').src;
                 const description = parent.querySelector('.description').textContent.trim();
@@ -259,14 +262,6 @@
                     event_label: description
                 });
             });
-        });
-
-        document.querySelector('.hamburger').addEventListener('click', function () {
-            navList.classList.toggle('open');
-        });
-
-        navList.addEventListener('click', function () {
-            navList.classList.remove('open');
         });
 
         imgPreview.addEventListener('click', function (e) {
@@ -284,18 +279,23 @@
         });
 
         document.getElementById('download-cta').addEventListener("click", function () {
+            gtag('event', 'download-cta-bigger', {
+                event_category: 'click',
+                event_label: 'Bigger Button'
+            });
+        });
+        
+        document.getElementById('download-cta-med').addEventListener("click", function () {
             gtag('event', 'download-cta', {
                 event_category: 'click',
                 event_label: 'Big Button'
             });
         });
-
-        document.getElementById('nav-list').querySelectorAll('a').forEach(anchor => {
-			anchor.addEventListener('click', function () {
-                gtag('event', 'menu-item', {
-                    event_category: 'click',
-                    event_label: anchor.textContent
-                });
+        
+        document.getElementById('source-cta').addEventListener("click", function () {
+            gtag('event', 'source-cta', {
+                event_category: 'click',
+                event_label: 'View Source Button'
             });
         });
 
@@ -316,7 +316,44 @@
                 hitCallback: function(){document.location = url;}
             });
         }
+
+        function setGithubRelease() {
+            const key = "github-version"
+            const cachedStr = localStorage.getItem(key);
+            const htmlElement = document.getElementById('cur-version');
+            if (cachedStr) {
+                const cached = JSON.parse(cachedStr);
+                const now = new Date();
+                if (now.getTime() < cached.expiry) {
+                    console.log("cached!")
+                    htmlElement.innerText = cached.text;
+                    return;
+                }
+            }
+
+            fetchGithubRelease().then((data) => {
+                console.log(data);
+                const now = new Date();
+                const cached = {
+                    expiry: now.getTime() + 3600,
+                    text: `${data.name} - released ${data.published_at.substring(0, 10)}`
+                };
+                localStorage.setItem(key, JSON.stringify(cached));
+                htmlElement.innerText = cached.text;
+            })
+        }
+
+        async function fetchGithubRelease() {
+            let apiUrl = "https://api.github.com/repos/moustachauve/cookie-editor/releases/latest"
+            const response = await fetch(apiUrl);
+            return response.json();
+        }
+
+        if (document.readyState !== 'loading') {
+            setGithubRelease();
+        } else {
+            document.addEventListener('DOMContentLoaded', setGithubRelease);
+        }
     </script>
-    <script src="script/stickyHeader.js"></script>
 </body>
 </html>

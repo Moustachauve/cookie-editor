@@ -1,58 +1,42 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-32262555-5"></script>
+    <link href="/style/main.css?cache=4" rel="stylesheet" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CYQRH9EK28"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-32262555-5');
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-CYQRH9EK28');
     </script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8" />
+	<meta name="description" content="Cookie-Editor is a browser extension/add-on that lets you efficiently create, edit and delete cookies for the current tab. Perfect for developing, quickly testing or even manually managing your cookies for your privacy.">
 	<link rel="canonical" href="https://cookie-editor.cgagnier.ca/404">
 	<meta name="robots" content="noindex">
 
     <title>404 Page not found - Cookie-Editor</title>
-    <link href="style/main.css?cache=1" rel="stylesheet" />
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+    <link rel="preload" src="/img/cookie-filled.svg" as="image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Roboto&display=swap" as="style">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
 </head>
 <body>
-    <header id="main-header">
-        <div class="overlay"></div>
+    <header>
         <div class="wrapper">
-            <img src="img/cookie-filled.svg" id="logo" alt="Cookie-Editor Logo" />
-            <h1>Cookie-Editor</h1>
-            <h2>Simple, yet Powerful Browser Extension</h2>
+            <a href="/" title="Go to homepage" class="logo">
+                <img src="/img/cookie-filled.svg" alt="Cookie-Editor Logo" height="70" width="70" />
+                <h1>Cookie-Editor</h1>
+            </a>
+            <a href="/#download" class="btn-cta btn-md" id="download-cta-med">Install Now</a>
         </div>
     </header>
-
-    <nav id="main-nav">
-        <div class="mobile">
-            <div class="hamburger">
-                <svg class="icon"><use xlink:href="img/fa-solid.svg#bars"></use></svg>
-            </div>
-            <img src="img/cookie-filled.svg" alt="Logo" />
-            <h2>Cookie-Editor</h2>
-        </div>
-        <ul id="nav-list">
-            <li>
-                <a href="/#access">Features</a>
-            </li>
-            <li>
-                <a href="/#download">Download</a>
-            </li>
-            <li>
-                <a href="/#source-code">Source Code</a>
-            </li>
-            <li>
-                <a href="/#suggestions">Suggestions</a>
-            </li>
-        </ul>
-    </nav>
 
     <div id="main-content">
         <div class="block" id="download">
@@ -64,10 +48,10 @@
             <p>
                 Cookie-Editor by <a href="https://cgagnier.ca/" title="Personal Site">Christophe Gagnier</a>, known as
                 <a href="https://github.com/Moustachauve/" title="Github Profile">
-                    <svg class="github-logo"><use xlink:href="img/github-logo.svg#github"></use></svg>Moustachauve
+                    <svg class="github-logo"><use xlink:href="/img/github-logo.svg#github"></use></svg>Moustachauve
                 </a>
             </p>
-			<p>Read our <a href="privacy.html" title="Privacy Policy">Privacy Policy</a>.</p>
+			<p>Read our <a href="/privacy.html" title="Privacy Policy">Privacy Policy</a>.</p>
         </footer>
     </div>
 
@@ -82,6 +66,5 @@
             navList.classList.remove('open');
         });
     </script>
-    <script src="script/stickyHeader.js"></script>
 </body>
 </html>
