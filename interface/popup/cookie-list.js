@@ -283,22 +283,66 @@
                 return;
             }
 
+/*
+[
+    {
+        "domain": ".stackoverflow.com",
+        "expirationDate": 1712988774.07051,
+        "hostOnly": false,
+        "httpOnly": true,
+        "name": "prov",
+        "path": "/",
+        "sameSite": null,
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "5c5915c0-b62e-c860-a431-c5b3ff7c6c27"
+    }
+]
+*/
+
             let cookies;
             try {
                 cookies = JSON.parse(json);
             } catch (error) {
-                console.log("Couldn't parse Json", error);
-                sendNotification("Could not parse the Json value");
-                buttonIcon.setAttribute("href", "../sprites/solid.svg#times");
-                setTimeout(() => {
-                    buttonIcon.setAttribute("href", "../sprites/solid.svg#file-import");
-                }, 1500);
-                return;
+                try {
+                    let cookiesTmp = [];
+                    // Json failed, let's try netscape format.
+                    let lines = json.split('\n');
+                    for (var line of lines) {
+                        line = line.trim();
+                        if (!line.length || line[0] == '#') {
+                            continue;
+                        }
+
+                        const elements = line.split("\t");
+                        if (elements.length != 7) {
+                            throw new Error('Invalid netscape format')
+                        }
+                        cookiesTmp.push({
+                            domain: elements[0],
+                            path: elements[2],
+                            secure: (elements[3].toLowerCase() === 'true'),
+                            expiration: elements[4],
+                            name: elements[5],
+                            value: elements[6]
+                        });
+                    }
+                    cookies = cookiesTmp;
+                } catch (error) {
+                    console.log("Couldn't parse Data", error);
+                    sendNotification("Could not parse the value");
+                    buttonIcon.setAttribute("href", "../sprites/solid.svg#times");
+                    setTimeout(() => {
+                        buttonIcon.setAttribute("href", "../sprites/solid.svg#file-import");
+                    }, 1500);
+                    return;
+                }
             }
 
             if (!isArray(cookies)) {
-                console.log("Invalid Json");
-                sendNotification("The Json is not valid");
+                console.log("Invalid Json/Netscape");
+                sendNotification("The input is not valid Json/Netscape format");
                 buttonIcon.setAttribute("href", "../sprites/solid.svg#times");
                 setTimeout(() => {
                     buttonIcon.setAttribute("href", "../sprites/solid.svg#file-import");
@@ -542,10 +586,14 @@
         for (var cookieId in loadedCookies) {
             let cookie = loadedCookies[cookieId].cookie;
             let secure = cookie.secure.toString().toUpperCase();
-            let expiration;
+            let expiration = 0;
 
-            if (!cookie.session && !!cookie.expirationDate) {
-                expiration = Math.round(cookie.expirationDate);
+            if (cookie.session) {
+                // Create sessions with a 1 day TTL to avoid the cookie being discarded when imported back.
+                // This is a compromise due to the Netscape format. It is short enough but not too short.
+                expiration = Math.trunc(new Date(Date.now() + 86400 * 1000).getTime() / 1000);
+            } else if (!cookie.session && !!cookie.expirationDate) {
+                expiration = Math.trunc(cookie.expirationDate);
             }
             
             netscapeCookies += `\n${cookie.domain}	TRUE	${cookie.path}	${secure}	${expiration}	${cookie.name}	${cookie.value}`;
