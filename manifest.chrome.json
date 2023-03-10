@@ -1,11 +1,11 @@
 {
 	"manifest_version": 3,
 	"name": "Cookie-Editor",
-	"version": "1.10.2",
+	"version": "1.11.0",
 	"author": "Moustachauve",
 	"description": "Simple yet powerful Cookie Editor that allow you to quickly create, edit and delete cookies without leaving your tab.",
 	"offline_enabled": true,
-    "minimum_chrome_version": "93",
+	"minimum_chrome_version": "93",
 	"background": {
 		"service_worker": "cookie-editor.js"
 	},
@@ -25,7 +25,9 @@
 		"tabs",
 		"storage"
 	],
-	"host_permissions": ["<all_urls>"],
+	"host_permissions": [
+		"<all_urls>"
+	],
 	"icons": {
 		"16": "icons/cookie-16-filled.png",
 		"19": "icons/cookie-19-filled.png",

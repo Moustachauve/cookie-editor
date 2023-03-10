@@ -1,15 +1,15 @@
 {
   "name": "cookie-editor",
-  "version": "1.10.1",
+  "version": "1.11.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/Moustachauve/cookie-editor.git"
   },
   "license": "GPL-3.0-only",
   "devDependencies": {
-    "grunt": "~1.5.3",
-    "grunt-contrib-clean": "^2.0.0",
-    "grunt-contrib-compress": "^1.4.3",
+    "grunt": "~1.6.1",
+    "grunt-contrib-clean": "^2.0.1",
+    "grunt-contrib-compress": "^2.0.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-jshint": "^3.2.0",
     "grunt-json-replace": "^0.1.2",
