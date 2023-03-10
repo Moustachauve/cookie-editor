@@ -282,25 +282,6 @@
             if (!json) {
                 return;
             }
-
-/*
-[
-    {
-        "domain": ".stackoverflow.com",
-        "expirationDate": 1712988774.07051,
-        "hostOnly": false,
-        "httpOnly": true,
-        "name": "prov",
-        "path": "/",
-        "sameSite": null,
-        "secure": false,
-        "session": false,
-        "storeId": null,
-        "value": "5c5915c0-b62e-c860-a431-c5b3ff7c6c27"
-    }
-]
-*/
-
             let cookies;
             try {
                 cookies = JSON.parse(json);
@@ -350,7 +331,7 @@
                 return;
             }
 
-            cookies.forEach(cookie => {
+            for (let cookie of cookies) {
                 // Make sure we are using the right store ID. This is in case we are importing from a basic store ID and the
                 // current user is using custom containers
                 cookie.storeId = cookieHandler.currentTab.cookieStoreId;
@@ -359,14 +340,19 @@
                     cookie.sameSite = null;
                 }
 
-                cookieHandler.saveCookie(cookie, getCurrentTabUrl(), function(error, cookie) {
-                    if (error) {
-                        sendNotification(error);
-                    }
-                });
-            });
+                try {
+                    cookieHandler.saveCookie(cookie, getCurrentTabUrl(), function (error, cookie) {
+                        if (error) {
+                            sendNotification(error);
+                        }
+                    });
+                } catch (error) {
+                    console.error(error)
+                    sendNotification(error);
+                }
+            }
 
-            sendNotification('Cookies were created');
+            sendNotification(`Cookies were imported`);
             showCookiesForTab();
         });
 

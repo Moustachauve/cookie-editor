@@ -42,6 +42,10 @@ function GenericCookieHandler() {
 
         if (browserDetector.supportSameSiteCookie()) {
             newCookie.sameSite = cookie.sameSite || undefined;
+
+            if (newCookie.sameSite == "no_restriction") {
+                newCookie.secure = true;
+            }
         }
         
         if (browserDetector.isFirefox()) {
