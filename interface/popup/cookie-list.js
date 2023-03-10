@@ -515,7 +515,7 @@
     function showExportMenu() {
         console.log("abc");
         let template = document.importNode(document.getElementById('tmp-export-options').content, true);
-        cookiesListHtml.appendChild(template.getElementById('export-menu'));
+        containerCookie.appendChild(template.getElementById('export-menu'));
         
         document.getElementById("export-json").addEventListener("click", (event) => {
             exportToJson();
@@ -526,7 +526,7 @@
     }
 
     function hideExportMenu() {
-        cookiesListHtml.removeChild(document.getElementById('export-menu'));
+        containerCookie.removeChild(document.getElementById('export-menu'));
         document.activeElement.blur()
     }
 
