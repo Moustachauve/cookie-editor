@@ -513,7 +513,6 @@
     }
 
     function showExportMenu() {
-        console.log("abc");
         let template = document.importNode(document.getElementById('tmp-export-options').content, true);
         containerCookie.appendChild(template.getElementById('export-menu'));
         
