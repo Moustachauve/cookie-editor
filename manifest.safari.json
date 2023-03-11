@@ -1,0 +1,38 @@
+{
+	"manifest_version": 3,
+	"name": "Cookie-Editor",
+	"version": "1.11.0",
+	"author": "Moustachauve",
+	"description": "Simple yet powerful Cookie Editor that allow you to quickly create, edit and delete cookies without leaving your tab.",
+	"offline_enabled": true,
+	"background": {
+		"service_worker": "cookie-editor.js"
+	},
+	"action": {
+		"default_icon": {
+			"16": "icons/cookie-16-filled.png",
+			"19": "icons/cookie-19-filled.png",
+			"32": "icons/cookie-32-filled.png",
+			"48": "icons/cookie-48-filled.png"
+		},
+		"default_title": "Cookie-Editor",
+		"default_popup": "interface/popup/cookie-list.html"
+	},
+	"devtools_page": "interface/devtools/devtool.html",
+	"permissions": [
+		"cookies",
+		"tabs",
+		"storage"
+	],
+	"host_permissions": [
+		"<all_urls>"
+	],
+	"icons": {
+		"16": "icons/cookie-16-filled.png",
+		"19": "icons/cookie-19-filled.png",
+		"32": "icons/cookie-32-filled.png",
+		"48": "icons/cookie-48-filled.png",
+		"128": "icons/cookie-128-filled.png"
+	},
+	"incognito": "split"
+}

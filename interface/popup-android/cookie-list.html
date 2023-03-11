@@ -28,7 +28,7 @@
 
     <div class="panel button-bar active" id="button-bar-default">
         <div class="panel-section panel-section-footer">
-            <button class="panel-section-footer-button" id="create-cookie">
+            <button class="panel-section-footer-button" id="create-cookie" type="button">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#plus"></use></svg>
                     <div class="tooltip" role="tooltip">Add</div>
@@ -36,7 +36,7 @@
             </button>
             <div class="panel-section-footer-separator"></div>
 
-            <button class="panel-section-footer-button danger" id="delete-all-cookies">
+            <button class="panel-section-footer-button danger" id="delete-all-cookies" type="button">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#trash"></use></svg>
                     <div class="tooltip" role="tooltip">Delete All</div>
@@ -44,7 +44,7 @@
             </button>
             <div class="panel-section-footer-separator"></div>
 
-            <button class="panel-section-footer-button" id="import-cookies">
+            <button class="panel-section-footer-button" id="import-cookies" type="button">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#file-import"></use></svg>
                     <div class="tooltip" role="tooltip">Import</div>
@@ -52,7 +52,7 @@
             </button>
             <div class="panel-section-footer-separator"></div>
 
-            <button class="panel-section-footer-button" id="export-cookies">
+            <button class="panel-section-footer-button" id="export-cookies" type="button">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#file-export"></use></svg>
                     <div class="tooltip" role="tooltip">Export</div>
@@ -63,7 +63,7 @@
 
     <div class="panel button-bar" id="button-bar-add">
         <div class="panel-section panel-section-footer">
-            <button class="panel-section-footer-button" id="return-list-add">
+            <button class="panel-section-footer-button" id="return-list-add" type="button">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#arrow-left"></use></svg>
                     <div class="tooltip" role="tooltip">Cancel</div>
@@ -71,7 +71,7 @@
             </button>
             <div class="panel-section-footer-separator"></div>
 
-            <button class="panel-section-footer-button primary" id="save-create-cookie">
+            <button class="panel-section-footer-button primary" id="save-create-cookie" type="button">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#save"></use></svg>
                     <div class="tooltip" role="tooltip">Add</div>
@@ -82,7 +82,7 @@
 
     <div class="panel button-bar" id="button-bar-import">
         <div class="panel-section panel-section-footer">
-            <button class="panel-section-footer-button" id="return-list-import">
+            <button class="panel-section-footer-button" id="return-list-import" type="button">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#arrow-left"></use></svg>
                     <div class="tooltip">Cancel</div>
@@ -90,7 +90,7 @@
             </button>
             <div class="panel-section-footer-separator"></div>
 
-            <button class="panel-section-footer-button primary" id="save-import-cookie">
+            <button class="panel-section-footer-button primary" id="save-import-cookie" type="button">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#file-import"></use></svg>
                     <div class="tooltip" role="tooltip">Import</div>
@@ -102,7 +102,7 @@
     <div id="notification-container">
         <div id="notification">
             <span></span>
-            <button id="notification-dismiss" aria-label="Dismiss Notification">
+            <button id="notification-dismiss" aria-label="Dismiss Notification" type="button">
 	            <svg class="icon"><use href="../sprites/solid.svg#times"></use></svg>
             </button>
         </div>
@@ -124,7 +124,7 @@
                 </svg>
                 <span class="header-name"></span>
                 <div class="btns">
-                    <button class="delete" data-tooltip-left="Delete" aria-label="Delete" tabindex="-1">
+                    <button class="delete" data-tooltip-left="Delete" aria-label="Delete" tabindex="-1" type="button">
                         <svg class="icon">
                             <use href="../sprites/solid.svg#trash"></use>
                         </svg>
@@ -134,12 +134,12 @@
             <div class="expando" aria-hidden="true" role="region">
                 <div class="wrapper">
                     <div class="action-btns">
-                        <button class="delete" data-tooltip="Delete" aria-label="Delete">
+                        <button class="delete" data-tooltip="Delete" aria-label="Delete" type="button">
                             <svg class="icon">
                                 <use href="../sprites/solid.svg#trash"></use>
                             </svg>
                         </button>
-                        <button class="save" data-tooltip="Save" aria-label="Save">
+                        <button class="save" data-tooltip="Save" aria-label="Save" type="submit">
                             <svg class="icon">
                                 <use href="../sprites/solid.svg#save"></use>
                             </svg>
@@ -191,7 +191,7 @@
                             </div>
                         </div>
                         <div class="advanced-toggle-container">
-                            <button class="advanced-toggle">
+                            <button class="advanced-toggle" type="button">
                                 Show Advanced
                             </button>
                         </div>
@@ -240,8 +240,8 @@
 
     <template id="tmp-export-options">
         <div id="export-menu">
-            <button id="export-json">Export as JSON</button>
-            <button id="export-netscape">Export as Netscape</button>
+            <button id="export-json" type="button">Export as JSON</button>
+            <button id="export-netscape" type="button">Export as Netscape</button>
         </div>
     </template>
 </body>

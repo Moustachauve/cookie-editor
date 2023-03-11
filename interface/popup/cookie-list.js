@@ -138,7 +138,7 @@
                             sendNotification(error);
                             return;
                         }
-                        if (browserDetector.isEdge()) {
+                        if (browserDetector.isSafari()) {
                             onCookiesChanged();
                         }
                         if (cookieContainer) {
@@ -153,7 +153,7 @@
                         sendNotification(error);
                         return;
                     }
-                    if (browserDetector.isEdge()) {
+                    if (browserDetector.isSafari()) {
                         onCookiesChanged();
                     }
 
@@ -196,6 +196,7 @@
         }
 
         document.getElementById('create-cookie').addEventListener('click', () => {
+            hideExportMenu();
             if (disableButtons) {
                 return;
             }
@@ -216,6 +217,7 @@
         });
 
         document.getElementById('delete-all-cookies').addEventListener('click', () => {
+            hideExportMenu();
             let buttonIcon = document.getElementById('delete-all-cookies').querySelector('use');
             if (buttonIcon.getAttribute("href") === "../sprites/solid.svg#check") {
                 return;
@@ -233,10 +235,15 @@
         });
 
         document.getElementById('export-cookies').addEventListener('click', () => {
+            if (disableButtons) {
+                hideExportMenu();
+                return;
+            }
             toggleExportMenu();
         });
 
         document.getElementById('import-cookies').addEventListener('click', () => {
+            hideExportMenu();
             if (disableButtons) {
                 return;
             }
@@ -516,6 +523,7 @@
         let template = document.importNode(document.getElementById('tmp-export-options').content, true);
         containerCookie.appendChild(template.getElementById('export-menu'));
         
+        document.getElementById("export-json").focus();
         document.getElementById("export-json").addEventListener("click", (event) => {
             exportToJson();
         });
@@ -525,8 +533,11 @@
     }
 
     function hideExportMenu() {
-        containerCookie.removeChild(document.getElementById('export-menu'));
-        document.activeElement.blur()
+        const exportMenu = document.getElementById('export-menu');
+        if (exportMenu) {
+            containerCookie.removeChild(exportMenu);
+            document.activeElement.blur()
+        }
     }
 
     function exportToJson() {
@@ -598,11 +609,10 @@
             if (callback) {
                 callback();
             }
+            if (browserDetector.isSafari()) {
+                onCookiesChanged();
+            }
         });
-
-        if (browserDetector.isEdge()) {
-            onCookiesChanged();
-        }
     }
 
     function onCookiesChanged(changeInfo) {

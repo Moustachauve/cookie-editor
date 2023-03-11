@@ -24,7 +24,7 @@ function CookieHandler() {
         } else {
             browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
             browserDetector.getApi().tabs.onActivated.addListener(onTabActivated);
-            if (!browserDetector.isEdge()) {
+            if (!browserDetector.isSafari()) {
                 browserDetector.getApi().cookies.onChanged.addListener(onCookiesChanged);
             }
         }

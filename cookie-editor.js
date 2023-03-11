@@ -12,15 +12,26 @@ if (typeof importScripts === 'function') {
 	browserDetector.getApi().runtime.onMessage.addListener(handleMessage);
 	browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
 
-    if (!browserDetector.isEdge()) {
+    if (!browserDetector.isSafari()) {
         browserDetector.getApi().cookies.onChanged.addListener(onCookiesChanged);
     }
 
     isFirefoxAndroid(function(response) {
         if (response) {
-            const popupOptions = {};
-            popupOptions.popup = '/interface/popup-android/cookie-list.html';
+            const popupOptions = {
+                popup: '/interface/popup-android/cookie-list.html'
+            };
             browserDetector.getApi().browserAction.setPopup(popupOptions);
+        }
+    });
+    isSafariIos(function(response) {
+        if (response) {
+            const popupOptions = {
+                popup: '/interface/popup-android/cookie-list.html'
+            };
+            console.log(browserDetector.getApi())
+            console.log(browserDetector.getApi().action)
+            browserDetector.getApi().action.setPopup(popupOptions);
         }
     });
 
@@ -150,6 +161,16 @@ if (typeof importScripts === 'function') {
 
         return browserDetector.getApi().runtime.getPlatformInfo().then((info) => {
             callback(info.os === 'android');
+        });
+    }
+
+    function isSafariIos(callback) {
+        if (!browserDetector.isSafari()) {
+            return callback(false);
+        }
+
+        return browserDetector.getApi().runtime.getPlatformInfo().then((info) => {
+            callback(info.os === 'ios');
         });
     }
 
