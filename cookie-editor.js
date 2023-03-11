@@ -27,10 +27,8 @@ if (typeof importScripts === 'function') {
     isSafariIos(function(response) {
         if (response) {
             const popupOptions = {
-                popup: '/interface/popup-android/cookie-list.html'
+                popup: '/interface/popup-ios/cookie-list.html'
             };
-            console.log(browserDetector.getApi())
-            console.log(browserDetector.getApi().action)
             browserDetector.getApi().action.setPopup(popupOptions);
         }
     });

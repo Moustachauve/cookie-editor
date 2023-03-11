@@ -1,0 +1,518 @@
+html, body {
+    height: 100%;
+    min-height: 400px;
+    max-height: 100vh;
+    min-width: 250px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    margin: 0;
+    font-size: 1em;
+    overflow: hidden;
+    background-color: #ffffff;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+body * {
+    box-sizing: border-box;
+    text-align: start;
+    -webkit-appearance: none;
+    -webkit-border-radius: none;
+}
+
+button::-moz-focus-inner {
+    border: 0;
+}
+
+svg.icon {
+  height: 1em;
+  width: 1em;
+  pointer-events: none;
+}
+
+.header-name {
+    pointer-events: none;
+}
+
+#pageTitle {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    flex-shrink: 0;
+    overflow: hidden;
+    padding: 0.5em;
+    background-color: #fafafa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+#pageTitle .titles {
+    display: inline-block;
+    flex: 1;
+}
+#pageTitle img {
+    margin-right: 10px;
+    height: 2.259em;
+}
+#pageTitle h1, #pageTitle h2 {
+    margin: 0;
+    padding: 0;
+}
+
+#pageTitle h1 {
+    font-size: 1.25em;
+}
+
+#pageTitle h2 {
+    font-size: 1em;
+    color: #1a1a1a;
+    font-weight: normal;
+}
+
+#searchContainer {
+    display: flex;
+    position: relative;
+}
+
+#cookie-container .search {
+    position: absolute;
+    left: 1em;
+    top: 1.05em;
+}
+
+#cookie-container #searchField {
+    background-color: #f5f5f5;
+    padding: 1em;
+    padding-left: 2.7em;
+    transition: background-color 100ms linear;
+    border: 1px solid rgb(150,150,150);
+}
+
+#cookie-container #searchField:hover, #cookie-container #searchField:focus {
+    background-color: #ffffec;
+}
+#cookie-container #searchField.content {
+    background-color: gold;
+}
+
+#cookie-container {
+    overflow-y: auto;
+    background-color: #eaeaea;
+    min-height: 100px;
+    flex: 1 1;
+}
+
+#cookie-container > .container {
+    padding: 15px;
+    height: 100%;
+}
+
+form.import, form.import > div {
+    height: 100%;
+    max-height: 100%;
+}
+form.import > div {
+    display: flex;
+    flex-direction: column;
+}
+#cookie-container form.import textarea {
+    flex: 1 1;
+    max-height: none;
+}
+
+#cookie-container ul {
+    margin: 0;
+    padding: 0;
+    padding-bottom: 15px;
+    list-style-type: none;
+}
+
+#cookie-container li .header {
+    display: block;
+    padding: 1.25em 1em;
+    font-weight: bold;
+    border: 1px solid #cacaca;
+    background-color: #ffffff;
+    position: relative;
+    -moz-user-select: none;
+    user-select: none;
+}
+#cookie-container li .header .btns {
+    display: none;
+}
+
+/* Firefox display outlines in a strange way */
+@-moz-document url-prefix() {
+    #cookie-container li .header:focus {
+        outline-offset: -3px;
+        outline: 2px solid #444;
+        border-radius: 3px;
+    }
+}
+
+#cookie-container li .header .icon {
+    -moz-transition: transform 150ms ease-in 0s;
+    transition: transform 150ms ease-in 0s;
+    margin-right: 10px;
+}
+
+#cookie-container li .header.active .icon {
+    -moz-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+#cookie-container li .expando {
+    max-height: 0;
+    display: none;
+    overflow: hidden;
+}
+
+#cookie-container li .expando .wrapper {
+    flex: 1;
+    padding: 1.25em 1em;
+    padding-bottom: 0.4em;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.form.container div:first-child {
+    margin-bottom: 0.75em;
+}
+
+#cookie-container textarea, #cookie-container input[type="text"], #cookie-container select {
+    width: 100%;
+    font-size: 1em;
+    font-family: inherit;
+    resize: vertical;
+    margin: 0;
+    padding: 1em 0.5em;
+}
+
+#cookie-container textarea {
+    resize: none;
+    height: 90px;
+    max-height: 90px;
+    min-height: 90px;
+}
+
+label {
+    display: block;
+    margin: 0;
+}
+
+.button-bar {
+    display: none;
+    background-color: #f0f0f0;
+    flex: 0 0 auto;
+    border-top: 1px solid rgba(0, 0, 0, 0.15);
+    z-index: 5;
+}
+
+.button-bar.active {
+    display: block;
+}
+
+.container.form {
+    flex: 1;
+}
+
+.action-btns {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: stretch;
+    padding: 4px;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.action-btns button {
+    flex: 1 1;
+    text-align: center;
+    border: none;
+    background-color: transparent;
+    padding: 18px;
+    color: #1a1a1a;
+}
+
+.action-btns button:focus {
+    outline: 2px solid #444;
+    border-radius: 4px;
+}
+
+.action-btns button:active {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.action-btns button:last-child {
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.action-btns svg, .action-btns [data-tooltip]::after {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 16px;
+}
+.action-btns [data-tooltip]::after {
+    display: block;
+    content: attr(data-tooltip);
+}
+
+.panel-section-footer {
+    background-color: rgba(0, 0, 0, 0.06);
+    border-top: 1px solid rgba(0, 0, 0, 0.15);
+    color: #1a1a1a;
+    display: flex;
+    flex-direction: row;
+    height: 65px;
+    margin-top: -1px;
+    padding: 0;
+    -moz-user-select: none;
+    user-select: none;
+    overflow: hidden;
+}
+.panel-section-footer-button {
+    flex: 1 1;
+    font-size: 18px;
+    line-height: 0.75em;
+    margin: 0 -1px;
+    padding: 12px;
+    text-align: center;
+    overflow: hidden;
+}
+.panel-section-footer-button:active {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+.panel-section-footer-separator {
+    background-color: rgba(0, 0, 0, 0.1);
+    width: 1px;
+    z-index: 99;
+}
+
+.panel-section-footer-button > div {
+    text-align: center;
+}
+.panel-section-footer-button .tooltip {
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+    line-height: 30px
+}
+
+
+#notification-container {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 90px;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 150ms ease-in 0s;
+    pointer-events: none;
+    padding: 0 25px;
+}
+
+#notification {
+    position: relative;
+    display: inline-block;
+    padding: 10px 25px 10px 20px;
+    margin: auto;
+    background-color: rgba(0, 0, 0, 0.87);
+    border-radius: 5px;
+    color: #fafafa;
+    font-size: 16px;
+    font-weight: 400;
+    pointer-events: auto;
+    animation-duration: 0.3s;
+    animation-fill-mode: both;
+    opacity: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+}
+
+.fadeInUp {
+    opacity: 0;
+    animation-name: fadeInUp;
+}
+.fadeOutDown {
+    opacity: 0;
+    animation-name: fadeOutDown;
+}
+
+#notification-dismiss {
+    position: absolute;
+    top: 5px;
+    right: 2px;
+    border: none;
+    background: transparent none;
+    cursor: pointer;
+    fill: #656565;
+}
+
+#notification-dismiss svg {
+    width: 0.9em;
+    height: 0.9em;
+}
+#notification:hover #notification-dismiss {
+    fill: #aaa;
+}
+#notification:hover #notification-dismiss:hover {
+    fill: #fafafa;
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translate3d(0,60px,0);
+    }
+
+    to {
+        transform: translate3d(0,0,0);
+        opacity: 1
+    }
+}
+@keyframes fadeOutDown {
+    from {
+        transform: translate3d(0,0,0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translate3d(0,60px,0);
+        opacity: 0;
+    }
+}
+.anim-value-changed, #cookie-container .anim-value-changed {
+    animation-name: changed-value;
+    animation-duration: 0.5s;
+}
+
+@keyframes changed-value {
+    0% {background-color: #fff; }
+    50% {background-color: #fdfb8e; }
+    100% {background-color: #fff; }
+}
+
+.anim-success, #cookie-container .anim-success {
+    animation-name: success;
+    animation-duration: 0.5s;
+    border: 1px solid initial
+}
+
+@keyframes success {
+    0% {background-color: transparent; }
+    50% {background-color: #9ee7a8; }
+    100% {background-color: transparent; }
+}
+
+#advanced-toggle-all {
+    float: right;
+    display: none;
+}
+
+.advanced-form {
+    display: none;
+}
+.advanced-form.show {
+    display: block;
+}
+.advanced-toggle-container {
+    text-align: center;
+}
+
+.advanced-toggle {
+    padding: 10px;
+    margin: 6px;
+    border: 1px solid #888;
+    color: #777;
+    user-select: none;
+    display: inline-block;
+}
+
+#advanced-toggle-all {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    user-select: none;
+}
+#advanced-toggle-all label {
+    cursor: pointer;
+}
+#advanced-toggle-all input {
+    vertical-align: middle;
+    position: relative;
+    bottom: 2px;
+}
+
+.checkbox-list {
+    margin-top: 7px;
+}
+.checkbox-list label {
+    padding: 15px 0;
+    margin: 10px 0;
+    border: 1px solid #aaa;
+    background-color: #ffffff;
+}
+.checkbox-list input {
+    vertical-align: middle;
+    position: relative;
+    bottom: 2px;
+    margin-left: 15px;
+}
+
+
+#export-menu {
+    border-radius: 5px;
+    position: fixed;
+    bottom: 80px;
+    right: 15px;
+    min-width: 100px;
+    background-color: #ffffff;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.35);
+    padding: 10px;
+    text-align: center;
+    margin-left: 10px;
+}
+
+#export-menu:after {
+    content:'';
+    position: absolute;
+    top: 100%;
+    right: 25px;
+    width: 0;
+    height: 0;
+    border-top: solid 15px #ffffff;
+    border-left: solid 15px transparent;
+    border-right: solid 15px transparent;
+}
+
+#export-menu button {
+    border: 1px solid #c5c5c5;
+    border-radius: 3px;
+    background-color: #fff;
+    padding: 20px 30px;
+    font-size: 14px;
+    transition: all 100ms linear;
+}
+#export-menu button:hover {
+    border-color: #575757;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.10);
+    background-color: rgba(0, 0, 0, 0.03)
+}
+
+@media only screen 
+    and (max-device-width: 400px) 
+    and (orientation: landscape) {
+    html, body {
+        min-height: 160px;
+    }
+}
+@media only screen 
+    and (min-device-width: 800px) {
+    html, body { 
+        min-width: 400px;
+    }
+}
