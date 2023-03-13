@@ -88,6 +88,7 @@ svg.icon {
     padding-left: 2.7em;
     transition: background-color 100ms linear;
     border: 1px solid rgb(150,150,150);
+    color: #000000;
 }
 
 #cookie-container #searchField:hover, #cookie-container #searchField:focus {
@@ -127,6 +128,10 @@ form.import > div {
     padding: 0;
     padding-bottom: 15px;
     list-style-type: none;
+}
+
+#cookie-container li.hide {
+    display: none;
 }
 
 #cookie-container li .header {

@@ -10,7 +10,7 @@ import SafariServices
 typealias PlatformViewController = NSViewController
 #endif
 
-let extensionBundleIdentifier = "ca.cgagnier.Cookie-Editor.Extension"
+let extensionBundleIdentifier = "ca.cgagnier.cookie-editor.Extension"
 
 class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMessageHandler {
 

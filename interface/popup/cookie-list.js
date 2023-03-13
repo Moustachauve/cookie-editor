@@ -785,7 +785,6 @@
     }
 
     function filterCookies(target, filterText) {
-        console.log('test');
         var cookies = cookiesListHtml.querySelectorAll('.cookie');
         filterText = filterText.toLowerCase();
 
