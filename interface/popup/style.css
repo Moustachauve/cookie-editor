@@ -74,6 +74,7 @@ button:focus {outline:0;}
     padding: 8px;
     padding-left: 40px;
     transition: background-color 100ms linear;
+    color: #000000;
 }
 
 #cookie-container #searchField:hover, #cookie-container #searchField:focus {

@@ -1,7 +1,8 @@
 html, body {
     height: 100%;
-    min-height: 200px;
-    min-width: 200px;
+    min-height: 400px;
+    max-height: 100vh;
+    min-width: 250px;
 }
 
 body {
@@ -10,7 +11,6 @@ body {
     align-items: stretch;
     padding: 0;
     margin: 0;
-    width: 100%;
     font-size: 1em;
     overflow: hidden;
     background-color: #ffffff;
@@ -20,6 +20,8 @@ body {
 body * {
     box-sizing: border-box;
     text-align: start;
+    -webkit-appearance: none;
+    -webkit-border-radius: none;
 }
 
 button::-moz-focus-inner {
@@ -99,6 +101,7 @@ svg.icon {
 #cookie-container {
     overflow-y: auto;
     background-color: #eaeaea;
+    min-height: 100px;
     flex: 1 1;
 }
 
@@ -125,6 +128,10 @@ form.import > div {
     padding: 0;
     padding-bottom: 15px;
     list-style-type: none;
+}
+
+#cookie-container li.hide {
+    display: none;
 }
 
 #cookie-container li .header {
@@ -231,6 +238,7 @@ label {
     border: none;
     background-color: transparent;
     padding: 18px;
+    color: #1a1a1a;
 }
 
 .action-btns button:focus {
@@ -252,7 +260,7 @@ label {
     font-size: 16px;
 }
 .action-btns [data-tooltip]::after {
-    margin-left: 10px;
+    display: block;
     content: attr(data-tooltip);
 }
 
@@ -277,7 +285,6 @@ label {
     padding: 12px;
     text-align: center;
     overflow: hidden;
-    -webkit-appearance: none;
 }
 .panel-section-footer-button:active {
     background-color: rgba(0, 0, 0, 0.1);
@@ -499,4 +506,18 @@ label {
     border-color: #575757;
     box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.10);
     background-color: rgba(0, 0, 0, 0.03)
+}
+
+@media only screen 
+    and (max-device-width: 400px) 
+    and (orientation: landscape) {
+    html, body {
+        min-height: 160px;
+    }
+}
+@media only screen 
+    and (min-device-width: 800px) {
+    html, body { 
+        min-width: 400px;
+    }
 }

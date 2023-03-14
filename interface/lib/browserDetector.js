@@ -3,11 +3,23 @@ function BrowserDetector() {
     let namespace = chrome || window.browser || window.chrome;
     let browserName;
     let doesSupportSameSiteCookie = null;
+    let isIos = false
 
     if (namespace === chrome || namespace === window.chrome) {
-        browserName = 'chrome';
-    }
-    else if (namespace === window.browser) {
+        let supportPromises = false;
+        try {
+            supportPromises = namespace.runtime.getPlatformInfo() instanceof Promise;
+        }
+        catch (e) {
+        }
+
+        if (supportPromises) {
+            browserName = 'safari';
+        }
+        else {
+            browserName = 'chrome';
+        }
+    } else if (namespace === window.browser) {
         let supportPromises = false;
         try {
             supportPromises = namespace.runtime.getPlatformInfo() instanceof Promise;
@@ -39,6 +51,10 @@ function BrowserDetector() {
 
     this.isEdge = function () {
         return browserName === 'edge';
+    };
+
+    this.isSafari = function () {
+        return browserName === 'safari';
     };
 
     this.supportSameSiteCookie = function () {

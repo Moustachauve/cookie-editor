@@ -8,7 +8,7 @@ function GenericCookieHandler() {
     const browserDetector = new BrowserDetector();
 
     this.getAllCookies = function(callback) {
-        if (browserDetector.isFirefox()) {
+        if (browserDetector.isFirefox() && browserDetector.isSafari()) {
             browserDetector.getApi().cookies.getAll({
                 url: this.currentTab.url,
                 storeId: this.currentTab.cookieStoreId
@@ -36,20 +36,29 @@ function GenericCookieHandler() {
             url: url
         };
 
-        if (cookie.hostOnly) {
+        // Bad hack on safari because cookies needs to have the very exact same domain
+        // to be able to edit it.
+        if (browserDetector.isSafari() && newCookie.domain) {
+            newCookie.url = "http://" + newCookie.domain;
+        }
+
+        if (cookie.hostOnly || (browserDetector.isSafari() && !newCookie.domain)) {
             newCookie.domain = null;
         }
 
-        if (browserDetector.supportSameSiteCookie()) {
+        if (browserDetector.supportSameSiteCookie() && !browserDetector.isSafari()) {
             newCookie.sameSite = cookie.sameSite || undefined;
 
             if (newCookie.sameSite == "no_restriction") {
                 newCookie.secure = true;
             }
+            if (browserDetector.isSafari()) {
+                newCookie.sameSite = 'explicit';
+            }
         }
         
-        if (browserDetector.isFirefox()) {
-            browserDetector.getApi().cookies.set(newCookie).then(cookie => {
+        if (browserDetector.isFirefox() || browserDetector.isSafari()) {
+            browserDetector.getApi().cookies.set(newCookie).then((cookie,a,b,c) => {
                 if (callback) {
                     callback(null, cookie);
                 }
@@ -78,8 +87,18 @@ function GenericCookieHandler() {
         }
     };
 
-    this.removeCookie = function(name, url, callback) {
-        if (browserDetector.isFirefox()) {
+    this.removeCookie = function(name, url, callback, isRecursive = false) {
+        // Bad hack on safari because cookies needs to have the very exact same domain
+        // to be able to delete it.
+        if (browserDetector.isSafari() && !isRecursive) {
+            this.getAllCookies((cookies) => {
+                for (let cookie of cookies) {
+                    if (cookie.name === name) {
+                        this.removeCookie(name, "http://" + cookie.domain, callback, true);
+                    }
+                }
+            })
+        } else if (browserDetector.isFirefox() || browserDetector.isSafari()) {
             browserDetector.getApi().cookies.remove({
                 name: name,
                 url: url,
