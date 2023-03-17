@@ -17,8 +17,8 @@ Find this extension on the [Chrome Web Store](https://chrome.google.com/webstore
 [![Chrome Web Store](readme/get-chrome.png)](https://chrome.google.com/webstore/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm?utm_campaign=github)
 
 ### Install on Firefox
-Find this extension on the [Firefox Add-ons site](https://addons.mozilla.org/addon/cookie-editor?src=external-github-readme).  
-[![Firefox Add-ons](readme/get-firefox.webp)](https://addons.mozilla.org/addon/cookie-editor?src=external-github-readme)
+Find this extension on the [Firefox Add-ons site](https://addons.mozilla.org/addon/cookie-editor?utm_campaign=external-github-readme).  
+[![Firefox Add-ons](readme/get-firefox.webp)](https://addons.mozilla.org/addon/cookie-editor?utm_campaign=external-github-readme)
 
 ### Install on Safari
 Cookie-Editor is available for both Mac and iOS. It has been tested on Mac, iPhone and iPad.  
