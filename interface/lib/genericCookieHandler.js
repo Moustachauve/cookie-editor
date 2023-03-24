@@ -8,7 +8,7 @@ function GenericCookieHandler() {
     const browserDetector = new BrowserDetector();
 
     this.getAllCookies = function(callback) {
-        if (browserDetector.isFirefox() && browserDetector.isSafari()) {
+        if (browserDetector.supportsPromises()) {
             browserDetector.getApi().cookies.getAll({
                 url: this.currentTab.url,
                 storeId: this.currentTab.cookieStoreId
@@ -57,7 +57,7 @@ function GenericCookieHandler() {
             }
         }
         
-        if (browserDetector.isFirefox() || browserDetector.isSafari()) {
+        if (browserDetector.supportsPromises()) {
             browserDetector.getApi().cookies.set(newCookie).then((cookie,a,b,c) => {
                 if (callback) {
                     callback(null, cookie);
@@ -98,7 +98,7 @@ function GenericCookieHandler() {
                     }
                 }
             })
-        } else if (browserDetector.isFirefox() || browserDetector.isSafari()) {
+        } else if (browserDetector.supportsPromises()) {
             browserDetector.getApi().cookies.remove({
                 name: name,
                 url: url,

@@ -3,16 +3,16 @@ function BrowserDetector() {
     let namespace = chrome || window.browser || window.chrome;
     let browserName;
     let doesSupportSameSiteCookie = null;
-    let isIos = false
+    let isIos = false;
+    let supportPromises = false;
+
+    try {
+        supportPromises = namespace.runtime.getPlatformInfo() instanceof Promise;
+    }
+    catch (e) {
+    }
 
     if (namespace === chrome || namespace === window.chrome) {
-        let supportPromises = false;
-        try {
-            supportPromises = namespace.runtime.getPlatformInfo() instanceof Promise;
-        }
-        catch (e) {
-        }
-
         if (supportPromises) {
             browserName = 'safari';
         }
@@ -20,13 +20,6 @@ function BrowserDetector() {
             browserName = 'chrome';
         }
     } else if (namespace === window.browser) {
-        let supportPromises = false;
-        try {
-            supportPromises = namespace.runtime.getPlatformInfo() instanceof Promise;
-        }
-        catch (e) {
-        }
-
         if (supportPromises) {
             browserName = 'firefox';
         }
@@ -56,6 +49,14 @@ function BrowserDetector() {
     this.isSafari = function () {
         return browserName === 'safari';
     };
+
+    this.supportsPromises = function () {
+        return this.supportPromises;
+    }
+
+    this.getBrowserName = function () {
+        return browserName;
+    }
 
     this.supportSameSiteCookie = function () {
         if (doesSupportSameSiteCookie !== null) {

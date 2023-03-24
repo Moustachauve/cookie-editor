@@ -24,6 +24,8 @@
             </label>
         </div>
     </div>
+
+    <div id="sponsor-container"></div>
     <div id="cookie-container"></div>
 
     <div class="panel button-bar active" id="button-bar-default">
@@ -114,6 +116,7 @@
     <script src="../lib/cookie.js"></script>
     <script src="../lib/genericCookieHandler.js"></script>
     <script src="../popup/popupCookieHandler.js"></script>
+    <script src="../lib/genericStorageHandler.js"></script>
     <script src="../popup/cookie-list.js"></script>
 
     <template id="tmp-cookie">
@@ -242,6 +245,19 @@
         <div id="export-menu">
             <button id="export-json" type="button">Export as JSON</button>
             <button id="export-netscape" type="button">Export as Netscape</button>
+        </div>
+    </template>
+
+    <template id="tmp-sponsor-item">
+        <div>
+            <span class="sponsor-tag">Sponsored</span>
+            <div class="sponsor-link">
+                <a href="" target="_blank" rel="noopener noreferrer">Sponsor Text!</a>
+            </div>
+            <div class="sponsor-actions">
+                <button class="dont-show">Not interested</button>
+                <button class="later">Later</button>
+            </div>
         </div>
     </template>
 </body>

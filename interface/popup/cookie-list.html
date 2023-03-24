@@ -21,6 +21,8 @@
         </div>
     </div>
 
+    <div id="sponsor-container"></div>
+
     <div id="cookie-container"></div>
 
     <div class="panel button-bar active" id="button-bar-default">
@@ -112,6 +114,7 @@
     <script src="../lib/cookie.js"></script>
     <script src="../lib/genericCookieHandler.js"></script>
     <script src="popupCookieHandler.js"></script>
+    <script src="../lib/genericStorageHandler.js"></script>
     <script src="cookie-list.js"></script>
 
     <template id="tmp-cookie">
@@ -198,6 +201,19 @@
         </form>
     </template>
 
+    <template id="tmp-export">
+        <form class="form container export sbro">
+            <div>
+                <label for="content-export">Json or Netscape Format Exporter</label>
+                <textarea class="json" 
+                name="content" 
+                id="content-export" 
+                placeholder="Export your  here">
+            </textarea>
+            </div>
+        </form>
+    </template>
+
     <template id="tmp-create">
         <form class="form container create">
             <div>
@@ -230,6 +246,19 @@
         <div id="export-menu">
             <button id="export-json" type="button">Export as JSON</button>
             <button id="export-netscape" type="button">Export as Netscape</button>
+        </div>
+    </template>
+
+    <template id="tmp-sponsor-item">
+        <div>
+            <span class="sponsor-tag">Sponsored</span>
+            <div class="sponsor-link">
+                <a href="" target="_blank" rel="noopener noreferrer">Sponsor Text!</a>
+            </div>
+            <div class="sponsor-actions">
+                <button class="dont-show">Not interested</button>
+                <button class="later">Later</button>
+            </div>
         </div>
     </template>
 </body>

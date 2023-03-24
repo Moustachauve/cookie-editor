@@ -12,9 +12,23 @@
 
     let notificationQueue = [];
     let notificationTimeout;
+
+    const secondsInOneDay = new Date().getTime() + (1 * 24 * 60 * 60 * 1000)
     const browserDetector = new BrowserDetector();
 
     const cookieHandler = new CookieHandler();
+    const storageHandler = new GenericStorageHandler();
+
+    let sponsors = [
+        {
+            id: "cookie-editor",
+            text: "Enjoying Cookie-Editor? Buy me a coffee!",
+            tooltip: "Cookie-Editor is always free. Help its development by sponsoring me.",
+            url: "https://github.com/sponsors/Moustachauve",
+            refresh_days: 80,
+            supported_browsers: "all"
+        },
+    ]
 
     document.addEventListener('DOMContentLoaded', function () {
         containerCookie = document.getElementById('cookie-container');
@@ -439,6 +453,7 @@
             loadedCookies = {};
 
             setPageTitle('Cookie Editor');
+            document.myThing = "I like potatoasts"
 
             document.getElementById('button-bar-add').classList.remove('active');
             document.getElementById('button-bar-import').classList.remove('active');
@@ -673,6 +688,7 @@
     function initWindow(tab) {
         cookieHandler.on('cookiesChanged', onCookiesChanged);
         cookieHandler.on('ready', onCookieHandlerReady);
+        handleSponsor();
     }
 
     function getCurrentTabUrl() {
@@ -803,5 +819,135 @@
                 cookieElement.classList.add('hide');
             }
         }
+    }
+
+    function handleSponsor() {
+        if (!sponsors) {
+            return;
+        }
+
+        canShowAnySponsor((error, canShow) => {
+            if (error) {
+                console.error(error);
+                return;
+            }
+            if (!canShow) {
+                return;
+            }
+            
+            showRandomSponsor();
+        });
+    }
+
+    function showRandomSponsor() {
+        if (!sponsors || !sponsors.length) {
+            console.log("No sponsors left");
+            return;
+        }
+        const randIndex = Math.floor(Math.random() * sponsors.length);
+        let selectedSponsor = sponsors[randIndex];
+        sponsors.splice(randIndex, 1);
+        isSponsorValid(selectedSponsor, (error, isValid) => {
+            if (error) {
+                console.error(error);
+                showRandomSponsor();
+                return;
+            }
+            if (!isValid) {
+                console.log(selectedSponsor.id, "sponsor is not valid to display");
+                showRandomSponsor();
+                return;
+            }
+            clearSponsor();
+            let sponsorItemHtml = createHtmlSponsor(selectedSponsor);
+            document.getElementById('sponsor-container').appendChild(sponsorItemHtml);
+        });
+    }
+
+    function isSponsorValid(selectedSponsor, callback) {
+        if (selectedSponsor.supported_browsers != 'all' &&
+            !selectedSponsor.supported_browsers.includes(browserDetector.getBrowserName())) {
+            callback(null, false);
+            return;
+        }
+
+        storageHandler.getLocal(getSponsorDismissKey(selectedSponsor.id), (error, data) => {
+            if (error) {
+                callback(error, false);
+                return;
+            }
+            // No data means it was never dismissed
+            if (data === null) {
+                callback(error, true);
+                return;
+            } 
+            
+            // Only show a sponsor if it has not been dismissed in less than |refresh_days| days
+            if ((secondsInOneDay * selectedSponsor.refresh_days) > data.date) {
+                console.log("Not showing sponsor " + selectedSponsor.id + ", it was dismissed.");
+                callback(error, false);
+                return;
+            }
+            callback(error, true);
+        });
+    }
+
+    function canShowAnySponsor(callback) {
+        storageHandler.getLocal(getLastDismissKey(), (error, data) => {
+            if (error) {
+                callback(error, false);
+                return;
+            }
+            // No data means it was never dismissed
+            if (data === null) {
+                callback(error, true);
+                return;
+            }
+            // Don't show more sponsor if one was dismissed in less than 24hrs
+            if (secondsInOneDay > data.date) {
+                console.log("Not showing sponsors, one was dismissed recently.");
+                callback(error, false);
+                return
+            } 
+            callback(error, true);
+        })
+    }
+
+    function clearSponsor() {
+        clearChildren(document.getElementById('sponsor-container'));
+    }
+
+    function createHtmlSponsor(sponsorObject) {
+        let template = document.importNode(document.getElementById('tmp-sponsor-item').content, true);
+        let link = template.querySelector('.sponsor-link a');
+        link.textContent = sponsorObject.text;
+        link.title = sponsorObject.tooltip;
+        link.href = sponsorObject.url;
+
+        template.querySelector('.dont-show').addEventListener('click', e => {
+            clearSponsor();
+            storageHandler.setLocal(getSponsorDismissKey(sponsorObject.id), createDismissObjV1())
+            storageHandler.setLocal(getLastDismissKey(), createDismissObjV1())
+        });
+        template.querySelector('.later').addEventListener('click', e => {
+            clearSponsor();
+        });
+
+        return template;
+    }
+
+    function getLastDismissKey() {
+        return 'sponsorDismissLast';
+    }
+
+    function getSponsorDismissKey(id) {
+        return 'sponsorDismiss.' + id;
+    }
+
+    function createDismissObjV1() {
+        return {
+            version: 1,
+            date: Date.now(),
+        };
     }
 }());
