@@ -6,7 +6,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css?family=Roboto&display=optional" as="style">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=optional">
-    <link href="style/main.css?cache=5" rel="stylesheet" />
+    <link href="style/main.css?cache=6" rel="stylesheet" />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CYQRH9EK28"></script>
     <script>
@@ -175,6 +175,26 @@
             </div>
         </div>
 
+        
+        <div class="block sponsor-container">
+            <h2>Sponsors</h2>
+            <div class="sponsor">
+                <img src="img/tab-for-cause.png" />
+                <div>
+                    <h3><a href="https://tab.gladly.io/cookieeditor/" class="sponsors-link" data-sponsor="tab-for-cause">Tab for a Cause</a></h3>
+                    <p>
+                        Raise money for charity every time you open a new browser tab.
+                    </p>
+                    <p>
+                        It's free and incredibly easy. Transform your tabs into a force for good in 30 seconds.
+                    </p>
+                    <a href="https://tab.gladly.io/cookieeditor/" class="btn-cta btn-sm sponsors-link" data-sponsor="tab-for-cause">
+                        Get Tab for a Cause
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <div id="contribution" class="block">
             <div id="github-block">
                     <svg><use xlink:href="img/github-logo.svg#github"></use></svg>
@@ -222,15 +242,6 @@
 			<p>Read my <a href="privacy.html" title="Privacy Policy">Privacy Policy</a>.</p>
             <p class="copyright">Copyright © 2023 Christophe Gagnier</p>
         </footer>
-        
-
-        <!--
-            <div class="block sponsor">
-                <h2>Special Thanks To</h2>
-                <p><a href="https://www.facebook.com/elevageceliray" target="_blank">Élevage Céliray</a>, a local welsh corgi pembroke breeder.</p>
-                <p><a href="https://www.facebook.com/elevageceliray" target="_blank">Élevage Céliray</a>, un élevage de Corgis gallois Pembroke situé à Upton, Québec.</p>
-            </div>
-        -->
     </div>
 
     <div id="img-preview">
@@ -279,6 +290,17 @@
                 gtag('event', 'open', {
                     event_category: 'image-preview',
                     event_label: description
+                });
+            });
+        });
+
+
+        document.querySelectorAll('.sponsors-link').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                let sponsorName = anchor.dataset.sponsor;
+                gtag('sponsor-click', 'sponsorName', {
+                    event_category: 'sponsor',
+                    event_label: sponsorName
                 });
             });
         });
