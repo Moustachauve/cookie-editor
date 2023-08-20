@@ -28,6 +28,14 @@
             refresh_days: 80,
             supported_browsers: "all"
         },
+        {
+            id: "tab-for-cause",
+            text: "Get Tab For A Cause: Raise money for charity",
+            tooltip: "Raise money for charity every time you open a new browser tab. It's free and incredibly easy. Transform your tabs into a force for good in 30 seconds.",
+            url: " https://tab.gladly.io/cookieeditor/",
+            refresh_days: 80,
+            supported_browsers: "chrome safari edge"
+        },
     ]
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -787,11 +795,6 @@
     }
 
     function adjustWidthIfSmaller() {
-        // Firefox can have the window smaller if it is in the overflow menu
-        if (!browserDetector.isFirefox()) {
-            return;
-        }
-
         let realWidth = document.documentElement.clientWidth;
         if (realWidth < 500) {
             console.log('Editor is smaller than 500px!');

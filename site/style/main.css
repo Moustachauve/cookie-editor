@@ -354,6 +354,21 @@ header .btn-cta {
     font-weight: 700;
 }
 
+.sponsor {
+    display: flex;
+	justify-content: center;
+	align-items: center;
+    gap: 20px;
+}
+
+.sponsor > img {
+    max-height: 120px;
+}
+
+.sponsor .btn-cta {
+    margin-top: 5px;
+}
+
 #contribution {
     display: flex;
     gap: 100px;
