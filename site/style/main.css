@@ -354,18 +354,18 @@ header .btn-cta {
     font-weight: 700;
 }
 
-.sponsor {
+.ad {
     display: flex;
 	justify-content: center;
 	align-items: center;
     gap: 20px;
 }
 
-.sponsor > img {
+.ad > img {
     max-height: 120px;
 }
 
-.sponsor .btn-cta {
+.ad .btn-cta {
     margin-top: 5px;
 }
 

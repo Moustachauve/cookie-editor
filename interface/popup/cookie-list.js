@@ -19,7 +19,7 @@
     const cookieHandler = new CookieHandler();
     const storageHandler = new GenericStorageHandler();
 
-    let sponsors = [
+    let ads = [
         {
             id: "cookie-editor",
             text: "Enjoying Cookie-Editor? Buy me a coffee!",
@@ -696,7 +696,7 @@
     function initWindow(tab) {
         cookieHandler.on('cookiesChanged', onCookiesChanged);
         cookieHandler.on('ready', onCookieHandlerReady);
-        handleSponsor();
+        handleAd();
     }
 
     function getCurrentTabUrl() {
@@ -824,12 +824,12 @@
         }
     }
 
-    function handleSponsor() {
-        if (!sponsors) {
+    function handleAd() {
+        if (!ads) {
             return;
         }
 
-        canShowAnySponsor((error, canShow) => {
+        canShowAnyAd((error, canShow) => {
             if (error) {
                 console.error(error);
                 return;
@@ -838,43 +838,43 @@
                 return;
             }
             
-            showRandomSponsor();
+            showRandomAd();
         });
     }
 
-    function showRandomSponsor() {
-        if (!sponsors || !sponsors.length) {
-            console.log("No sponsors left");
+    function showRandomAd() {
+        if (!ads || !ads.length) {
+            console.log("No ads left");
             return;
         }
-        const randIndex = Math.floor(Math.random() * sponsors.length);
-        let selectedSponsor = sponsors[randIndex];
-        sponsors.splice(randIndex, 1);
-        isSponsorValid(selectedSponsor, (error, isValid) => {
+        const randIndex = Math.floor(Math.random() * ads.length);
+        let selectedAd = ads[randIndex];
+        ads.splice(randIndex, 1);
+        isAdValid(selectedAd, (error, isValid) => {
             if (error) {
                 console.error(error);
-                showRandomSponsor();
+                showRandomAd();
                 return;
             }
             if (!isValid) {
-                console.log(selectedSponsor.id, "sponsor is not valid to display");
-                showRandomSponsor();
+                console.log(selectedAd.id, "ad is not valid to display");
+                showRandomAd();
                 return;
             }
-            clearSponsor();
-            let sponsorItemHtml = createHtmlSponsor(selectedSponsor);
-            document.getElementById('sponsor-container').appendChild(sponsorItemHtml);
+            clearAd();
+            let adItemHtml = createHtmlAd(selectedAd);
+            document.getElementById('ad-container').appendChild(adItemHtml);
         });
     }
 
-    function isSponsorValid(selectedSponsor, callback) {
-        if (selectedSponsor.supported_browsers != 'all' &&
-            !selectedSponsor.supported_browsers.includes(browserDetector.getBrowserName())) {
+    function isAdValid(selectedAd, callback) {
+        if (selectedAd.supported_browsers != 'all' &&
+            !selectedAd.supported_browsers.includes(browserDetector.getBrowserName())) {
             callback(null, false);
             return;
         }
 
-        storageHandler.getLocal(getSponsorDismissKey(selectedSponsor.id), (error, data) => {
+        storageHandler.getLocal(getAdDismissKey(selectedAd.id), (error, data) => {
             if (error) {
                 callback(error, false);
                 return;
@@ -885,9 +885,9 @@
                 return;
             } 
             
-            // Only show a sponsor if it has not been dismissed in less than |refresh_days| days
-            if ((secondsInOneDay * selectedSponsor.refresh_days) > data.date) {
-                console.log("Not showing sponsor " + selectedSponsor.id + ", it was dismissed.");
+            // Only show a ad if it has not been dismissed in less than |refresh_days| days
+            if ((secondsInOneDay * selectedAd.refresh_days) > data.date) {
+                console.log("Not showing ad " + selectedAd.id + ", it was dismissed.");
                 callback(error, false);
                 return;
             }
@@ -895,7 +895,7 @@
         });
     }
 
-    function canShowAnySponsor(callback) {
+    function canShowAnyAd(callback) {
         storageHandler.getLocal(getLastDismissKey(), (error, data) => {
             if (error) {
                 callback(error, false);
@@ -906,9 +906,9 @@
                 callback(error, true);
                 return;
             }
-            // Don't show more sponsor if one was dismissed in less than 24hrs
+            // Don't show more ad if one was dismissed in less than 24hrs
             if (secondsInOneDay > data.date) {
-                console.log("Not showing sponsors, one was dismissed recently.");
+                console.log("Not showing ads, one was dismissed recently.");
                 callback(error, false);
                 return
             } 
@@ -916,35 +916,35 @@
         })
     }
 
-    function clearSponsor() {
-        clearChildren(document.getElementById('sponsor-container'));
+    function clearAd() {
+        clearChildren(document.getElementById('ad-container'));
     }
 
-    function createHtmlSponsor(sponsorObject) {
-        let template = document.importNode(document.getElementById('tmp-sponsor-item').content, true);
-        let link = template.querySelector('.sponsor-link a');
-        link.textContent = sponsorObject.text;
-        link.title = sponsorObject.tooltip;
-        link.href = sponsorObject.url;
+    function createHtmlAd(adObject) {
+        let template = document.importNode(document.getElementById('tmp-ad-item').content, true);
+        let link = template.querySelector('.ad-link a');
+        link.textContent = adObject.text;
+        link.title = adObject.tooltip;
+        link.href = adObject.url;
 
         template.querySelector('.dont-show').addEventListener('click', e => {
-            clearSponsor();
-            storageHandler.setLocal(getSponsorDismissKey(sponsorObject.id), createDismissObjV1())
+            clearAd();
+            storageHandler.setLocal(getAdDismissKey(adObject.id), createDismissObjV1())
             storageHandler.setLocal(getLastDismissKey(), createDismissObjV1())
         });
         template.querySelector('.later').addEventListener('click', e => {
-            clearSponsor();
+            clearAd();
         });
 
         return template;
     }
 
     function getLastDismissKey() {
-        return 'sponsorDismissLast';
+        return 'adDismissLast';
     }
 
-    function getSponsorDismissKey(id) {
-        return 'sponsorDismiss.' + id;
+    function getAdDismissKey(id) {
+        return 'adDismiss.' + id;
     }
 
     function createDismissObjV1() {

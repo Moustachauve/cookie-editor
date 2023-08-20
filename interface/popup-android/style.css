@@ -69,34 +69,34 @@ svg.icon {
     font-weight: normal;
 }
 
-#sponsor-container > div {
+#ad-container > div {
     padding: 3px 6px;
     background-color: #b1d7f7;
     font-size: 14px;
 }
 
-.sponsor-tag {
+.ad-tag {
     font-style: italic;
     color: #214357;
 }
 
-.sponsor-link {
+.ad-link {
     display: inline;
 }
 
-.sponsor-link a {
+.ad-link a {
     color: #195179;
 }
 
-.sponsor-link a:hover {
+.ad-link a:hover {
     color: #000000;
 }
 
-.sponsor-actions {
+.ad-actions {
     text-align: right;
 }
 
-.sponsor-actions button {
+.ad-actions button {
     border: none;
     background: transparent;
     font-size: 14px;
@@ -105,7 +105,7 @@ svg.icon {
     color: #195179;
 }
 
-.sponsor-actions button:hover {
+.ad-actions button:hover {
     color: #000000;
     text-decoration: underline;
 }

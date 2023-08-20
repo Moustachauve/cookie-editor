@@ -176,19 +176,19 @@
         </div>
 
         
-        <div class="block sponsor-container">
+        <div class="block ad-container">
             <h2>Sponsors</h2>
-            <div class="sponsor">
+            <div class="ad">
                 <img src="img/tab-for-cause.png" />
                 <div>
-                    <h3><a href="https://tab.gladly.io/cookieeditor/" class="sponsors-link" data-sponsor="tab-for-cause">Tab for a Cause</a></h3>
+                    <h3><a href="https://tab.gladly.io/cookieeditor/" class="ads-link" data-ad="tab-for-cause">Tab for a Cause</a></h3>
                     <p>
                         Raise money for charity every time you open a new browser tab.
                     </p>
                     <p>
                         It's free and incredibly easy. Transform your tabs into a force for good in 30 seconds.
                     </p>
-                    <a href="https://tab.gladly.io/cookieeditor/" class="btn-cta btn-sm sponsors-link" data-sponsor="tab-for-cause">
+                    <a href="https://tab.gladly.io/cookieeditor/" class="btn-cta btn-sm ads-link" data-ad="tab-for-cause">
                         Get Tab for a Cause
                     </a>
                 </div>
@@ -295,12 +295,12 @@
         });
 
 
-        document.querySelectorAll('.sponsors-link').forEach(anchor => {
+        document.querySelectorAll('.ads-link').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
-                let sponsorName = anchor.dataset.sponsor;
-                gtag('sponsor-click', 'sponsorName', {
-                    event_category: 'sponsor',
-                    event_label: sponsorName
+                let adName = anchor.dataset.ad;
+                gtag('ad-click', 'adName', {
+                    event_category: 'ad',
+                    event_label: adName
                 });
             });
         });
