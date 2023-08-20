@@ -1,4 +1,5 @@
 if (typeof importScripts === 'function') {
+    importScripts('interface/lib/env.js');
     importScripts('interface/lib/browserDetector.js');
 }
 
@@ -32,6 +33,12 @@ if (typeof importScripts === 'function') {
             browserDetector.getApi().action.setPopup(popupOptions);
         }
     });
+
+    if (browserDetector.supportsSidePanel()) {
+        browserDetector.getApi().sidePanel
+            .setPanelBehavior({ openPanelOnActionClick: false })
+            .catch((error) => console.error(error));
+    }
 
     function handleMessage(request, sender, sendResponse) {
         console.log('message received: ' + (request.type || 'unknown'));

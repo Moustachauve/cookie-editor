@@ -114,6 +114,44 @@ module.exports = function(grunt) {
             },
 
         },
+        replace: {
+            options: {
+              patterns: [
+                {
+                  match: 'browser_name',
+                  replacement: '<%= grunt.task.current.target %>'
+                }
+              ]
+            },
+            firefox: {
+                files: [
+                    {
+                    expand: true, flatten: true, src: ['interface/lib/env.js'], dest: 'build/<%= grunt.task.current.target %>/interface/lib/'
+                    }
+                ]
+            },
+            chrome: {
+                files: [
+                    {
+                    expand: true, flatten: true, src: ['interface/lib/env.js'], dest: 'build/<%= grunt.task.current.target %>/interface/lib/'
+                    }
+                ]
+            },
+            edge: {
+                files: [
+                    {
+                    expand: true, flatten: true, src: ['interface/lib/env.js'], dest: 'build/<%= grunt.task.current.target %>/interface/lib/'
+                    }
+                ]
+            },
+            opera: {
+                files: [
+                    {
+                    expand: true, flatten: true, src: ['interface/lib/env.js'], dest: 'build/<%= grunt.task.current.target %>/interface/lib/'
+                    }
+                ]
+            }
+        },
         removelogging: {
             dist: {
                 src: "build/**/*.js"
@@ -159,10 +197,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-replace');
     grunt.loadNpmTasks("grunt-remove-logging");
     grunt.loadNpmTasks('grunt-contrib-compress');
 
     // Default task(s).
-    grunt.registerTask('default', ['json-replace', 'jshint', 'clean', 'copy', 'removelogging', 'compress']);
+    grunt.registerTask('default', ['json-replace', 'jshint', 'clean', 'copy', 'replace', 'removelogging', 'compress']);
 
 };

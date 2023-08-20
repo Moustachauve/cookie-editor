@@ -1,61 +1,42 @@
 function BrowserDetector() {
     'use strict';
+    const env = new Env();
     let namespace = chrome || window.browser || window.chrome;
-    let browserName;
     let doesSupportSameSiteCookie = null;
     let isIos = false;
     let supportPromises = false;
-
-    try {
-        supportPromises = namespace.runtime.getPlatformInfo() instanceof Promise;
-    }
-    catch (e) {
-    }
-
-    if (namespace === chrome || namespace === window.chrome) {
-        if (supportPromises) {
-            browserName = 'safari';
-        }
-        else {
-            browserName = 'chrome';
-        }
-    } else if (namespace === window.browser) {
-        if (supportPromises) {
-            browserName = 'firefox';
-        }
-        else {
-            browserName = 'edge';
-        }
-    }
-
-    console.log(browserName);
+    let supportSidePanel = false;
 
     this.getApi = function () {
         return namespace;
     };
 
     this.isFirefox = function () {
-        return browserName === 'firefox';
+        return env.browserName === 'firefox';
     };
 
     this.isChrome = function () {
-        return browserName === 'chrome';
+        return env.browserName === 'chrome';
     };
 
     this.isEdge = function () {
-        return browserName === 'edge';
+        return env.browserName === 'edge';
     };
 
     this.isSafari = function () {
-        return browserName === 'safari';
+        return env.browserName === 'safari';
     };
 
     this.supportsPromises = function () {
         return this.supportPromises;
     }
 
+    this.supportsSidePanel = function () {
+        return this.supportSidePanel;
+    }
+
     this.getBrowserName = function () {
-        return browserName;
+        return env.browserName;
     }
 
     this.supportSameSiteCookie = function () {
@@ -95,6 +76,28 @@ function BrowserDetector() {
 
         return doesSupportSameSiteCookie;
     }
+
+    try {
+        supportPromises = namespace.runtime.getPlatformInfo() instanceof Promise;
+        console.info('Promises support: ', supportPromises);
+    }
+    catch (e) {
+    }
+
+    try {
+        supportSidePanel = typeof this.getApi().sidePanel !== "undefined";
+        console.info('SidePanel support: ', supportSidePanel);
+    }
+    catch (e) {
+    }
+
+    if (env.browserName === "@@browser_name") {
+        env.browserName = "chrome";
+        console.warn("undefined browser name, using chrome as fallback");
+    }
+
+    console.log(env.browserName);
+
 
     // We call it right away to make sure the value of doesSupportSameSiteCookie is initialized
     this.supportSameSiteCookie();
