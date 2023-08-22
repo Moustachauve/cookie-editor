@@ -46,14 +46,11 @@ function GenericCookieHandler() {
             newCookie.domain = null;
         }
 
-        if (browserDetector.supportSameSiteCookie() && !browserDetector.isSafari()) {
+        if (!browserDetector.isSafari()) {
             newCookie.sameSite = cookie.sameSite || undefined;
 
             if (newCookie.sameSite == "no_restriction") {
                 newCookie.secure = true;
-            }
-            if (browserDetector.isSafari()) {
-                newCookie.sameSite = 'explicit';
             }
         }
         

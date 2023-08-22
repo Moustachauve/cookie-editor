@@ -13,8 +13,9 @@
     let notificationQueue = [];
     let notificationTimeout;
 
-    const secondsInOneDay = new Date().getTime() + (1 * 24 * 60 * 60 * 1000)
+    const secondsInOneDay = new Date().getTime() + (1 * 24 * 60 * 60 * 1000);
     const browserDetector = new BrowserDetector();
+    const permissionHandler = new PermissionHandler();
 
     const cookieHandler = new CookieHandler();
     const storageHandler = new GenericStorageHandler();
@@ -425,13 +426,14 @@
 
     // == End document ready == //
 
-    function showCookiesForTab() {
+    async function showCookiesForTab() {
         if (!cookieHandler.currentTab) {
             return;
         }
         if (disableButtons) {
             return;
         }
+
         if (showAllAdvanced === undefined) {
             if (browserDetector.isFirefox()) {
                 browserDetector.getApi().storage.local.get('showAllAdvanced').then(function (onGot) {
@@ -454,6 +456,17 @@
         if (subtitleLine) {
             subtitleLine.textContent = domain || cookieHandler.currentTab.url;
         }
+
+        if (!permissionHandler.canHavePermissions(cookieHandler.currentTab.url)) {
+            showPermissionImpossible();
+            return;
+        }
+        let hasPermissions = await permissionHandler.checkPermissions(cookieHandler.currentTab.url);
+        if (!hasPermissions) {
+            showNoPermission();
+            return;
+        }
+
 
         cookieHandler.getAllCookies(function (cookies) {
             cookies = cookies.sort(sortCookiesByName);
@@ -504,6 +517,69 @@
         let html = document.importNode(document.getElementById('tmp-empty').content, true).querySelector('p');
         if (containerCookie.firstChild) {
             if (containerCookie.firstChild.id === 'no-cookie') {
+                return;
+            }
+            disableButtons = true;
+            Animate.transitionPage(containerCookie, containerCookie.firstChild, html, 'right', () => {
+                disableButtons = false;
+            });
+        } else {
+            containerCookie.appendChild(html);
+        }
+    }
+
+    function showNoPermission() {
+        if (disableButtons) {
+            return;
+        }
+        cookiesListHtml = null;
+        let html = document.importNode(document.getElementById('tmp-no-permission').content, true).querySelector('div');
+
+        // Firefox can't request permissions from devTools due to https://bugzilla.mozilla.org/show_bug.cgi?id=1796933
+        if (browserDetector.isFirefox() && typeof browserDetector.getApi().devtools !== "undefined") {
+            console.log('Firefox devtools permission display hack');
+            html.querySelector('div').textContent = 'Go to your settings (about:addons) or open the extension\'s popup to adjust your permissions.';
+        }
+
+        if (containerCookie.firstChild) {
+            if (containerCookie.firstChild.id === 'no-permission') {
+                return;
+            }
+            disableButtons = true;
+            Animate.transitionPage(containerCookie, containerCookie.firstChild, html, 'right', () => {
+                disableButtons = false;
+            });
+        } else {
+            containerCookie.appendChild(html);
+        }
+        document.getElementById("request-permission").focus();
+        document.getElementById("request-permission").addEventListener("click", async (event) => {
+            console.log("requesting permissions!")
+            let isPermissionGranted = await permissionHandler.requestPermission(cookieHandler.currentTab.url);
+            console.log("permission granted? ", isPermissionGranted);
+            if (isPermissionGranted) {
+                showCookiesForTab();
+            }
+
+        });
+        document.getElementById("request-permission-all").addEventListener("click", async (event) => {
+            console.log("requesting all permissions!")
+            let isPermissionGranted = await permissionHandler.requestPermission("<all_urls>");
+            console.log("permission granted? ", isPermissionGranted);
+            if (isPermissionGranted) {
+                showCookiesForTab();
+            }
+        });
+    }
+
+    function showPermissionImpossible() {
+        if (disableButtons) {
+            return;
+        }
+        cookiesListHtml = null;
+        let html = document.importNode(document.getElementById('tmp-permission-impossible').content, true).querySelector('div');
+        if (containerCookie.firstChild) {
+            if (containerCookie.firstChild.id === 'permission-impossible') {
                 return;
             }
             disableButtons = true;

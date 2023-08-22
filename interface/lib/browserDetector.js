@@ -2,7 +2,6 @@ function BrowserDetector() {
     'use strict';
     const env = new Env();
     let namespace = chrome || window.browser || window.chrome;
-    let doesSupportSameSiteCookie = null;
     let isIos = false;
     let supportPromises = false;
     let supportSidePanel = false;
@@ -39,44 +38,6 @@ function BrowserDetector() {
         return env.browserName;
     }
 
-    this.supportSameSiteCookie = function () {
-        if (doesSupportSameSiteCookie !== null) {
-            return doesSupportSameSiteCookie;
-        }
-
-        const newCookie = {
-            url: 'https://example.com/',
-            name: 'testSameSite',
-            value: 'someValue',
-            sameSite: 'strict',
-        };
-
-        try {
-            if (this.isFirefox()) {
-                this.getApi().cookies.set(newCookie).then(cookie => {
-                    doesSupportSameSiteCookie = true;
-                }, error => {
-                    console.error('Failed to create cookie', error);
-                    doesSupportSameSiteCookie = false;
-                });
-            } else {
-                this.getApi().cookies.set(newCookie, (cookieResponse) => {
-                    let error = this.getApi().runtime.lastError;
-                    if (!cookieResponse || error) {
-                        console.error('Failed to create cookie', error);
-                        doesSupportSameSiteCookie = false;
-                        return;
-                    }
-                    doesSupportSameSiteCookie = true;
-                });
-            }
-        } catch(e) {
-            doesSupportSameSiteCookie = false;
-        }
-
-        return doesSupportSameSiteCookie;
-    }
-
     try {
         supportPromises = namespace.runtime.getPlatformInfo() instanceof Promise;
         console.info('Promises support: ', supportPromises);
@@ -92,13 +53,9 @@ function BrowserDetector() {
     }
 
     if (env.browserName === "@@browser_name") {
-        env.browserName = "chrome";
+        env.browserName = "firefox";
         console.warn("undefined browser name, using chrome as fallback");
     }
 
     console.log(env.browserName);
-
-
-    // We call it right away to make sure the value of doesSupportSameSiteCookie is initialized
-    this.supportSameSiteCookie();
 }

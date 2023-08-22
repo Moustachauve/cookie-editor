@@ -133,10 +133,46 @@ button:focus {outline:0;}
     background-color: #eaeaea;
 }
 
-#no-cookies {
+#no-cookies, #no-permission, #permission-impossible {
     margin-top: 2em;
     text-align: center;
     font-size: 1.2em;
+}
+
+#no-permission {
+    margin: 1em auto;
+}
+
+#no-permission > div {
+    text-align: center;
+    padding-top: 5px;
+    font-size: 1.1em;
+}
+
+#no-permission .button-container {
+    display: flex;
+	justify-content: center;
+    gap: 20px;
+    padding-top: 5px;
+}
+
+#no-permission button {
+    border: 1px solid #c5c5c5;
+    border-radius: 3px;
+    background-color: #fff;
+    padding: 8px 25px;
+    font-size: 14px;
+    transition: all 100ms linear;
+}
+
+#no-permission button:hover {
+    outline: 1px solid #444;
+    border-radius: 4px;
+}
+
+#no-permission button:focus {
+    outline: 2px solid #444;
+    border-radius: 4px;
 }
 
 #cookie-container ul {

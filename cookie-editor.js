@@ -1,6 +1,7 @@
 if (typeof importScripts === 'function') {
     importScripts('interface/lib/env.js');
     importScripts('interface/lib/browserDetector.js');
+    importScripts('interface/lib/permissionHandler.js');
 }
 
 (function () {
@@ -8,6 +9,7 @@ if (typeof importScripts === 'function') {
 
     const connections = {};
     const browserDetector = new BrowserDetector();
+    const permissionHandler = new PermissionHandler();
 
 	browserDetector.getApi().runtime.onConnect.addListener(onConnect);
 	browserDetector.getApi().runtime.onMessage.addListener(handleMessage);
@@ -22,7 +24,7 @@ if (typeof importScripts === 'function') {
             const popupOptions = {
                 popup: '/interface/popup-android/cookie-list.html'
             };
-            browserDetector.getApi().browserAction.setPopup(popupOptions);
+            browserDetector.getApi().action.setPopup(popupOptions);
         }
     });
     isSafariIos(function(response) {
@@ -97,6 +99,14 @@ if (typeof importScripts === 'function') {
                 } else {
                     browserDetector.getApi().cookies.remove(removeParams, sendResponse);
                 }
+                return true;
+
+            case 'permissionsContains':
+                permissionHandler.checkPermissions(request.params).then(sendResponse);
+                return true;
+
+            case 'permissionsRequest':
+                permissionHandler.requestPermission(request.params).then(sendResponse);
                 return true;
         }
     }

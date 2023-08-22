@@ -106,12 +106,13 @@
             </button>
         </div>
     </div>
-
+    
     <script src="../lib/isPopup.js"></script>
     <script src="../lib/animate.js"></script>
     <script src="../lib/event.js"></script>
     <script src="../lib/env.js"></script>
     <script src="../lib/browserDetector.js"></script>
+    <script src="../lib/permissionHandler.js"></script>
     <script src="../lib/cookie.js"></script>
     <script src="../lib/genericCookieHandler.js"></script>
     <script src="popupCookieHandler.js"></script>
@@ -232,6 +233,25 @@
         <p class="container" id="no-cookies">
             This page does not have any cookies
         </p>
+    </template>
+
+    <template id="tmp-no-permission">
+        <div class="container" id="no-permission">
+            You do not have the permission required to see the cookies for this page.
+            <div>
+                Request permission for
+                <div class="button-container">
+                    <button id="request-permission">This site</button>
+                    <button id="request-permission-all">All sites</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="tmp-permission-impossible">
+        <div class="container" id="permission-impossible">
+            Cookie-Editor can't display cookies for this page.
+        </div>
     </template>
 
     <template id="tmp-search-bar">

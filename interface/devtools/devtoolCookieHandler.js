@@ -13,14 +13,8 @@ function CookieHandler() {
     function init() {
         console.log('Devtool init');
         let tabId;
-        if (browserDetector.isFirefox()) {
-            backgroundPageConnection = browserDetector.getApi().runtime.connect({name: "panel"});
-            tabId = browserDetector.getApi().devtools.inspectedWindow.tabId;
-        } else {
-            backgroundPageConnection = browserDetector.getApi().runtime.connect({name: "panel"});
-            tabId = browserDetector.getApi().devtools.inspectedWindow.tabId;
-        }
-
+        backgroundPageConnection = browserDetector.getApi().runtime.connect({name: "panel"});
+        tabId = browserDetector.getApi().devtools.inspectedWindow.tabId;
         backgroundPageConnection.onMessage.addListener(onMessage);
 
         backgroundPageConnection.postMessage({
