@@ -1,3 +1,5 @@
-function Env() {
-    this.browserName = "@@browser_name";
+export class Env {
+  constructor() {
+    this.browserName = '@@browser_name';
+  }
 }

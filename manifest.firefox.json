@@ -10,7 +10,8 @@
 			"interface/lib/browserDetector.js",
 			"interface/lib/permissionHandler.js",
 			"cookie-editor.js"
-		]
+		],
+		"type": "module"
 	},
 	"action": {
 		"default_icon": {

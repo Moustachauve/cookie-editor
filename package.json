@@ -9,6 +9,8 @@
   "devDependencies": {
     "eslint": "^8.47.0",
     "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "grunt": "~1.6.1",
     "grunt-contrib-clean": "^2.0.1",
     "grunt-contrib-compress": "^2.0.0",
@@ -16,6 +18,10 @@
     "grunt-contrib-jshint": "^3.2.0",
     "grunt-json-replace": "^0.1.2",
     "grunt-remove-logging": "^0.2.0",
-    "grunt-replace": "^2.0.2"
+    "grunt-replace": "^2.0.2",
+    "prettier": "^3.0.2"
+  },
+  "scripts": {
+    "prettier-format": "prettier --config .prettierrc **/*.js --write"
   }
 }

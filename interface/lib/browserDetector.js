@@ -1,61 +1,62 @@
-function BrowserDetector() {
-    'use strict';
-    const env = new Env();
-    let namespace = chrome || window.browser || window.chrome;
-    let isIos = false;
-    let supportPromises = false;
-    let supportSidePanel = false;
+import { Env } from './env.js';
 
-    this.getApi = function () {
-        return namespace;
-    };
+/**
+ * Browser Detector
+ */
+export function BrowserDetector() {
+  'use strict';
+  const env = new Env();
+  const namespace = chrome || window.browser || window.chrome;
+  const isIos = false;
+  let supportPromises = false;
+  let supportSidePanel = false;
 
-    this.isFirefox = function () {
-        return env.browserName === 'firefox';
-    };
+  this.getApi = function () {
+    return namespace;
+  };
 
-    this.isChrome = function () {
-        return env.browserName === 'chrome';
-    };
+  this.isFirefox = function () {
+    return env.browserName === 'firefox';
+  };
 
-    this.isEdge = function () {
-        return env.browserName === 'edge';
-    };
+  this.isChrome = function () {
+    return env.browserName === 'chrome';
+  };
 
-    this.isSafari = function () {
-        return env.browserName === 'safari';
-    };
+  this.isEdge = function () {
+    return env.browserName === 'edge';
+  };
 
-    this.supportsPromises = function () {
-        return this.supportPromises;
-    }
+  this.isSafari = function () {
+    return env.browserName === 'safari';
+  };
 
-    this.supportsSidePanel = function () {
-        return this.supportSidePanel;
-    }
+  this.supportsPromises = function () {
+    return this.supportPromises;
+  };
 
-    this.getBrowserName = function () {
-        return env.browserName;
-    }
+  this.supportsSidePanel = function () {
+    return this.supportSidePanel;
+  };
 
-    try {
-        supportPromises = namespace.runtime.getPlatformInfo() instanceof Promise;
-        console.info('Promises support: ', supportPromises);
-    }
-    catch (e) {
-    }
+  this.getBrowserName = function () {
+    return env.browserName;
+  };
 
-    try {
-        supportSidePanel = typeof this.getApi().sidePanel !== "undefined";
-        console.info('SidePanel support: ', supportSidePanel);
-    }
-    catch (e) {
-    }
+  try {
+    supportPromises = namespace.runtime.getPlatformInfo() instanceof Promise;
+    console.info('Promises support: ', supportPromises);
+  } catch (e) {}
 
-    if (env.browserName === "@@browser_name") {
-        env.browserName = "firefox";
-        console.warn("undefined browser name, using chrome as fallback");
-    }
+  try {
+    supportSidePanel = typeof this.getApi().sidePanel !== 'undefined';
+    console.info('SidePanel support: ', supportSidePanel);
+  } catch (e) {}
 
-    console.log(env.browserName);
+  if (env.browserName === '@@browser_name') {
+    env.browserName = 'firefox';
+    console.warn('undefined browser name, using chrome as fallback');
+  }
+
+  console.log(env.browserName);
 }
