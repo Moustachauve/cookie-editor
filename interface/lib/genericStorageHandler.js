@@ -1,12 +1,26 @@
-function GenericStorageHandler() {
-  'use strict';
-  Event.call(this);
+import { BrowserDetector } from './browserDetector.js';
+import { EventEmitter } from './eventEmitter.js';
 
-  const browserDetector = new BrowserDetector();
+/**
+ * Abstract class used to implement basic common Storage API handling.
+ */
+export class GenericStorageHandler extends EventEmitter {
+  /**
+   * Constructs a GenericStorageHandler.
+   */
+  constructor() {
+    super();
+    this.browserDetector = new BrowserDetector();
+  }
 
-  this.getLocal = function (key, callback) {
-    if (browserDetector.supportsPromises()) {
-      browserDetector
+  /**
+   * Gets a value from LocalStorage.
+   * @param {string} key Key to identify the value in the LocalStorage.
+   * @param {function} callback
+   */
+  getLocal(key, callback) {
+    if (this.browserDetector.supportsPromises()) {
+      this.browserDetector
         .getApi()
         .storage.local.get([key])
         .then(
@@ -23,8 +37,8 @@ function GenericStorageHandler() {
           },
         );
     } else {
-      browserDetector.getApi().storage.local.get([key], (data) => {
-        const error = browserDetector.getApi().runtime.lastError;
+      this.browserDetector.getApi().storage.local.get([key], (data) => {
+        const error = this.browserDetector.getApi().runtime.lastError;
         if (error) {
           console.error('Failed to get data', key, error);
           if (callback) {
@@ -40,14 +54,20 @@ function GenericStorageHandler() {
         }
       });
     }
-  };
+  }
 
-  this.setLocal = function (key, data, callback) {
+  /**
+   * Sets a value in the LocalStorage.
+   * @param {string} key Key to identify the value in the LocalStorage.
+   * @param {any} data Data to store in the LocalStorage
+   * @param {function} callback
+   */
+  setLocal(key, data, callback) {
     const dataObj = {};
     dataObj[key] = data;
 
-    if (browserDetector.supportsPromises()) {
-      browserDetector
+    if (this.browserDetector.supportsPromises()) {
+      this.browserDetector
         .getApi()
         .storage.local.set(dataObj)
         .then(
@@ -64,8 +84,8 @@ function GenericStorageHandler() {
           },
         );
     } else {
-      browserDetector.getApi().storage.local.set(dataObj, () => {
-        const error = browserDetector.getApi().runtime.lastError;
+      this.browserDetector.getApi().storage.local.set(dataObj, () => {
+        const error = this.browserDetector.getApi().runtime.lastError;
         if (error) {
           console.error('Failed to set data', key, data, error);
           if (callback) {
@@ -81,5 +101,5 @@ function GenericStorageHandler() {
         }
       });
     }
-  };
+  }
 }

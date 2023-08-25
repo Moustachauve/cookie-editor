@@ -1,4 +1,16 @@
-class Cookie {
+import { Animate } from './animate.js';
+
+/**
+ * Helper class to display a cookie.
+ */
+export class Cookie {
+  /**
+   * Creates a cookie object.
+   * @param {string} id HTML id name for this cookie.
+   * @param {object} cookie Cookie data.
+   * @param {boolean} showAdvancedForm Whether to display the advanced form or
+   *     not.
+   */
   constructor(id, cookie, showAdvancedForm) {
     this.id = id;
     this.cookie = cookie;
@@ -7,10 +19,17 @@ class Cookie {
     this.showAdvancedForm = showAdvancedForm;
   }
 
+  /**
+   * Whether the HTML for this cookie is already generated or not.
+   */
   get isGenerated() {
     return this.baseHtml !== false;
   }
 
+  /**
+   * Gets the HTML to represent this cookie. This will generate it if it was
+   * not already generated.
+   */
   get html() {
     if (!this.isGenerated) {
       this.generateHtml();
@@ -19,6 +38,13 @@ class Cookie {
     return this.baseHtml;
   }
 
+  /**
+   * Updates the generated HTML code for a cookie. Used when a cookie changed
+   * to avoid regenerating completely the HTML. This also allows to display to
+   * the user that a cookie changed.
+   * This will not do anything if the HTML is not yet generated.
+   * @param {*} cookie Cookie data.
+   */
   updateHtml(cookie) {
     if (!this.isGenerated) {
       return;
@@ -92,7 +118,11 @@ class Cookie {
     }
   }
 
+  /**
+   * Generates the HTML representation of a cookie.
+   */
   generateHtml() {
+    const self = this;
     const template = document.importNode(
       document.getElementById('tmp-cookie').content,
       true,
@@ -184,10 +214,10 @@ class Cookie {
     inputHttpOnly.checked = this.cookie.httpOnly;
 
     inputHostOnly.addEventListener('change', function () {
-      inputDomain.disabled = this.checked;
+      inputDomain.disabled = self.checked;
     });
     inputSession.addEventListener('change', function () {
-      inputExpiration.disabled = this.checked;
+      inputExpiration.disabled = self.checked;
     });
 
     const advancedToggleButton = form.querySelector('.advanced-toggle');
@@ -208,6 +238,9 @@ class Cookie {
     }
   }
 
+  /**
+   * Updates the name of the cookie in the HTML.
+   */
   updateName() {
     const nameInput = this.baseHtml.querySelector('#name-' + this.guid);
     const header = this.baseHtml.querySelector('.header');
@@ -218,6 +251,9 @@ class Cookie {
     this.animateChangeOnNode(nameInput);
   }
 
+  /**
+   * Updates the value of the cookie in the HTML.
+   */
   updateValue() {
     const valueInput = this.baseHtml.querySelector('#value-' + this.guid);
     const header = this.baseHtml.querySelector('.header');
@@ -227,6 +263,9 @@ class Cookie {
     this.animateChangeOnNode(valueInput);
   }
 
+  /**
+   * Updates the domain of the cookie in the HTML.
+   */
   updateDomain() {
     const valueInput = this.baseHtml.querySelector('#domain-' + this.guid);
     const header = this.baseHtml.querySelector('.header');
@@ -236,6 +275,9 @@ class Cookie {
     this.animateChangeOnNode(valueInput);
   }
 
+  /**
+   * Updates the path of the cookie in the HTML.
+   */
   updatePath() {
     const valueInput = this.baseHtml.querySelector('#path-' + this.guid);
     const header = this.baseHtml.querySelector('.header');
@@ -245,6 +287,9 @@ class Cookie {
     this.animateChangeOnNode(valueInput);
   }
 
+  /**
+   * Updates the expiration of the cookie in the HTML.
+   */
   updateExpiration() {
     const valueInput = this.baseHtml.querySelector('#expiration-' + this.guid);
     const header = this.baseHtml.querySelector('.header');
@@ -256,6 +301,9 @@ class Cookie {
     this.animateChangeOnNode(valueInput);
   }
 
+  /**
+   * Updates the SameSite field of the cookie in the HTML.
+   */
   updateSameSite() {
     const valueInput = this.baseHtml.querySelector('#sameSite-' + this.guid);
     const header = this.baseHtml.querySelector('.header');
@@ -265,6 +313,9 @@ class Cookie {
     this.animateChangeOnNode(valueInput);
   }
 
+  /**
+   * Updates the HostOnly field of the cookie in the HTML.
+   */
   updateHostOnly() {
     const valueInput = this.baseHtml.querySelector('#hostOnly-' + this.guid);
     const domainInput = this.baseHtml.querySelector('#domain-' + this.guid);
@@ -277,6 +328,9 @@ class Cookie {
     this.animateChangeOnNode(valueInput);
   }
 
+  /**
+   * Updates the Session field of the cookie in the HTML.
+   */
   updateSession() {
     const valueInput = this.baseHtml.querySelector('#session-' + this.guid);
     const expirationInput = this.baseHtml.querySelector(
@@ -291,6 +345,9 @@ class Cookie {
     this.animateChangeOnNode(valueInput);
   }
 
+  /**
+   * Updates the Secure field of the cookie in the HTML.
+   */
   updateSecure() {
     const valueInput = this.baseHtml.querySelector('#secure-' + this.guid);
     const header = this.baseHtml.querySelector('.header');
@@ -300,6 +357,9 @@ class Cookie {
     this.animateChangeOnNode(valueInput);
   }
 
+  /**
+   * Updates the HttpOnly field of the cookie in the HTML.
+   */
   updateHttpOnly() {
     const valueInput = this.baseHtml.querySelector('#httpOnly-' + this.guid);
     const header = this.baseHtml.querySelector('.header');
@@ -309,6 +369,11 @@ class Cookie {
     this.animateChangeOnNode(valueInput);
   }
 
+  /**
+   * Removes the cookie from the HTML.
+   * @param {function} callback Gets called after the element's animation is
+   *     done.
+   */
   removeHtml(callback = null) {
     if (this.isRemoving) {
       return;
@@ -325,6 +390,10 @@ class Cookie {
     });
   }
 
+  /**
+   * Animates changes to the HTML.
+   * @param {Element} node Element to animate.
+   */
   animateChangeOnNode(node) {
     node.classList.remove('anim-value-changed');
     setTimeout(() => {
@@ -332,12 +401,19 @@ class Cookie {
     }, 20);
   }
 
+  /**
+   * Shows a little success animation on the cookie HTML.
+   */
   showSuccessAnimation() {
     if (this.baseHtml) {
       this.animateSuccessOnNode(this.baseHtml);
     }
   }
 
+  /**
+   * Executes a success animation on a node.
+   * @param {Element} node Element to animate.
+   */
   animateSuccessOnNode(node) {
     node.classList.remove('anim-success');
     setTimeout(() => {
@@ -345,28 +421,27 @@ class Cookie {
     }, 20);
   }
 
+  /**
+   * Generates a v4 UUID using a cryptographically strong random value
+   * generator.
+   * https://stackoverflow.com/a/2117523/1244026
+   * @return {string} A string containing a randomly generated, 36 character
+   *    long v4 UUID.
+   */
   static guid() {
-    function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
-    }
-    return (
-      s4() +
-      s4() +
-      '-' +
-      s4() +
-      '-' +
-      s4() +
-      '-' +
-      s4() +
-      '-' +
-      s4() +
-      s4() +
-      s4()
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+      (
+        c ^
+        (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+      ).toString(16),
     );
   }
 
+  /**
+   * Generates a hashcode to represent a cookie based on its name and domain.
+   * @param {object} cookie A cookie's data.
+   * @return {string} A hashcode.
+   */
   static hashCode(cookie) {
     const cookieString = cookie.name + cookie.domain;
     let hash = 0;

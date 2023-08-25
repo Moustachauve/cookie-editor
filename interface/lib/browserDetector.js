@@ -1,62 +1,103 @@
 import { Env } from './env.js';
 
 /**
- * Browser Detector
+ * Detects information about the browser being used.
  */
-export function BrowserDetector() {
-  'use strict';
-  const env = new Env();
-  const namespace = chrome || window.browser || window.chrome;
-  const isIos = false;
-  let supportPromises = false;
-  let supportSidePanel = false;
+export class BrowserDetector {
+  /**
+   * Constructs the BrowserDetector.
+   */
+  constructor() {
+    this.namespace = chrome || window.browser || window.chrome;
+    this.supportPromises = false;
+    this.supportSidePanel = false;
 
-  this.getApi = function () {
-    return namespace;
-  };
+    try {
+      this.supportPromises =
+        this.namespace.runtime.getPlatformInfo() instanceof Promise;
+      console.info('Promises support: ', this.supportPromises);
+    } catch (e) {
+      /* empty */
+    }
 
-  this.isFirefox = function () {
-    return env.browserName === 'firefox';
-  };
+    try {
+      this.supportSidePanel = typeof this.getApi().sidePanel !== 'undefined';
+      console.info('SidePanel support: ', this.supportSidePanel);
+    } catch (e) {
+      /* empty */
+    }
 
-  this.isChrome = function () {
-    return env.browserName === 'chrome';
-  };
+    if (Env.browserName === '@@browser_name') {
+      Env.browserName = 'firefox';
+      console.warn('undefined browser name, using chrome as fallback');
+    }
 
-  this.isEdge = function () {
-    return env.browserName === 'edge';
-  };
-
-  this.isSafari = function () {
-    return env.browserName === 'safari';
-  };
-
-  this.supportsPromises = function () {
-    return this.supportPromises;
-  };
-
-  this.supportsSidePanel = function () {
-    return this.supportSidePanel;
-  };
-
-  this.getBrowserName = function () {
-    return env.browserName;
-  };
-
-  try {
-    supportPromises = namespace.runtime.getPlatformInfo() instanceof Promise;
-    console.info('Promises support: ', supportPromises);
-  } catch (e) {}
-
-  try {
-    supportSidePanel = typeof this.getApi().sidePanel !== 'undefined';
-    console.info('SidePanel support: ', supportSidePanel);
-  } catch (e) {}
-
-  if (env.browserName === '@@browser_name') {
-    env.browserName = 'firefox';
-    console.warn('undefined browser name, using chrome as fallback');
+    console.log(Env.browserName);
   }
 
-  console.log(env.browserName);
+  /**
+   * Get the main API container specific to the current browser.
+   * @return {chrome|browser}
+   */
+  getApi() {
+    return this.namespace;
+  }
+
+  /**
+   * Checks if the current browser is Firefox.
+   * @return {boolean} true if the current browser is Firefox, otherwise false.
+   */
+  isFirefox() {
+    return Env.browserName === 'firefox';
+  }
+
+  /**
+   * Checks if the current browser is Chrome.
+   * @return {boolean} true if the current browser is Chrome, otherwise false.
+   */
+  isChrome() {
+    return Env.browserName === 'chrome';
+  }
+
+  /**
+   * Checks if the current browser is Edge.
+   * @return {boolean} true if the current browser is Edge, otherwise false.
+   */
+  isEdge() {
+    return Env.browserName === 'edge';
+  }
+
+  /**
+   * Checks if the current browser is Safari.
+   * @return {boolean} true if the current browser is Safari, otherwise false.
+   */
+  isSafari() {
+    return Env.browserName === 'safari';
+  }
+
+  /**
+   * Checks if the current browser's API supports promises.
+   * @return {boolean} true if the current browser's API supports promises,
+   *     otherwise false.
+   */
+  supportsPromises() {
+    return this.supportPromises;
+  }
+
+  /**
+   * Checks if the current browser supports the Sidepanel API.
+   * @return {boolean} true if the current browser supports the Sidepanel API,
+   *     otherwise false.
+   */
+  supportsSidePanel() {
+    return this.supportSidePanel;
+  }
+
+  /**
+   * Gets the current browser name.
+   * @return {string} The browser name.
+   */
+  getBrowserName() {
+    return Env.browserName;
+  }
 }

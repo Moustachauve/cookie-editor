@@ -20,7 +20,10 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
+  plugins: ['simple-import-sort'],
   rules: {
     'prettier/prettier': 2,
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
   },
 };

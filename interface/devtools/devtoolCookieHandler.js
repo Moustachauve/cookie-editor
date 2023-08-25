@@ -1,35 +1,51 @@
-function CookieHandler() {
-  'use strict';
-  GenericCookieHandler.call(this);
+import { BrowserDetector } from '../lib/browserDetector.js';
+import { GenericCookieHandler } from '../lib/genericCookieHandler.js';
 
-  const self = this;
-  let isInit = false;
-  let backgroundPageConnection;
-  const browserDetector = new BrowserDetector();
+/**
+ * implements Cookie API handling for the devtools.
+ * Devtools needs a separate behavior because they don't have access to the same
+ * APIs as the popup, for example.
+ */
+export class CookieHandler extends GenericCookieHandler {
+  /**
+   * Constructs and initializes the cookie handler.
+   */
+  constructor() {
+    super();
+    this.isInit = false;
+    this.browserDetector = new BrowserDetector();
+    this.updateCurrentTab(this.init);
+  }
 
-  updateCurrentTab(init);
-
-  function init() {
+  /**
+   * Initialise the cookie handler after making first contact with the main
+   * background script.
+   */
+  init() {
     console.log('Devtool init');
     let tabId;
-    backgroundPageConnection = browserDetector
+    const backgroundPageConnection = this.browserDetector
       .getApi()
       .runtime.connect({ name: 'panel' });
-    tabId = browserDetector.getApi().devtools.inspectedWindow.tabId;
-    backgroundPageConnection.onMessage.addListener(onMessage);
+    this.tabId = this.browserDetector.getApi().devtools.inspectedWindow.tabId;
+    backgroundPageConnection.onMessage.addListener(this.onMessage);
 
     backgroundPageConnection.postMessage({
       type: 'init',
       tabId: tabId,
     });
 
-    isInit = true;
+    this.isInit = true;
     console.log('Devtool ready');
     self.emit('ready');
   }
 
-  this.getAllCookies = function (callback) {
-    sendMessage(
+  /**
+   * Gets all the cookies for the current tab.
+   * @param {function} callback
+   */
+  getAllCookies(callback) {
+    this.sendMessage(
       'getAllCookies',
       {
         url: this.currentTab.url,
@@ -37,9 +53,16 @@ function CookieHandler() {
       },
       callback,
     );
-  };
+  }
 
-  this.saveCookie = function (cookie, url, callback) {
+  /**
+   * Saves a cookie. This can either create a new cookie or modify an existing
+   * one.
+   * @param {Cookie} cookie Cookie's data.
+   * @param {string} url The url to attach the cookie to.
+   * @param {function} callback
+   */
+  saveCookie(cookie, url, callback) {
     const newCookie = {
       domain: cookie.domain || '',
       name: cookie.name || '',
@@ -53,11 +76,17 @@ function CookieHandler() {
       sameSite: cookie.sameSite || undefined,
     };
 
-    sendMessage('saveCookie', { cookie: newCookie }, callback);
-  };
+    this.sendMessage('saveCookie', { cookie: newCookie }, callback);
+  }
 
-  this.removeCookie = function (name, url, callback) {
-    sendMessage(
+  /**
+   * Removes a cookie from the browser.
+   * @param {string} name The name of the cookie to remove.
+   * @param {string} url The url that the cookie is attached to.
+   * @param {function} callback
+   */
+  removeCookie(name, url, callback) {
+    this.sendMessage(
       'removeCookie',
       {
         name: name,
@@ -66,42 +95,61 @@ function CookieHandler() {
       },
       callback,
     );
-  };
+  }
 
-  function onMessage(request) {
+  /**
+   * Handles the reception of messages from the background script.
+   * @param {object} request
+   */
+  onMessage(request) {
     console.log('background message received: ' + (request.type || 'unknown'));
     switch (request.type) {
       case 'cookiesChanged':
-        onCookiesChanged(request.data);
+        this.onCookiesChanged(request.data);
         return;
 
       case 'tabsChanged':
-        onTabsChanged(request.data);
+        this.onTabsChanged(request.data);
         return;
     }
   }
 
-  function onCookiesChanged(changeInfo) {
+  /**
+   * Handles events that is triggered when a cookie changes.
+   * @param {object} changeInfo An object containing details of the change that
+   *     occurred.
+   */
+  onCookiesChanged(changeInfo) {
     const domain = changeInfo.cookie.domain.substring(1);
     if (self.currentTab.url.indexOf(domain) !== -1) {
       self.emit('cookiesChanged', changeInfo);
     }
   }
-  function onTabsChanged(changeInfo) {
+
+  /**
+   * Handles the event that is fired when a tab is updated.
+   * @param {object} changeInfo Properties of the tab that changed.
+   */
+  onTabsChanged(changeInfo) {
     if (changeInfo.url || changeInfo.status === 'complete') {
       console.log('tabChanged!');
-      updateCurrentTab();
+      this.updateCurrentTab();
     }
   }
 
-  function updateCurrentTab(callback) {
-    sendMessage('getCurrentTab', null, function (tabInfo) {
+  /**
+   * Retrieves the informations of the current tab from the background script.
+   * @param {*} callback
+   */
+  updateCurrentTab(callback) {
+    const self = this;
+    this.sendMessage('getCurrentTab', null, function (tabInfo) {
       const newTab =
         tabInfo[0].id !== self.currentTabId ||
         tabInfo[0].url !== self.currentTab.url;
       self.currentTabId = tabInfo[0].id;
       self.currentTab = tabInfo[0];
-      if (newTab && isInit) {
+      if (newTab && self.isInit) {
         self.emit('cookiesChanged');
       }
       if (callback) {
@@ -110,14 +158,21 @@ function CookieHandler() {
     });
   }
 
-  function sendMessage(type, params, callback, errorCallback) {
-    if (browserDetector.isFirefox()) {
-      const sending = browserDetector
+  /**
+   * Sends a message to the background script.
+   * @param {string} type The type of the message.
+   * @param {object} params The payload of the message
+   * @param {function} callback
+   * @param {function} errorCallback
+   */
+  sendMessage(type, params, callback, errorCallback) {
+    if (this.browserDetector.isFirefox()) {
+      const sending = this.browserDetector
         .getApi()
         .runtime.sendMessage({ type: type, params: params });
       sending.then(callback, errorCallback);
     } else {
-      browserDetector
+      this.browserDetector
         .getApi()
         .runtime.sendMessage({ type: type, params: params }, callback);
     }

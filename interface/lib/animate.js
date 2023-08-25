@@ -1,4 +1,13 @@
-class Animate {
+/**
+ * Handles the different animations used in the interface.
+ */
+export class Animate {
+  /**
+   * Toggles between the two different states of a expanding element through a
+   * sliding animation.
+   * @param {Element} el Element to animate.
+   * @param {function} callback Called after the animation is done.
+   */
   static toggleSlide(el, callback = null) {
     let elMaxHeight = 0;
     const self = this;
@@ -16,7 +25,8 @@ class Animate {
           el.style.display = 'none';
         }
 
-        // Hack to force firefox to resize the popup window after the animation is done
+        // Hack to force firefox to resize the popup window after the animation
+        // is done
         document.body.style.height = '100%';
         setTimeout(function () {
           document.body.style.height = '';
@@ -61,6 +71,11 @@ class Animate {
     }
   }
 
+  /**
+   * Animates the change of size of an element through a sliding animation.
+   * @param {Element} el Slide element to recalculate the size.
+   * @param {function} callback Called after the animation is done.
+   */
   static resizeSlide(el, callback = null) {
     if (callback) {
       el.addEventListener(
@@ -88,6 +103,14 @@ class Animate {
     }, 10);
   }
 
+  /**
+   * Animates a change of page content.
+   * @param {Element} container Parent container of the page
+   * @param {Element} oldPage Page that needs to get removed from the container.
+   * @param {Element} newPage Page that will be inserted in the container.
+   * @param {string} direction Which direction to slide the old page towards.
+   * @param {function} callback Called after the animation is done.
+   */
   static transitionPage(
     container,
     oldPage,
@@ -180,9 +203,13 @@ class Animate {
   }
 
   /**
-   * getHeight - for elements with display:none
+   * Calculates the height for elements with display:none.
    * https://stackoverflow.com/a/29047447
-   **/
+   * @param {Element} el Element to calculate the height.
+   * @param {boolean} ignoreMaxHeight Whether the css property `max-height`
+   *     should be ignored or not.
+   * @return {number} The calculated height of the element, in pixel.
+   */
   static getHeight(el, ignoreMaxHeight) {
     const elStyle = window.getComputedStyle(el);
     const elMaxHeight = elStyle.maxHeight;
@@ -213,6 +240,11 @@ class Animate {
     return wantedHeight;
   }
 
+  /**
+   * Determines whether or not an element is hidden.
+   * @param {Element} el The element to check.
+   * @return {boolean} True if the element is hidden, otherwise false.
+   */
   static isHidden(el) {
     return el.style.maxHeight.replace('px', '').replace('%', '') === '0';
   }

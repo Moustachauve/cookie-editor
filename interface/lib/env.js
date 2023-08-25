@@ -1,5 +1,6 @@
+/**
+ * Contains global environment variables.
+ */
 export class Env {
-  constructor() {
-    this.browserName = '@@browser_name';
-  }
+  static browserName = '@@browser_name';
 }

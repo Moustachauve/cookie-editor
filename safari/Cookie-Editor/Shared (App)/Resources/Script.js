@@ -1,3 +1,10 @@
+/* eslint-disable no-unused-vars */
+/**
+ * Shows the window in the main app that serves to sideload the extension.
+ * @param {object} platform
+ * @param {boolean} enabled
+ * @param {boolean} useSettingsInsteadOfPreferences
+ */
 function show(platform, enabled, useSettingsInsteadOfPreferences) {
   document.body.classList.add(`platform-${platform}`);
 
@@ -22,7 +29,11 @@ function show(platform, enabled, useSettingsInsteadOfPreferences) {
   }
 }
 
+/**
+ * Opens Safari's preference window.
+ */
 function openPreferences() {
+  // eslint-disable-next-line no-undef
   webkit.messageHandlers.controller.postMessage('open-preferences');
 }
 

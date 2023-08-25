@@ -1,14 +1,27 @@
-function GenericCookieHandler() {
-  'use strict';
-  Event.call(this);
+import { BrowserDetector } from './browserDetector.js';
+import { EventEmitter } from './eventEmitter.js';
 
-  this.cookies = [];
-  this.currentTab = null;
-  const browserDetector = new BrowserDetector();
+/**
+ * Abstract class used to implement basic common Cookie API handling.
+ */
+export class GenericCookieHandler extends EventEmitter {
+  /**
+   * Constructs a GenericCookieHandler.
+   */
+  constructor() {
+    super();
+    this.cookies = [];
+    this.currentTab = null;
+    this.browserDetector = new BrowserDetector();
+  }
 
-  this.getAllCookies = function (callback) {
-    if (browserDetector.supportsPromises()) {
-      browserDetector
+  /**
+   * Gets all cookie for the current tab.
+   * @param {function} callback
+   */
+  getAllCookies(callback) {
+    if (this.browserDetector.supportsPromises()) {
+      this.browserDetector
         .getApi()
         .cookies.getAll({
           url: this.currentTab.url,
@@ -18,7 +31,7 @@ function GenericCookieHandler() {
           console.error('Failed to retrieve cookies', e);
         });
     } else {
-      browserDetector.getApi().cookies.getAll(
+      this.browserDetector.getApi().cookies.getAll(
         {
           url: this.currentTab.url,
           storeId: this.currentTab.cookieStoreId,
@@ -26,9 +39,16 @@ function GenericCookieHandler() {
         callback,
       );
     }
-  };
+  }
 
-  this.saveCookie = function (cookie, url, callback) {
+  /**
+   * Saves a cookie. This can either create a new cookie or modify an existing
+   * one.
+   * @param {Cookie} cookie Cookie's data.
+   * @param {string} url The url to attach the cookie to.
+   * @param {function} callback
+   */
+  saveCookie(cookie, url, callback) {
     const newCookie = {
       domain: cookie.domain || '',
       name: cookie.name || '',
@@ -43,15 +63,18 @@ function GenericCookieHandler() {
 
     // Bad hack on safari because cookies needs to have the very exact same domain
     // to be able to edit it.
-    if (browserDetector.isSafari() && newCookie.domain) {
+    if (this.browserDetector.isSafari() && newCookie.domain) {
       newCookie.url = 'http://' + newCookie.domain;
     }
 
-    if (cookie.hostOnly || (browserDetector.isSafari() && !newCookie.domain)) {
+    if (
+      cookie.hostOnly ||
+      (this.browserDetector.isSafari() && !newCookie.domain)
+    ) {
       newCookie.domain = null;
     }
 
-    if (!browserDetector.isSafari()) {
+    if (!this.browserDetector.isSafari()) {
       newCookie.sameSite = cookie.sameSite || undefined;
 
       if (newCookie.sameSite == 'no_restriction') {
@@ -59,8 +82,8 @@ function GenericCookieHandler() {
       }
     }
 
-    if (browserDetector.supportsPromises()) {
-      browserDetector
+    if (this.browserDetector.supportsPromises()) {
+      this.browserDetector
         .getApi()
         .cookies.set(newCookie)
         .then(
@@ -77,8 +100,8 @@ function GenericCookieHandler() {
           },
         );
     } else {
-      browserDetector.getApi().cookies.set(newCookie, (cookieResponse) => {
-        const error = browserDetector.getApi().runtime.lastError;
+      this.browserDetector.getApi().cookies.set(newCookie, (cookieResponse) => {
+        const error = this.browserDetector.getApi().runtime.lastError;
         if (!cookieResponse || error) {
           console.error('Failed to create cookie', error);
           if (callback) {
@@ -94,12 +117,20 @@ function GenericCookieHandler() {
         }
       });
     }
-  };
+  }
 
-  this.removeCookie = function (name, url, callback, isRecursive = false) {
+  /**
+   * Removes a cookie from the browser.
+   * @param {string} name The name of the cookie to remove.
+   * @param {string} url The url that the cookie is attached to.
+   * @param {function} callback
+   * @param {boolean} isRecursive
+   */
+  removeCookie(name, url, callback, isRecursive = false) {
     // Bad hack on safari because cookies needs to have the very exact same domain
     // to be able to delete it.
-    if (browserDetector.isSafari() && !isRecursive) {
+    // TODO: Check if this hack is needed on devtools.
+    if (this.browserDetector.isSafari() && !isRecursive) {
       this.getAllCookies((cookies) => {
         for (const cookie of cookies) {
           if (cookie.name === name) {
@@ -107,8 +138,8 @@ function GenericCookieHandler() {
           }
         }
       });
-    } else if (browserDetector.supportsPromises()) {
-      browserDetector
+    } else if (this.browserDetector.supportsPromises()) {
+      this.browserDetector
         .getApi()
         .cookies.remove({
           name: name,
@@ -122,14 +153,14 @@ function GenericCookieHandler() {
           }
         });
     } else {
-      browserDetector.getApi().cookies.remove(
+      this.browserDetector.getApi().cookies.remove(
         {
           name: name,
           url: url,
           storeId: this.currentTab.cookieStoreId,
         },
         (cookieResponse) => {
-          const error = browserDetector.getApi().runtime.lastError;
+          const error = this.browserDetector.getApi().runtime.lastError;
           if (!cookieResponse || error) {
             console.error('Failed to remove cookie', error);
             if (callback) {
@@ -146,5 +177,5 @@ function GenericCookieHandler() {
         },
       );
     }
-  };
+  }
 }
