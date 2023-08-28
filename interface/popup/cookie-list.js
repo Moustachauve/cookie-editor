@@ -493,7 +493,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     document
       .querySelector('#advanced-toggle-all input')
       .addEventListener('change', function (e) {
-        // TODO: check that this still works after changes
         showAllAdvanced = e.target.checked;
         browserDetector
           .getApi()
@@ -583,7 +582,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       return;
     }
     const hasPermissions = await permissionHandler.checkPermissions(
-      // TODO: check why CurrentTab doesn't exists on devtools on safari
       cookieHandler.currentTab.url,
     );
     if (!hasPermissions) {
@@ -1046,7 +1044,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * @return {string} The domain extracted.
    */
   function getDomainFromUrl(url) {
-    // TODO: Check that this still works.
     const matches = url.match(/^https?:\/\/([^/?#]+)(?:[/?#]|$)/i);
     return matches && matches[1];
   }
