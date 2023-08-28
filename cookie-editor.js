@@ -2,8 +2,6 @@ import { BrowserDetector } from './interface/lib/browserDetector.js';
 import { PermissionHandler } from './interface/lib/permissionHandler.js';
 
 (function () {
-  ('use strict');
-
   const connections = {};
   const browserDetector = new BrowserDetector();
   const permissionHandler = new PermissionHandler();
@@ -37,7 +35,8 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
     browserDetector
       .getApi()
       .sidePanel.setPanelBehavior({ openPanelOnActionClick: false })
-      .catch((error) => console.error(error));
+      // eslint-disable-next-line prettier/prettier
+      .catch((error) => {console.error(error);});
   }
 
   /**

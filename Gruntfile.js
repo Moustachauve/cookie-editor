@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 module.exports = function (grunt) {
   // Project configuration.
   grunt.initConfig({
@@ -47,6 +48,9 @@ module.exports = function (grunt) {
         jshintrc: true,
       },
       all: ['**.js'],
+    },
+    eslint: {
+      target: ['**.js', '!Gruntfile.js'],
     },
     clean: {
       firefox: ['build/firefox'],
@@ -289,6 +293,7 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-json-replace');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-replace');
@@ -299,6 +304,7 @@ module.exports = function (grunt) {
   grunt.registerTask('default', [
     'json-replace',
     'jshint',
+    'eslint',
     'clean',
     'copy',
     'replace',

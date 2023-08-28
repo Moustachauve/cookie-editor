@@ -3,31 +3,58 @@ import { BrowserDetector } from './browserDetector.js';
 /**
  * interface/devtools/permissionHandler.js needs to be kept in sync to the functions in this file
  */
-export function PermissionHandler() {
-  'use strict';
-  const browserDetector = new BrowserDetector();
+export class PermissionHandler {
+  /**
+   * Constructs a PermissionHandler.
+   */
+  constructor() {
+    this.browserDetector = new BrowserDetector();
+    // Urls that start with these values can't be requested for permission.
+    this.impossibleUrls = ['about:', 'chrome:', 'edge:'];
+  }
 
-  // Check if it is possible for a website to have permissions.
-  // for example, on firefox, it is impossible to check for permission on internal pages (about:[...])
-  this.canHavePermissions = function (url) {
-    if (url.indexOf('about:') === 0 || url.indexOf('edge:') === 0) {
-      return false;
+  /**
+   * Check if it is possible for a website to have permissions. for example, on
+   * firefox, it is impossible to check for permission on internal pages
+   * (about:[...]).
+   * @param {*} url Url to check.
+   * @return {boolean} True if it's possible to request permission, otherwise
+   *     false.
+   */
+  canHavePermissions(url) {
+    for (const impossibleUrl of this.impossibleUrls) {
+      if (url.indexOf(impossibleUrl) === 0) {
+        return false;
+      }
     }
     return true;
-  };
+  }
 
-  this.checkPermissions = async function (url) {
+  /**
+   * Checks if the extension has permissions to access the cookies for a
+   * specific url.
+   * @param {string} url Url to check.
+   * @return {Promise}
+   */
+  async checkPermissions(url) {
     const testPermission = {
       origins: [url],
     };
 
-    return await browserDetector.getApi().permissions.contains(testPermission);
-  };
+    return await this.browserDetector
+      .getApi()
+      .permissions.contains(testPermission);
+  }
 
-  this.requestPermission = async function (url) {
+  /**
+   * Requests permissions to access the cookies for a specific url.
+   * @param {string} url Url to request permissions.
+   * @return {Promise}
+   */
+  async requestPermission(url) {
     const permission = {
       origins: [url],
     };
-    return browserDetector.getApi().permissions.request(permission);
-  };
+    return this.browserDetector.getApi().permissions.request(permission);
+  }
 }

@@ -32,10 +32,10 @@ export class EventEmitter {
    * @param {*} callback Callback to register to an event for handling signals.
    */
   on(event, callback) {
-    if (typeof self.queue[event] === 'undefined') {
-      self.queue[event] = [];
+    if (typeof this.queue[event] === 'undefined') {
+      this.queue[event] = [];
     }
 
-    self.queue[event].push(callback);
+    this.queue[event].push(callback);
   }
 }

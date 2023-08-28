@@ -1,8 +1,12 @@
+import { Animate } from '../lib/animate.js';
 import { BrowserDetector } from '../lib/browserDetector.js';
+import { Cookie } from '../lib/cookie.js';
+import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
 import { PermissionHandler } from '../lib/permissionHandler.js';
+import { CookieHandler } from './popupCookieHandler.js';
 
 (function () {
-  'use strict';
+  ('use strict');
 
   let containerCookie;
   let cookiesListHtml;
@@ -49,6 +53,10 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     notificationElement = document.getElementById('notification');
     pageTitleContainer = document.getElementById('pageTitle');
 
+    /**
+     * Expands the HTML cookie element.
+     * @param {element} e Element to expand.
+     */
     function expandCookie(e) {
       const parent = e.target.closest('li');
       const header = parent.querySelector('.header');
@@ -60,6 +68,11 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
       expando.ariaHidden = !header.classList.contains('active');
     }
 
+    /**
+     * Handles clicks on the delete button of a cookie.
+     * @param {Element} e Delete button element.
+     * @return {false} returns false to prevent click event propagation.
+     */
     function deleteButton(e) {
       e.preventDefault();
       console.log('removing cookie...');
@@ -68,6 +81,11 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
       return false;
     }
 
+    /**
+     * Handles saving a cookie from a form.
+     * @param {element} form Form element that contains the cookie fields.
+     * @return {false} returns false to prevent click event propagation.
+     */
     function saveCookieForm(form) {
       const isCreateForm = form.classList.contains('create');
 
@@ -115,6 +133,20 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
       return false;
     }
 
+    /**
+     * Creates or saves changes to a cookie.
+     * @param {string} id HTML ID assigned to the cookie.
+     * @param {string} name Name of the cookie.
+     * @param {string} value Value of the cookie.
+     * @param {string} domain
+     * @param {string} path
+     * @param {string} expiration
+     * @param {string} sameSite
+     * @param {boolean} hostOnly
+     * @param {boolean} session
+     * @param {boolean} secure
+     * @param {boolean} httpOnly
+     */
     function saveCookie(
       id,
       name,
@@ -289,7 +321,9 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
         }
         if (loadedCookies && Object.keys(loadedCookies).length) {
           for (const cookieId in loadedCookies) {
-            removeCookie(loadedCookies[cookieId].cookie.name);
+            if (Object.prototype.hasOwnProperty.call(loadedCookies, cookieId)) {
+              removeCookie(loadedCookies[cookieId].cookie.name);
+            }
           }
         }
         sendNotification('All cookies were deleted');
@@ -453,8 +487,9 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
 
     document
       .querySelector('#advanced-toggle-all input')
-      .addEventListener('change', function () {
-        showAllAdvanced = this.checked;
+      .addEventListener('change', function (e) {
+        // TODO: check that this still works after changes
+        showAllAdvanced = e.target.checked;
         browserDetector
           .getApi()
           .storage.local.set({ showAllAdvanced: showAllAdvanced });
@@ -492,6 +527,7 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     if (browserDetector.isChrome()) {
       console.log('chrome 84 hotfix');
       document.querySelectorAll('svg').forEach((x) => {
+        // eslint-disable-next-line no-self-assign
         x.innerHTML = x.innerHTML;
       });
     }
@@ -499,6 +535,10 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
 
   // == End document ready == //
 
+  /**
+   * Builds the HTML for the cookies of the current tab.
+   * @return {Promise|null}
+   */
   async function showCookiesForTab() {
     if (!cookieHandler.currentTab) {
       return;
@@ -592,12 +632,17 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
       if (browserDetector.isChrome()) {
         console.log('chrome 84 hotfix');
         document.querySelectorAll('svg').forEach((x) => {
+          // eslint-disable-next-line no-self-assign
           x.innerHTML = x.innerHTML;
         });
       }
     });
   }
 
+  /**
+   * Displays a message to the user to let them know that no cookies are
+   * available for the current page.
+   */
   function showNoCookies() {
     if (disableButtons) {
       return;
@@ -625,6 +670,10 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     }
   }
 
+  /**
+   * Displays a message to the user to let them know that the extension doesn't
+   * have permission to access the cookies for this page.
+   */
   function showNoPermission() {
     if (disableButtons) {
       return;
@@ -634,14 +683,16 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
       .importNode(document.getElementById('tmp-no-permission').content, true)
       .querySelector('div');
 
-    // Firefox can't request permissions from devTools due to https://bugzilla.mozilla.org/show_bug.cgi?id=1796933
+    // Firefox can't request permissions from devTools due to
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=1796933
     if (
       browserDetector.isFirefox() &&
       typeof browserDetector.getApi().devtools !== 'undefined'
     ) {
       console.log('Firefox devtools permission display hack');
       html.querySelector('div').textContent =
-        "Go to your settings (about:addons) or open the extension's popup to adjust your permissions.";
+        "Go to your settings (about:addons) or open the extension's popup to " +
+        'adjust your permissions.';
     }
 
     if (containerCookie.firstChild) {
@@ -687,6 +738,11 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
       });
   }
 
+  /**
+   * Displays a message to the user to let them know that the extension can't
+   * get permission to access the cookies for this page due to them being
+   * internal pages.
+   */
   function showPermissionImpossible() {
     if (disableButtons) {
       return;
@@ -717,6 +773,13 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     }
   }
 
+  /**
+   * Creates the HTML representation of a cookie.
+   * @param {string} name Name of the cookie.
+   * @param {string} value Value of the cookie.
+   * @param {string} id HTML ID to use for the cookie.
+   * @return {string} the HTML of the cookie.
+   */
   function createHtmlForCookie(name, value, id) {
     const cookie = new Cookie(id, {
       name: name,
@@ -726,6 +789,10 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     return cookie.html;
   }
 
+  /**
+   * Creates the HTML form to allow editing a cookie.
+   * @return {string} The HTML for the form.
+   */
   function createHtmlFormCookie() {
     const template = document.importNode(
       document.getElementById('tmp-create').content,
@@ -734,6 +801,10 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     return template.querySelector('form');
   }
 
+  /**
+   * Creates the HTML form to allow importing cookies.
+   * @return {string} The HTML for the form.
+   */
   function createHtmlFormImport() {
     const template = document.importNode(
       document.getElementById('tmp-import').content,
@@ -742,6 +813,9 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     return template.querySelector('form');
   }
 
+  /**
+   * Toggles the visibility of the export menu.
+   */
   function toggleExportMenu() {
     if (document.getElementById('export-menu')) {
       hideExportMenu();
@@ -750,6 +824,9 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     }
   }
 
+  /**
+   * Shows the export menu.
+   */
   function showExportMenu() {
     const template = document.importNode(
       document.getElementById('tmp-export-options').content,
@@ -770,6 +847,9 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
       });
   }
 
+  /**
+   * Hides the export menu.
+   */
   function hideExportMenu() {
     const exportMenu = document.getElementById('export-menu');
     if (exportMenu) {
@@ -778,6 +858,15 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     }
   }
 
+  if (typeof createHtmlFormCookie === 'undefined') {
+    // This should not happen anyway ;)
+    // eslint-disable-next-line no-func-assign
+    createHtmlFormCookie = createHtmlForCookie;
+  }
+
+  /**
+   * Exports all the cookies for the current tab in the JSON format.
+   */
   function exportToJson() {
     hideExportMenu();
     const buttonIcon = document
@@ -791,12 +880,14 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
 
     const exportedCookies = [];
     for (const cookieId in loadedCookies) {
-      const exportedCookie = loadedCookies[cookieId].cookie;
-      exportedCookie.storeId = null;
-      if (exportedCookie.sameSite === 'unspecified') {
-        exportedCookie.sameSite = null;
+      if (Object.prototype.hasOwnProperty.call(loadedCookies, cookieId)) {
+        const exportedCookie = loadedCookies[cookieId].cookie;
+        exportedCookie.storeId = null;
+        if (exportedCookie.sameSite === 'unspecified') {
+          exportedCookie.sameSite = null;
+        }
+        exportedCookies.push(exportedCookie);
       }
-      exportedCookies.push(exportedCookie);
     }
 
     copyText(JSON.stringify(exportedCookies, null, 4));
@@ -807,6 +898,9 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     }, 1500);
   }
 
+  /**
+   * Exports all the cookies for the current tab in the Netscape format.
+   */
   function exportToNetscape() {
     hideExportMenu();
     const buttonIcon = document
@@ -822,21 +916,26 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     netscapeCookies += '\n# http://curl.haxx.se/rfc/cookie_spec.html';
     netscapeCookies += '\n# This file was generated by Cookie-Editor';
     for (const cookieId in loadedCookies) {
-      const cookie = loadedCookies[cookieId].cookie;
-      const secure = cookie.secure.toString().toUpperCase();
-      let expiration = 0;
+      if (Object.prototype.hasOwnProperty.call(loadedCookies, cookieId)) {
+        const cookie = loadedCookies[cookieId].cookie;
+        const secure = cookie.secure.toString().toUpperCase();
+        let expiration = 0;
 
-      if (cookie.session) {
-        // Create sessions with a 1 day TTL to avoid the cookie being discarded when imported back.
-        // This is a compromise due to the Netscape format. It is short enough but not too short.
-        expiration = Math.trunc(
-          new Date(Date.now() + 86400 * 1000).getTime() / 1000,
-        );
-      } else if (!cookie.session && !!cookie.expirationDate) {
-        expiration = Math.trunc(cookie.expirationDate);
+        if (cookie.session) {
+          // Create sessions with a 1 day TTL to avoid the cookie being
+          // discarded when imported back. This is a compromise due to the
+          // Netscape format. It is short enough but not too short.
+          expiration = Math.trunc(
+            new Date(Date.now() + 86400 * 1000).getTime() / 1000,
+          );
+        } else if (!cookie.session && !!cookie.expirationDate) {
+          expiration = Math.trunc(cookie.expirationDate);
+        }
+
+        netscapeCookies +=
+          `\n${cookie.domain}	TRUE	${cookie.path}	${secure}	` +
+          `${expiration}	${cookie.name}	${cookie.value}`;
       }
-
-      netscapeCookies += `\n${cookie.domain}	TRUE	${cookie.path}	${secure}	${expiration}	${cookie.name}	${cookie.value}`;
     }
 
     copyText(netscapeCookies);
@@ -847,6 +946,12 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     }, 1500);
   }
 
+  /**
+   * Removes a cookie from the current tab.
+   * @param {string} name Name of the cookie to remove.
+   * @param {string} url Url of the tab that contains the cookie.
+   * @param {function} callback
+   */
   function removeCookie(name, url, callback) {
     cookieHandler.removeCookie(name, url || getCurrentTabUrl(), function (e) {
       console.log('removed successfuly', e);
@@ -859,6 +964,10 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     });
   }
 
+  /**
+   * Handles the CookiesChanged event and updates the interface.
+   * @param {object} changeInfo
+   */
   function onCookiesChanged(changeInfo) {
     if (!changeInfo) {
       showCookiesForTab();
@@ -904,22 +1013,33 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     }
   }
 
-  function onCookieHandlerReady() {
-    showCookiesForTab();
-  }
-
+  /**
+   * Evaluates two cookies to determine which comes first when sorting them.
+   * @param {object} a First cookie.
+   * @param {object} b Second cookie.
+   * @return {int} -1 if a should show first, 0 if they are equal, otherwise 1.
+   */
   function sortCookiesByName(a, b) {
     const aName = a.name.toLowerCase();
     const bName = b.name.toLowerCase();
     return aName < bName ? -1 : aName > bName ? 1 : 0;
   }
 
-  function initWindow(tab) {
+  /**
+   * Initialises the interface.
+   * @param {object} _tab The current Tab.
+   */
+  function initWindow(_tab) {
     cookieHandler.on('cookiesChanged', onCookiesChanged);
-    cookieHandler.on('ready', onCookieHandlerReady);
+    cookieHandler.on('ready', showCookiesForTab);
     handleAd();
   }
 
+  /**
+   * Gets the URL of the current tab.
+   * @return {string} The URL of the current tab, otherwise empty string if
+   *     we can't get the current tab.
+   */
   function getCurrentTabUrl() {
     if (cookieHandler.currentTab) {
       return cookieHandler.currentTab.url;
@@ -927,16 +1047,30 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     return '';
   }
 
+  /**
+   * Gets the domain of an URL.
+   * @param {string} url URL to extract the domain from.
+   * @return {string} The domain extracted.
+   */
   function getDomainFromUrl(url) {
-    const matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
+    // TODO: Check that this still works.
+    const matches = url.match(/^https?:\/\/([^/?#]+)(?:[/?#]|$)/i);
     return matches && matches[1];
   }
 
+  /**
+   * Adds a notification to the notification queue.
+   * @param {string} message Message to display in the notification.
+   */
   function sendNotification(message) {
     notificationQueue.push(message);
     triggerNotification();
   }
 
+  /**
+   * Generates the HTML for the search bar.
+   * @return {string} The HTML to display the search bar.
+   */
   function generateSearchBar() {
     const searchBarContainer = document.importNode(
       document.getElementById('tmp-search-bar').content,
@@ -950,6 +1084,11 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     return searchBarContainer;
   }
 
+  /**
+   * Starts displaying the next notification in the queue if there is one.
+   * This will also make sure that wer are not already in the middle of
+   * displaying a notification already.
+   */
   function triggerNotification() {
     if (!notificationQueue || !notificationQueue.length) {
       return;
@@ -964,6 +1103,11 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     showNotification();
   }
 
+  /**
+   * Creates the HTML for a notification and animates it into view for a
+   * specific amount of time. Then it will dismiss itself if the user doesn't
+   * dismiss it manually.
+   */
   function showNotification() {
     if (notificationTimeout) {
       return;
@@ -983,6 +1127,9 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     }, 2500);
   }
 
+  /**
+   * Hides a notification.
+   */
   function hideNotification() {
     if (notificationTimeout) {
       clearTimeout(notificationTimeout);
@@ -996,6 +1143,10 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
       'none';
   }
 
+  /**
+   * Sets the page title.
+   * @param {string} title Title to display.
+   */
   function setPageTitle(title) {
     if (!pageTitleContainer) {
       return;
@@ -1004,6 +1155,10 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     pageTitleContainer.querySelector('h1').textContent = title;
   }
 
+  /**
+   * Copy some text to the user's clipboard.
+   * @param {string} text Text to copy.
+   */
   function copyText(text) {
     const fakeText = document.createElement('textarea');
     fakeText.classList.add('clipboardCopier');
@@ -1015,16 +1170,29 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     document.body.removeChild(fakeText);
   }
 
+  /**
+   * Checks if a value is an arary.
+   * @param {any} value Value to evaluate.
+   * @return {boolean} true if the value is an array, otherwise false.
+   */
   function isArray(value) {
     return value && typeof value === 'object' && value.constructor === Array;
   }
 
+  /**
+   * Clears all the children of an element.
+   * @param {element} element Element to clear its children.
+   */
   function clearChildren(element) {
     while (element.firstChild) {
       element.removeChild(element.firstChild);
     }
   }
 
+  /**
+   * Adjusts the width of the interface if the container it's in is smaller than
+   * a specific size.
+   */
   function adjustWidthIfSmaller() {
     const realWidth = document.documentElement.clientWidth;
     if (realWidth < 500) {
@@ -1034,6 +1202,11 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     }
   }
 
+  /**
+   * Filters the cookies based on keywords. Used for searching.
+   * @param {element} target The searchbox.
+   * @param {*} filterText The text to search for.
+   */
   function filterCookies(target, filterText) {
     const cookies = cookiesListHtml.querySelectorAll('.cookie');
     filterText = filterText.toLowerCase();
@@ -1057,6 +1230,11 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     }
   }
 
+  /**
+   * Handles the main logic of displaying ads. This will check if there are any
+   * ads that can be displayed and will select a random one to display if there
+   * are more than one valid option.
+   */
   function handleAd() {
     if (!ads) {
       return;
@@ -1075,6 +1253,9 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     });
   }
 
+  /**
+   * Shows a random valid ad to the user.
+   */
   function showRandomAd() {
     if (!ads || !ads.length) {
       console.log('No ads left');
@@ -1100,6 +1281,13 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     });
   }
 
+  /**
+   * Checks if an ad is valid to display to the user. To be valid, an ad needs
+   * to be available for the user's browser and respect the choice of the user
+   * if they have marked it as not interested.
+   * @param {object} selectedAd The ad to validate.
+   * @param {function} callback
+   */
   function isAdValid(selectedAd, callback) {
     if (
       selectedAd.supported_browsers != 'all' &&
@@ -1130,6 +1318,10 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     });
   }
 
+  /**
+   * Makes sure to not spam the user with ads if they recently dismissed one.
+   * @param {function} callback
+   */
   function canShowAnyAd(callback) {
     storageHandler.getLocal(getLastDismissKey(), (error, data) => {
       if (error) {
@@ -1151,10 +1343,18 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     });
   }
 
+  /**
+   * Removes the currently displayed ad from the interface.
+   */
   function clearAd() {
     clearChildren(document.getElementById('ad-container'));
   }
 
+  /**
+   * Creates the HTML to display an ad.
+   * @param {object} adObject Ad to display.
+   * @return {string} The HTML representation of the ad.
+   */
   function createHtmlAd(adObject) {
     const template = document.importNode(
       document.getElementById('tmp-ad-item').content,
@@ -1180,14 +1380,27 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
     return template;
   }
 
+  /**
+   * Gets the key to get the last dismissed ad.
+   * @return {string} The key.
+   */
   function getLastDismissKey() {
     return 'adDismissLast';
   }
 
+  /**
+   * Gets the key to get the time a specific ad was dismissed.
+   * @param {string} id Id of the ad to check.
+   * @return {string} The key.
+   */
   function getAdDismissKey(id) {
     return 'adDismiss.' + id;
   }
 
+  /**
+   * Creates the data to log the time a specific ad was dismissed.
+   * @return {object} Data about the dismissal.
+   */
   function createDismissObjV1() {
     return {
       version: 1,

@@ -2,7 +2,7 @@ import { BrowserDetector } from './browserDetector.js';
 import { EventEmitter } from './eventEmitter.js';
 
 /**
- * Abstract class used to implement basic common Cookie API handling.
+ * Class used to implement basic common Cookie API handling.
  */
 export class GenericCookieHandler extends EventEmitter {
   /**

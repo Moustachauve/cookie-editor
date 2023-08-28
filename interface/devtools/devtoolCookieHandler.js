@@ -1,4 +1,3 @@
-import { BrowserDetector } from '../lib/browserDetector.js';
 import { GenericCookieHandler } from '../lib/genericCookieHandler.js';
 
 /**
@@ -13,7 +12,6 @@ export class CookieHandler extends GenericCookieHandler {
   constructor() {
     super();
     this.isInit = false;
-    this.browserDetector = new BrowserDetector();
     this.updateCurrentTab(this.init);
   }
 
@@ -37,7 +35,7 @@ export class CookieHandler extends GenericCookieHandler {
 
     this.isInit = true;
     console.log('Devtool ready');
-    self.emit('ready');
+    this.emit('ready');
   }
 
   /**
@@ -121,8 +119,8 @@ export class CookieHandler extends GenericCookieHandler {
    */
   onCookiesChanged(changeInfo) {
     const domain = changeInfo.cookie.domain.substring(1);
-    if (self.currentTab.url.indexOf(domain) !== -1) {
-      self.emit('cookiesChanged', changeInfo);
+    if (this.currentTab.url.indexOf(domain) !== -1) {
+      this.emit('cookiesChanged', changeInfo);
     }
   }
 

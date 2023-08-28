@@ -1,94 +1,130 @@
-function CookieHandler() {
-  'use strict';
-  GenericCookieHandler.call(this);
+import { GenericCookieHandler } from '../lib/genericCookieHandler.js';
 
-  const self = this;
-  let isInit = false;
-  const browserDetector = new BrowserDetector();
+/**
+ * implements Cookie API handling for the popup and other similar interfaces.
+ */
+export class CookieHandler extends GenericCookieHandler {
+  /**
+   * Constructs and initializes the cookie handler.
+   */
+  constructor() {
+    super();
+    this.isInit = false;
+    this.currentTabId = null;
 
-  if (browserDetector.isFirefox()) {
-    browserDetector
-      .getApi()
-      .tabs.query({ active: true, currentWindow: true })
-      .then(init);
-  } else {
-    browserDetector
-      .getApi()
-      .tabs.query({ active: true, currentWindow: true }, init);
+    if (this.browserDetector.isFirefox()) {
+      this.browserDetector
+        .getApi()
+        .tabs.query({ active: true, currentWindow: true })
+        .then(this.init);
+    } else {
+      this.browserDetector
+        .getApi()
+        .tabs.query({ active: true, currentWindow: true }, this.init);
+    }
   }
 
-  function init(tabInfo) {
-    self.currentTabId = tabInfo[0].id;
-    self.currentTab = tabInfo[0];
-
-    if (browserDetector.isFirefox()) {
-      browserDetector.getApi().cookies.onChanged.addListener(onCookiesChanged);
-      browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
-      browserDetector.getApi().tabs.onActivated.addListener(onTabActivated);
+  /**
+   * Initialise the cookie handler after getting our first contact with the
+   * current tab.
+   * @param {*} tabInfo Info about the current tab.
+   */
+  init = (tabInfo) => {
+    this.currentTabId = tabInfo[0].id;
+    this.currentTab = tabInfo[0];
+    const api = this.browserDetector.getApi();
+    if (this.browserDetector.isFirefox()) {
+      api.cookies.onChanged.addListener(this.onCookiesChanged);
+      api.tabs.onUpdated.addListener(this.onTabsChanged);
+      api.tabs.onActivated.addListener(this.onTabActivated);
     } else {
-      browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
-      browserDetector.getApi().tabs.onActivated.addListener(onTabActivated);
-      if (!browserDetector.isSafari()) {
-        browserDetector
-          .getApi()
-          .cookies.onChanged.addListener(onCookiesChanged);
+      api.tabs.onUpdated.addListener(this.onTabsChanged);
+      api.tabs.onActivated.addListener(this.onTabActivated);
+      if (!this.browserDetector.isSafari()) {
+        api.cookies.onChanged.addListener(this.onCookiesChanged);
       }
     }
 
-    isInit = true;
-    self.emit('ready');
-  }
+    this.isInit = true;
+    this.emit('ready');
+  };
 
-  function onCookiesChanged(changeInfo) {
+  /**
+   * Handles events that is triggered when a cookie changes.
+   * @param {object} changeInfo An object containing details of the change that
+   *     occurred.
+   */
+  onCookiesChanged = (changeInfo) => {
     const domain = changeInfo.cookie.domain.substring(1);
     if (
-      self.currentTab.url.indexOf(domain) !== -1 &&
-      changeInfo.cookie.storeId === (self.currentTab.cookieStoreId || '0')
+      this.currentTab.url.indexOf(domain) !== -1 &&
+      changeInfo.cookie.storeId === (this.currentTab.cookieStoreId || '0')
     ) {
-      self.emit('cookiesChanged', changeInfo);
+      this.emit('cookiesChanged', changeInfo);
     }
-  }
-  function onTabsChanged(tabId, changeInfo, tab) {
+  };
+
+  /**
+   * Handles the event that is fired when a tab is updated.
+   * @param {object} tabId Id of the tab that changed.
+   * @param {object} changeInfo Properties of the tab that changed.
+   * @param {object} _tab
+   */
+  onTabsChanged = (tabId, changeInfo, _tab) => {
     if (
-      tabId === self.currentTabId &&
+      tabId === this.currentTabId &&
       (changeInfo.url || changeInfo.status === 'complete')
     ) {
       console.log('tabChanged!');
-      if (browserDetector.isFirefox()) {
-        browserDetector
+      if (this.browserDetector.isFirefox()) {
+        this.browserDetector
           .getApi()
           .tabs.query({ active: true, currentWindow: true })
-          .then(updateCurrentTab);
+          .then(this.updateCurrentTab);
       } else {
-        browserDetector
+        this.browserDetector
           .getApi()
-          .tabs.query({ active: true, currentWindow: true }, updateCurrentTab);
+          .tabs.query(
+            { active: true, currentWindow: true },
+            this.updateCurrentTab,
+          );
       }
     }
-  }
+  };
 
-  function onTabActivated(activeInfo) {
-    if (browserDetector.isFirefox()) {
-      browserDetector
+  /**
+   * Event handler for when a tab is being activated.
+   * @param {object} activeInfo Info about the event.
+   */
+  onTabActivated = (activeInfo) => {
+    if (this.browserDetector.isFirefox()) {
+      this.browserDetector
         .getApi()
         .tabs.query({ active: true, currentWindow: true })
-        .then(updateCurrentTab);
+        .then(this.updateCurrentTab);
     } else {
-      browserDetector
+      this.browserDetector
         .getApi()
-        .tabs.query({ active: true, currentWindow: true }, updateCurrentTab);
+        .tabs.query(
+          { active: true, currentWindow: true },
+          this.updateCurrentTab,
+        );
     }
-  }
+  };
 
-  function updateCurrentTab(tabInfo) {
+  /**
+   * Emits a signal that the current tab changed if needed.
+   * @param {object} tabInfo Info about the new current tab.
+   */
+  updateCurrentTab = (tabInfo) => {
     const newTab =
-      tabInfo[0].id !== self.currentTabId ||
-      tabInfo[0].url !== self.currentTab.url;
-    self.currentTabId = tabInfo[0].id;
-    self.currentTab = tabInfo[0];
+      tabInfo[0].id !== this.currentTabId ||
+      tabInfo[0].url !== this.currentTab.url;
+    this.currentTabId = tabInfo[0].id;
+    this.currentTab = tabInfo[0];
 
-    if (newTab && isInit) {
-      self.emit('cookiesChanged');
+    if (newTab && this.isInit) {
+      this.emit('cookiesChanged');
     }
-  }
+  };
 }
