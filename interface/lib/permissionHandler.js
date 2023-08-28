@@ -43,10 +43,9 @@ export class PermissionHandler {
 
     // If we don't have access to the permission API, assume we have
     // access. Safari devtools can't access the API.
-    if (typeof this.browserDetector .getApi()
-      .permissions === 'undefined') {
-        return true;
-      }
+    if (typeof this.browserDetector.getApi().permissions === 'undefined') {
+      return true;
+    }
 
     return await this.browserDetector
       .getApi()

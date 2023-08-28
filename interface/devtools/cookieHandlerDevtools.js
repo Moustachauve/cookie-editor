@@ -59,7 +59,11 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * @param {function} callback
    */
   saveCookie(cookie, url, callback) {
-    this.sendMessage('saveCookie', {cookie: this.prepareCookie(cookie, url)}, callback);
+    this.sendMessage(
+      'saveCookie',
+      { cookie: this.prepareCookie(cookie, url) },
+      callback,
+    );
   }
 
   /**
@@ -95,7 +99,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
         this.onTabsChanged(request.data);
         return;
     }
-  }
+  };
 
   /**
    * Handles events that is triggered when a cookie changes.
@@ -107,7 +111,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
     if (this.currentTab.url.indexOf(domain) !== -1) {
       this.emit('cookiesChanged', changeInfo);
     }
-  }
+  };
 
   /**
    * Handles the event that is fired when a tab is updated.
@@ -119,7 +123,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
       console.log('tabChanged!');
       this.updateCurrentTab();
     }
-  }
+  };
 
   /**
    * Retrieves the informations of the current tab from the background script.
@@ -127,22 +131,27 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    */
   updateCurrentTab = (callback) => {
     const self = this;
-    this.sendMessage('getCurrentTab', null, function (tabInfo) {
-      const newTab =
-        tabInfo[0].id !== self.currentTabId ||
-        tabInfo[0].url !== self.currentTab.url;
-      self.currentTabId = tabInfo[0].id;
-      self.currentTab = tabInfo[0];
-      if (newTab && self.isInit) {
-        self.emit('cookiesChanged');
-      }
-      if (callback) {
-        callback();
-      }
-    }, function (e) {
-      console.log('failed to update current tab', e);
-    });
-  }
+    this.sendMessage(
+      'getCurrentTab',
+      null,
+      function (tabInfo) {
+        const newTab =
+          tabInfo[0].id !== self.currentTabId ||
+          tabInfo[0].url !== self.currentTab.url;
+        self.currentTabId = tabInfo[0].id;
+        self.currentTab = tabInfo[0];
+        if (newTab && self.isInit) {
+          self.emit('cookiesChanged');
+        }
+        if (callback) {
+          callback();
+        }
+      },
+      function (e) {
+        console.log('failed to update current tab', e);
+      },
+    );
+  };
 
   /**
    * Sends a message to the background script.

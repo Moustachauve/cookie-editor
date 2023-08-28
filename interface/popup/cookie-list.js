@@ -1,10 +1,10 @@
+import { CookieHandlerDevtools } from '../devtools/cookieHandlerDevtools.js';
 import { Animate } from '../lib/animate.js';
 import { BrowserDetector } from '../lib/browserDetector.js';
 import { Cookie } from '../lib/cookie.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
 import { PermissionHandler } from '../lib/permissionHandler.js';
 import { CookieHandlerPopup } from './cookieHandlerPopup.js';
-import { CookieHandlerDevtools } from '../devtools/cookieHandlerDevtools.js';
 
 (function () {
   ('use strict');
@@ -25,7 +25,9 @@ import { CookieHandlerDevtools } from '../devtools/cookieHandlerDevtools.js';
   const browserDetector = new BrowserDetector();
   const permissionHandler = new PermissionHandler();
 
-  const cookieHandler = window.isDevtools ? new CookieHandlerDevtools() : new CookieHandlerPopup();
+  const cookieHandler = window.isDevtools
+    ? new CookieHandlerDevtools()
+    : new CookieHandlerPopup();
   const storageHandler = new GenericStorageHandler();
 
   const ads = [

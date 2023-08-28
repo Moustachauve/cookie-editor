@@ -41,6 +41,12 @@ export class GenericCookieHandler extends EventEmitter {
     }
   }
 
+  /**
+   * Prepares a cookie to be saved. Cleans it up for certain browsers.
+   * @param {object} cookie
+   * @param {string} url
+   * @return {object}
+   */
   prepareCookie(cookie, url) {
     const newCookie = {
       domain: cookie.domain || '',
