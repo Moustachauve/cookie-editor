@@ -28,7 +28,7 @@ export class BrowserDetector {
     }
 
     if (Env.browserName === '@@browser_name') {
-      Env.browserName = 'edge';
+      Env.browserName = 'chrome';
       console.warn('undefined browser name, using chrome as fallback');
     }
 

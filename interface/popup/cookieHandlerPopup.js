@@ -3,12 +3,13 @@ import { GenericCookieHandler } from '../lib/genericCookieHandler.js';
 /**
  * implements Cookie API handling for the popup and other similar interfaces.
  */
-export class CookieHandler extends GenericCookieHandler {
+export class CookieHandlerPopup extends GenericCookieHandler {
   /**
    * Constructs and initializes the cookie handler.
    */
   constructor() {
     super();
+    console.log('Constructing PopupCookieHandler');
     this.isInit = false;
     this.currentTabId = null;
 

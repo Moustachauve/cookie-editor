@@ -2,6 +2,7 @@ import { BrowserDetector } from './interface/lib/browserDetector.js';
 import { PermissionHandler } from './interface/lib/permissionHandler.js';
 
 (function () {
+  console.log('starting background script');
   const connections = {};
   const browserDetector = new BrowserDetector();
   const permissionHandler = new PermissionHandler();
@@ -222,6 +223,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
    * @param {object} _tab The new state of the tab.
    */
   function onTabsChanged(tabId, changeInfo, _tab) {
+    console.log('tabs changed', tabId, changeInfo, _tab);
     sendMessageToTab(tabId, 'tabsChanged', changeInfo);
   }
 

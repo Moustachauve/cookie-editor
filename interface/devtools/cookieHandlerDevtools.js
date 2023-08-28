@@ -5,13 +5,17 @@ import { GenericCookieHandler } from '../lib/genericCookieHandler.js';
  * Devtools needs a separate behavior because they don't have access to the same
  * APIs as the popup, for example.
  */
-export class CookieHandler extends GenericCookieHandler {
+export class CookieHandlerDevtools extends GenericCookieHandler {
   /**
    * Constructs and initializes the cookie handler.
    */
   constructor() {
     super();
+    console.log('Constructing DevToolsCookieHandler');
     this.isInit = false;
+    this.backgroundPageConnection = this.browserDetector
+      .getApi()
+      .runtime.connect({ name: 'panel' });
     this.updateCurrentTab(this.init);
   }
 
@@ -19,24 +23,18 @@ export class CookieHandler extends GenericCookieHandler {
    * Initialise the cookie handler after making first contact with the main
    * background script.
    */
-  init() {
+  init = () => {
     console.log('Devtool init');
-    let tabId;
-    const backgroundPageConnection = this.browserDetector
-      .getApi()
-      .runtime.connect({ name: 'panel' });
-    this.tabId = this.browserDetector.getApi().devtools.inspectedWindow.tabId;
-    backgroundPageConnection.onMessage.addListener(this.onMessage);
-
-    backgroundPageConnection.postMessage({
+    this.backgroundPageConnection.onMessage.addListener(this.onMessage);
+    this.backgroundPageConnection.postMessage({
       type: 'init',
-      tabId: tabId,
+      tabId: this.browserDetector.getApi().devtools.inspectedWindow.tabId,
     });
 
     this.isInit = true;
     console.log('Devtool ready');
     this.emit('ready');
-  }
+  };
 
   /**
    * Gets all the cookies for the current tab.
@@ -99,7 +97,7 @@ export class CookieHandler extends GenericCookieHandler {
    * Handles the reception of messages from the background script.
    * @param {object} request
    */
-  onMessage(request) {
+  onMessage = (request) => {
     console.log('background message received: ' + (request.type || 'unknown'));
     switch (request.type) {
       case 'cookiesChanged':
@@ -117,7 +115,7 @@ export class CookieHandler extends GenericCookieHandler {
    * @param {object} changeInfo An object containing details of the change that
    *     occurred.
    */
-  onCookiesChanged(changeInfo) {
+  onCookiesChanged = (changeInfo) => {
     const domain = changeInfo.cookie.domain.substring(1);
     if (this.currentTab.url.indexOf(domain) !== -1) {
       this.emit('cookiesChanged', changeInfo);
@@ -128,7 +126,8 @@ export class CookieHandler extends GenericCookieHandler {
    * Handles the event that is fired when a tab is updated.
    * @param {object} changeInfo Properties of the tab that changed.
    */
-  onTabsChanged(changeInfo) {
+  onTabsChanged = (changeInfo) => {
+    console.log('devtools: tab changed', changeInfo);
     if (changeInfo.url || changeInfo.status === 'complete') {
       console.log('tabChanged!');
       this.updateCurrentTab();
@@ -139,7 +138,7 @@ export class CookieHandler extends GenericCookieHandler {
    * Retrieves the informations of the current tab from the background script.
    * @param {*} callback
    */
-  updateCurrentTab(callback) {
+  updateCurrentTab = (callback) => {
     const self = this;
     this.sendMessage('getCurrentTab', null, function (tabInfo) {
       const newTab =
@@ -153,6 +152,8 @@ export class CookieHandler extends GenericCookieHandler {
       if (callback) {
         callback();
       }
+    }, function(e) {
+      console.log('failed to update current tab', e);
     });
   }
 
@@ -164,11 +165,11 @@ export class CookieHandler extends GenericCookieHandler {
    * @param {function} errorCallback
    */
   sendMessage(type, params, callback, errorCallback) {
-    if (this.browserDetector.isFirefox()) {
-      const sending = this.browserDetector
+    if (this.browserDetector.supportsPromises()) {
+      this.browserDetector
         .getApi()
-        .runtime.sendMessage({ type: type, params: params });
-      sending.then(callback, errorCallback);
+        .runtime.sendMessage({ type: type, params: params })
+        .then(callback, errorCallback);
     } else {
       this.browserDetector
         .getApi()

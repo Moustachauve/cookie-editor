@@ -1,0 +1,1 @@
+window.isDevtools = true;

@@ -3,7 +3,8 @@ import { BrowserDetector } from '../lib/browserDetector.js';
 import { Cookie } from '../lib/cookie.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
 import { PermissionHandler } from '../lib/permissionHandler.js';
-import { CookieHandler } from './popupCookieHandler.js';
+import { CookieHandlerPopup } from './cookieHandlerPopup.js';
+import { CookieHandlerDevtools } from '../devtools/cookieHandlerDevtools.js';
 
 (function () {
   ('use strict');
@@ -24,7 +25,7 @@ import { CookieHandler } from './popupCookieHandler.js';
   const browserDetector = new BrowserDetector();
   const permissionHandler = new PermissionHandler();
 
-  const cookieHandler = new CookieHandler();
+  const cookieHandler = window.isDevtools ? new CookieHandlerDevtools() : new CookieHandlerPopup();
   const storageHandler = new GenericStorageHandler();
 
   const ads = [
