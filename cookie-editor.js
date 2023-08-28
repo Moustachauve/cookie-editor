@@ -25,6 +25,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
   });
   isSafariIos(function (response) {
     if (response) {
+      console.log('Setting up iOS popup');
       const popupOptions = {
         popup: '/interface/popup-ios/cookie-list.html',
       };
@@ -87,7 +88,6 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
         return true;
       }
       case 'saveCookie': {
-        console.log(request.params);
         if (browserDetector.supportsPromises()) {
           browserDetector
             .getApi()
