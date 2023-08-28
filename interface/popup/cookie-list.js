@@ -207,6 +207,8 @@ import { CookieHandlerDevtools } from '../devtools/cookieHandlerDevtools.js';
       } else {
         cookie.expirationDate = new Date(expiration).getTime() / 1000;
         if (!cookie.expirationDate) {
+          // Reset it to null because on safari it is NaN and causes failures.
+          cookie.expirationDate = null;
           cookie.session = true;
         }
       }
@@ -582,7 +584,13 @@ import { CookieHandlerDevtools } from '../devtools/cookieHandlerDevtools.js';
       showPermissionImpossible();
       return;
     }
+    // If devtools has not been fully init yet, we will wait for a signal.
+    if (!cookieHandler.currentTab) {
+      showNoCookies();
+      return;
+    }
     const hasPermissions = await permissionHandler.checkPermissions(
+      // TODO: check why CurrentTab doesn't exists on devtools on safari
       cookieHandler.currentTab.url,
     );
     if (!hasPermissions) {

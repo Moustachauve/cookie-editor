@@ -41,14 +41,7 @@ export class GenericCookieHandler extends EventEmitter {
     }
   }
 
-  /**
-   * Saves a cookie. This can either create a new cookie or modify an existing
-   * one.
-   * @param {Cookie} cookie Cookie's data.
-   * @param {string} url The url to attach the cookie to.
-   * @param {function} callback
-   */
-  saveCookie(cookie, url, callback) {
+  prepareCookie(cookie, url) {
     const newCookie = {
       domain: cookie.domain || '',
       name: cookie.name || '',
@@ -82,10 +75,22 @@ export class GenericCookieHandler extends EventEmitter {
       }
     }
 
+    return newCookie;
+  }
+
+  /**
+   * Saves a cookie. This can either create a new cookie or modify an existing
+   * one.
+   * @param {Cookie} cookie Cookie's data.
+   * @param {string} url The url to attach the cookie to.
+   * @param {function} callback
+   */
+  saveCookie(cookie, url, callback) {
+    cookie = this.prepareCookie(cookie, url);
     if (this.browserDetector.supportsPromises()) {
       this.browserDetector
         .getApi()
-        .cookies.set(newCookie)
+        .cookies.set(cookie)
         .then(
           (cookie, a, b, c) => {
             if (callback) {
@@ -100,7 +105,7 @@ export class GenericCookieHandler extends EventEmitter {
           },
         );
     } else {
-      this.browserDetector.getApi().cookies.set(newCookie, (cookieResponse) => {
+      this.browserDetector.getApi().cookies.set(cookie, (cookieResponse) => {
         const error = this.browserDetector.getApi().runtime.lastError;
         if (!cookieResponse || error) {
           console.error('Failed to create cookie', error);

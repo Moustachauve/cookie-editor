@@ -59,20 +59,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * @param {function} callback
    */
   saveCookie(cookie, url, callback) {
-    const newCookie = {
-      domain: cookie.domain || '',
-      name: cookie.name || '',
-      value: cookie.value || '',
-      path: cookie.path || null,
-      secure: cookie.secure || null,
-      httpOnly: cookie.httpOnly || null,
-      expirationDate: cookie.expirationDate || null,
-      storeId: cookie.storeId || this.currentTab.cookieStoreId || null,
-      url: url,
-      sameSite: cookie.sameSite || undefined,
-    };
-
-    this.sendMessage('saveCookie', { cookie: newCookie }, callback);
+    this.sendMessage('saveCookie', {cookie: this.prepareCookie(cookie, url)}, callback);
   }
 
   /**
@@ -152,7 +139,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
       if (callback) {
         callback();
       }
-    }, function(e) {
+    }, function (e) {
       console.log('failed to update current tab', e);
     });
   }

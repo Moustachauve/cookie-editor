@@ -87,7 +87,8 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
         return true;
       }
       case 'saveCookie': {
-        if (browserDetector.isFirefox()) {
+        console.log(request.params);
+        if (browserDetector.supportsPromises()) {
           browserDetector
             .getApi()
             .cookies.set(request.params.cookie)
