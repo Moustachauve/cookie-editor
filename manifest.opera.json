@@ -20,7 +20,7 @@
 		"default_popup": "interface/popup/cookie-list.html"
 	},
 	"side_panel": {
-		"default_path": "interface/popup/cookie-list.html"
+		"default_path": "interface/sidepanel/cookie-list.html"
 	},
 	"devtools_page": "interface/devtools/devtool.html",
 	"permissions": [
