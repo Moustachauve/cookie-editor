@@ -10,7 +10,8 @@
 			"interface/lib/browserDetector.js",
 			"interface/lib/permissionHandler.js",
 			"cookie-editor.js"
-		]
+		],
+		"type": "module"
 	},
 	"action": {
 		"default_icon": {
@@ -45,7 +46,7 @@
 			"32": "icons/cookie-filled-small.svg"
 		},
 		"default_title": "Cookie-Editor",
-		"default_panel": "interface/popup/cookie-list.html"
+		"default_panel": "interface/sidepanel/cookie-list.html"
 	},
 	"devtools_page": "interface/devtools/devtool.html",
 	"permissions": [

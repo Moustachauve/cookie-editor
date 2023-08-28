@@ -5,17 +5,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../popup/style.css" />
     <link rel="stylesheet" href="style.css" />
 	<title>Cookie-Editor</title>
 </head>
 
 <body>
     <div id="pageTitle">
-        <img src="../../icons/cookie-filled.svg" alt="Cookie-Editor Logo" />
-        <div class="titles">
-            <h1>Cookie Editor</h1>
-            <h2></h2>
-        </div>
+        <h1 class="container">Cookie Editor</h1>
 
         <div id="advanced-toggle-all">
             <label>
@@ -26,6 +23,7 @@
     </div>
 
     <div id="ad-container"></div>
+
     <div id="cookie-container"></div>
 
     <div class="panel button-bar active" id="button-bar-default">
@@ -87,7 +85,7 @@
             <button class="panel-section-footer-button" id="return-list-import" type="button">
                 <div>
                     <svg class="icon"><use href="../sprites/solid.svg#arrow-left"></use></svg>
-                    <div class="tooltip">Cancel</div>
+                    <div class="tooltip" role="tooltip">Cancel</div>
                 </div>
             </button>
             <div class="panel-section-footer-separator"></div>
@@ -105,25 +103,21 @@
         <div id="notification">
             <span></span>
             <button id="notification-dismiss" aria-label="Dismiss Notification" type="button">
-	            <svg class="icon"><use href="../sprites/solid.svg#times"></use></svg>
+                <svg class="icon"><use href="../sprites/solid.svg#times"></use></svg>
             </button>
         </div>
     </div>
-
+    
     <script type="module" src="../popup/cookie-list.js"></script>
 
     <template id="tmp-cookie">
         <li data-name="" class="cookie">
             <div class="header container" tabindex="0" role="button" aria-expanded="false">
-                <svg class="icon arrow">
-                    <use href="../sprites/solid.svg#angle-down"></use>
-                </svg>
+                <svg class="icon arrow"><use href="../sprites/solid.svg#angle-down"></use></svg>
                 <span class="header-name"></span>
                 <div class="btns">
                     <button class="delete" data-tooltip-left="Delete" aria-label="Delete" tabindex="-1" type="button">
-                        <svg class="icon">
-                            <use href="../sprites/solid.svg#trash"></use>
-                        </svg>
+                        <svg class="icon"><use href="../sprites/solid.svg#trash"></use></svg>
                     </button>
                 </div>
             </div>
@@ -131,14 +125,10 @@
                 <div class="wrapper">
                     <div class="action-btns">
                         <button class="delete" data-tooltip="Delete" aria-label="Delete" type="button">
-                            <svg class="icon">
-                                <use href="../sprites/solid.svg#trash"></use>
-                            </svg>
+                            <svg class="icon"><use href="../sprites/solid.svg#trash"></use></svg>
                         </button>
                         <button class="save" data-tooltip="Save" aria-label="Save" type="submit">
-                            <svg class="icon">
-                                <use href="../sprites/solid.svg#save"></use>
-                            </svg>
+                            <svg class="icon"><use href="../sprites/solid.svg#save"></use></svg>
                         </button>
                     </div>
                     <form data-id="" class="form container">
@@ -150,6 +140,9 @@
                             <label class="label-value">Value</label>
                             <textarea name="value" class="input-value"></textarea>
                         </div>
+                        <button class="advanced-toggle" type="button">
+                            Show Advanced
+                        </button>
                         <div class="advanced-form">
                             <div>
                                 <label class="label-domain">Domain</label>
@@ -186,11 +179,6 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="advanced-toggle-container">
-                            <button class="advanced-toggle" type="button">
-                                Show Advanced
-                            </button>
-                        </div>
                     </form>
                 </div>
             </div>
@@ -202,6 +190,19 @@
             <div>
                 <label for="content-import">Json or Netscape Format</label>
                 <textarea class="json" name="content" id="content-import" placeholder="Paste your JSON/Netscape format here"></textarea>
+            </div>
+        </form>
+    </template>
+
+    <template id="tmp-export">
+        <form class="form container export sbro">
+            <div>
+                <label for="content-export">Json or Netscape Format Exporter</label>
+                <textarea class="json" 
+                name="content" 
+                id="content-export" 
+                placeholder="Export your  here">
+            </textarea>
             </div>
         </form>
     </template>

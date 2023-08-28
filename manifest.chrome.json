@@ -7,7 +7,8 @@
 	"offline_enabled": true,
 	"minimum_chrome_version": "102",
 	"background": {
-		"service_worker": "cookie-editor.js"
+		"service_worker": "cookie-editor.js",
+		"type": "module"
 	},
 	"action": {
 		"default_icon": {
@@ -20,7 +21,7 @@
 		"default_popup": "interface/popup/cookie-list.html"
 	},
 	"side_panel": {
-		"default_path": "interface/popup/cookie-list.html"
+		"default_path": "interface/sidepanel/cookie-list.html"
 	},
 	"devtools_page": "interface/devtools/devtool.html",
 	"permissions": [

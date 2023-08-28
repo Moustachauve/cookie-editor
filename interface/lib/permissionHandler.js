@@ -1,30 +1,66 @@
-// interface/devtools/permissionHandler.js needs to be kept in sync to the functions in this file
-function PermissionHandler() {
-    'use strict';
-    const browserDetector = new BrowserDetector();
+import { BrowserDetector } from './browserDetector.js';
 
-    // Check if it is possible for a website to have permissions.
-    // for example, on firefox, it is impossible to check for permission on internal pages (about:[...])
-    this.canHavePermissions = function (url) {
-        if (url.indexOf("about:") === 0 || url.indexOf("edge:") === 0) {
-            return false;
-        }
-        return true;
+/**
+ * interface/devtools/permissionHandler.js needs to be kept in sync to the functions in this file
+ */
+export class PermissionHandler {
+  /**
+   * Constructs a PermissionHandler.
+   */
+  constructor() {
+    this.browserDetector = new BrowserDetector();
+    // Urls that start with these values can't be requested for permission.
+    this.impossibleUrls = ['about:', 'chrome:', 'edge:'];
+  }
+
+  /**
+   * Check if it is possible for a website to have permissions. for example, on
+   * firefox, it is impossible to check for permission on internal pages
+   * (about:[...]).
+   * @param {*} url Url to check.
+   * @return {boolean} True if it's possible to request permission, otherwise
+   *     false.
+   */
+  canHavePermissions(url) {
+    for (const impossibleUrl of this.impossibleUrls) {
+      if (url.indexOf(impossibleUrl) === 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Checks if the extension has permissions to access the cookies for a
+   * specific url.
+   * @param {string} url Url to check.
+   * @return {Promise}
+   */
+  async checkPermissions(url) {
+    const testPermission = {
+      origins: [url],
+    };
+
+    // If we don't have access to the permission API, assume we have
+    // access. Safari devtools can't access the API.
+    if (typeof this.browserDetector.getApi().permissions === 'undefined') {
+      return true;
     }
 
-    this.checkPermissions = async function (url) {
-        let testPermission = {
-            origins: [url]
-        };
-        
-        return await browserDetector.getApi().permissions.contains(testPermission);
-    }
+    return await this.browserDetector
+      .getApi()
+      .permissions.contains(testPermission);
+  }
 
-    this.requestPermission = async function (url) {
-        let permission = {
-            origins: [url]
-        };
-        return browserDetector.getApi().permissions.request(permission)
-    }
-
+  /**
+   * Requests permissions to access the cookies for a specific url.
+   * @param {string} url Url to request permissions.
+   * @return {Promise}
+   */
+  async requestPermission(url) {
+    const permission = {
+      origins: [url],
+    };
+    return this.browserDetector.getApi().permissions.request(permission);
+  }
 }

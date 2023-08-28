@@ -1,3 +1,6 @@
-function Env() {
-    this.browserName = "@@browser_name";
+/**
+ * Contains global environment variables.
+ */
+export class Env {
+  static browserName = '@@browser_name';
 }
