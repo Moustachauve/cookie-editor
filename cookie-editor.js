@@ -77,7 +77,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
         const getAllCookiesParams = {
           url: request.params.url,
         };
-        if (browserDetector.isFirefox()) {
+        if (browserDetector.supportsPromises()) {
           browserDetector
             .getApi()
             .cookies.getAll(getAllCookiesParams)
@@ -123,7 +123,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
           name: request.params.name,
           url: request.params.url,
         };
-        if (browserDetector.isFirefox()) {
+        if (browserDetector.supportsPromises()) {
           browserDetector
             .getApi()
             .cookies.remove(removeParams)

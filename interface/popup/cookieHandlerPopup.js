@@ -13,7 +13,7 @@ export class CookieHandlerPopup extends GenericCookieHandler {
     this.isInit = false;
     this.currentTabId = null;
 
-    if (this.browserDetector.isFirefox()) {
+    if (this.browserDetector.supportsPromises()) {
       this.browserDetector
         .getApi()
         .tabs.query({ active: true, currentWindow: true })
@@ -34,16 +34,10 @@ export class CookieHandlerPopup extends GenericCookieHandler {
     this.currentTabId = tabInfo[0].id;
     this.currentTab = tabInfo[0];
     const api = this.browserDetector.getApi();
-    if (this.browserDetector.isFirefox()) {
+    api.tabs.onUpdated.addListener(this.onTabsChanged);
+    api.tabs.onActivated.addListener(this.onTabActivated);
+    if (!this.browserDetector.isSafari()) {
       api.cookies.onChanged.addListener(this.onCookiesChanged);
-      api.tabs.onUpdated.addListener(this.onTabsChanged);
-      api.tabs.onActivated.addListener(this.onTabActivated);
-    } else {
-      api.tabs.onUpdated.addListener(this.onTabsChanged);
-      api.tabs.onActivated.addListener(this.onTabActivated);
-      if (!this.browserDetector.isSafari()) {
-        api.cookies.onChanged.addListener(this.onCookiesChanged);
-      }
     }
 
     this.isInit = true;
@@ -77,7 +71,7 @@ export class CookieHandlerPopup extends GenericCookieHandler {
       (changeInfo.url || changeInfo.status === 'complete')
     ) {
       console.log('tabChanged!');
-      if (this.browserDetector.isFirefox()) {
+      if (this.browserDetector.supportsPromises()) {
         this.browserDetector
           .getApi()
           .tabs.query({ active: true, currentWindow: true })
@@ -98,7 +92,7 @@ export class CookieHandlerPopup extends GenericCookieHandler {
    * @param {object} activeInfo Info about the event.
    */
   onTabActivated = (activeInfo) => {
-    if (this.browserDetector.isFirefox()) {
+    if (this.browserDetector.supportsPromises()) {
       this.browserDetector
         .getApi()
         .tabs.query({ active: true, currentWindow: true })

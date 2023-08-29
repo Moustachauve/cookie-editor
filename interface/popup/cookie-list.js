@@ -543,7 +543,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     }
 
     if (showAllAdvanced === undefined) {
-      if (browserDetector.isFirefox()) {
+      if (browserDetector.supportsPromises()) {
         browserDetector
           .getApi()
           .storage.local.get('showAllAdvanced')
