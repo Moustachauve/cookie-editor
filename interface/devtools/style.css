@@ -12,14 +12,9 @@ body {
     width: 100%;
     font-size: 1em;
     overflow: hidden;
-    background-color: #ffffff;
-}
-.panel-section-footer {
-    background-color: #fafafa;
 }
 #cookie-container {
     overflow-y: auto;
-    background-color: #eaeaea;
     flex: 1 1 auto;
     min-height: initial;
     max-height: initial;
@@ -28,7 +23,6 @@ body {
 }
 .button-bar {
     display: none;
-    background-color: #f0f0f0;
     flex: 0 0 auto;
     border-top: 1px solid rgba(0, 0, 0, 0.15);
     z-index: 5;
@@ -37,4 +31,10 @@ body {
 #no-permission > div {
     font-size: 0.95em;
     padding: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+    #cookie-container {
+    background-color: #202124;
+    }
 }
