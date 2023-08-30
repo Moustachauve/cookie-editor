@@ -1,26 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../popup/style.css" />
     <link rel="stylesheet" href="../popup/dark.css" />
     <link rel="stylesheet" href="style.css" />
-	<title>Cookie-Editor</title>
-</head>
+    <title>Cookie-Editor</title>
+  </head>
 
-<body>
+  <body>
     <div id="pageTitle">
-        <h1 class="container">Cookie Editor</h1>
+      <h1 class="container">Cookie Editor</h1>
 
-        <div id="advanced-toggle-all">
-            <label>
-                <input type="checkbox" />
-                Show Advanced
-            </label>
-        </div>
+      <div id="advanced-toggle-all">
+        <label>
+          <input type="checkbox" />
+          Show Advanced
+        </label>
+      </div>
     </div>
 
     <div id="ad-container"></div>
@@ -28,256 +27,368 @@
     <div id="cookie-container"></div>
 
     <div class="panel button-bar active" id="button-bar-default">
-        <div class="panel-section panel-section-footer">
-            <button class="panel-section-footer-button" id="create-cookie" type="button">
-                <div>
-                    <svg class="icon"><use href="../sprites/solid.svg#plus"></use></svg>
-                    <div class="tooltip" role="tooltip">Add</div>
-                </div>
-            </button>
-            <div class="panel-section-footer-separator"></div>
+      <div class="panel-section panel-section-footer">
+        <button
+          class="panel-section-footer-button"
+          id="create-cookie"
+          type="button"
+        >
+          <div>
+            <svg class="icon"><use href="../sprites/solid.svg#plus"></use></svg>
+            <div class="tooltip" role="tooltip">Add</div>
+          </div>
+        </button>
+        <div class="panel-section-footer-separator"></div>
 
-            <button class="panel-section-footer-button danger" id="delete-all-cookies" type="button">
-                <div>
-                    <svg class="icon"><use href="../sprites/solid.svg#trash"></use></svg>
-                    <div class="tooltip" role="tooltip">Delete All</div>
-                </div>
-            </button>
-            <div class="panel-section-footer-separator"></div>
+        <button
+          class="panel-section-footer-button danger"
+          id="delete-all-cookies"
+          type="button"
+        >
+          <div>
+            <svg class="icon">
+              <use href="../sprites/solid.svg#trash"></use>
+            </svg>
+            <div class="tooltip" role="tooltip">Delete All</div>
+          </div>
+        </button>
+        <div class="panel-section-footer-separator"></div>
 
-            <button class="panel-section-footer-button" id="import-cookies" type="button">
-                <div>
-                    <svg class="icon"><use href="../sprites/solid.svg#file-import"></use></svg>
-                    <div class="tooltip" role="tooltip">Import</div>
-                </div>
-            </button>
-            <div class="panel-section-footer-separator"></div>
+        <button
+          class="panel-section-footer-button"
+          id="import-cookies"
+          type="button"
+        >
+          <div>
+            <svg class="icon">
+              <use href="../sprites/solid.svg#file-import"></use>
+            </svg>
+            <div class="tooltip" role="tooltip">Import</div>
+          </div>
+        </button>
+        <div class="panel-section-footer-separator"></div>
 
-            <button class="panel-section-footer-button" id="export-cookies" type="button">
-                <div>
-                    <svg class="icon"><use href="../sprites/solid.svg#file-export"></use></svg>
-                    <div class="tooltip" role="tooltip">Export</div>
-                </div>
-            </button>
-        </div>
+        <button
+          class="panel-section-footer-button"
+          id="export-cookies"
+          type="button"
+        >
+          <div>
+            <svg class="icon">
+              <use href="../sprites/solid.svg#file-export"></use>
+            </svg>
+            <div class="tooltip" role="tooltip">Export</div>
+          </div>
+        </button>
+      </div>
     </div>
 
     <div class="panel button-bar" id="button-bar-add">
-        <div class="panel-section panel-section-footer">
-            <button class="panel-section-footer-button" id="return-list-add" type="button">
-                <div>
-                    <svg class="icon"><use href="../sprites/solid.svg#arrow-left"></use></svg>
-                    <div class="tooltip" role="tooltip">Cancel</div>
-                </div>
-            </button>
-            <div class="panel-section-footer-separator"></div>
+      <div class="panel-section panel-section-footer">
+        <button
+          class="panel-section-footer-button"
+          id="return-list-add"
+          type="button"
+        >
+          <div>
+            <svg class="icon">
+              <use href="../sprites/solid.svg#arrow-left"></use>
+            </svg>
+            <div class="tooltip" role="tooltip">Cancel</div>
+          </div>
+        </button>
+        <div class="panel-section-footer-separator"></div>
 
-            <button class="panel-section-footer-button primary" id="save-create-cookie" type="button">
-                <div>
-                    <svg class="icon"><use href="../sprites/solid.svg#save"></use></svg>
-                    <div class="tooltip" role="tooltip">Add</div>
-                </div>
-            </button>
-        </div>
+        <button
+          class="panel-section-footer-button primary"
+          id="save-create-cookie"
+          type="button"
+        >
+          <div>
+            <svg class="icon"><use href="../sprites/solid.svg#save"></use></svg>
+            <div class="tooltip" role="tooltip">Add</div>
+          </div>
+        </button>
+      </div>
     </div>
 
     <div class="panel button-bar" id="button-bar-import">
-        <div class="panel-section panel-section-footer">
-            <button class="panel-section-footer-button" id="return-list-import" type="button">
-                <div>
-                    <svg class="icon"><use href="../sprites/solid.svg#arrow-left"></use></svg>
-                    <div class="tooltip" role="tooltip">Cancel</div>
-                </div>
-            </button>
-            <div class="panel-section-footer-separator"></div>
+      <div class="panel-section panel-section-footer">
+        <button
+          class="panel-section-footer-button"
+          id="return-list-import"
+          type="button"
+        >
+          <div>
+            <svg class="icon">
+              <use href="../sprites/solid.svg#arrow-left"></use>
+            </svg>
+            <div class="tooltip" role="tooltip">Cancel</div>
+          </div>
+        </button>
+        <div class="panel-section-footer-separator"></div>
 
-            <button class="panel-section-footer-button primary" id="save-import-cookie" type="button">
-                <div>
-                    <svg class="icon"><use href="../sprites/solid.svg#file-import"></use></svg>
-                    <div class="tooltip" role="tooltip">Import</div>
-                </div>
-            </button>
-        </div>
+        <button
+          class="panel-section-footer-button primary"
+          id="save-import-cookie"
+          type="button"
+        >
+          <div>
+            <svg class="icon">
+              <use href="../sprites/solid.svg#file-import"></use>
+            </svg>
+            <div class="tooltip" role="tooltip">Import</div>
+          </div>
+        </button>
+      </div>
     </div>
 
     <div id="notification-container">
-        <div id="notification">
-            <span></span>
-            <button id="notification-dismiss" aria-label="Dismiss Notification" type="button">
-                <svg class="icon"><use href="../sprites/solid.svg#times"></use></svg>
-            </button>
-        </div>
+      <div id="notification">
+        <span></span>
+        <button
+          id="notification-dismiss"
+          aria-label="Dismiss Notification"
+          type="button"
+        >
+          <svg class="icon"><use href="../sprites/solid.svg#times"></use></svg>
+        </button>
+      </div>
     </div>
-    
+
     <script type="module" src="../popup/cookie-list.js"></script>
 
     <template id="tmp-cookie">
-        <li data-name="" class="cookie">
-            <div class="header container" tabindex="0" role="button" aria-expanded="false">
-                <svg class="icon arrow"><use href="../sprites/solid.svg#angle-down"></use></svg>
-                <span class="header-name"></span>
-                <div class="btns">
-                    <button class="delete" data-tooltip-left="Delete" aria-label="Delete" tabindex="-1" type="button">
-                        <svg class="icon"><use href="../sprites/solid.svg#trash"></use></svg>
-                    </button>
-                </div>
+      <li data-name="" class="cookie">
+        <div
+          class="header container"
+          tabindex="0"
+          role="button"
+          aria-expanded="false"
+        >
+          <svg class="icon arrow">
+            <use href="../sprites/solid.svg#angle-down"></use>
+          </svg>
+          <span class="header-name"></span>
+          <div class="btns">
+            <button
+              class="delete"
+              data-tooltip-left="Delete"
+              aria-label="Delete"
+              tabindex="-1"
+              type="button"
+            >
+              <svg class="icon">
+                <use href="../sprites/solid.svg#trash"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="expando" aria-hidden="true" role="region">
+          <div class="wrapper">
+            <div class="action-btns">
+              <button
+                class="delete"
+                data-tooltip="Delete"
+                aria-label="Delete"
+                type="button"
+              >
+                <svg class="icon">
+                  <use href="../sprites/solid.svg#trash"></use>
+                </svg>
+              </button>
+              <button
+                class="save"
+                data-tooltip="Save"
+                aria-label="Save"
+                type="submit"
+              >
+                <svg class="icon">
+                  <use href="../sprites/solid.svg#save"></use>
+                </svg>
+              </button>
             </div>
-            <div class="expando" aria-hidden="true" role="region">
-                <div class="wrapper">
-                    <div class="action-btns">
-                        <button class="delete" data-tooltip="Delete" aria-label="Delete" type="button">
-                            <svg class="icon"><use href="../sprites/solid.svg#trash"></use></svg>
-                        </button>
-                        <button class="save" data-tooltip="Save" aria-label="Save" type="submit">
-                            <svg class="icon"><use href="../sprites/solid.svg#save"></use></svg>
-                        </button>
-                    </div>
-                    <form data-id="" class="form container">
-                        <div>
-                            <label class="label-name">Name</label>
-                            <input name="name" type="text" class="input-name" />
-                        </div>
-                        <div>
-                            <label class="label-value">Value</label>
-                            <textarea name="value" class="input-value"></textarea>
-                        </div>
-                        <button class="advanced-toggle" type="button">
-                            Show Advanced
-                        </button>
-                        <div class="advanced-form">
-                            <div>
-                                <label class="label-domain">Domain</label>
-                                <input name="domain" type="text" class="input-domain" />
-                            </div>
-                            <div>
-                                <label class="label-path">Path</label>
-                                <input name="path" type="text" class="input-path" />
-                            </div>
-                            <div>
-                                <label class="label-expiration">Expiration</label>
-                                <input name="expiration" type="text" class="input-expiration" />
-                            </div>
-                            <div>
-                                <label class="label-sameSite">Same Site</label>
-                                <select name="sameSite" class="input-sameSite">
-                                    <option value="no_restriction">None</option>
-                                    <option value="lax">Lax</option>
-                                    <option value="strict">Strict</option>
-                                </select>
-                            </div>
-                            <div class="checkbox-list">
-                                <label class="label-hostOnly">
-                                    <input type="checkbox" name="hostOnly" class="input-hostOnly" /> Host Only
-                                </label>
-                                <label class="label-session">
-                                    <input type="checkbox" name="session" class="input-session" /> Session
-                                </label>
-                                <label class="label-secure">
-                                    <input type="checkbox" name="secure" class="input-secure" /> Secure
-                                </label>
-                                <label class="label-httpOnly">
-                                    <input type="checkbox" name="httpOnly" class="input-httpOnly" /> Http Only
-                                </label>
-                            </div>
-                        </div>
-                    </form>
+            <form data-id="" class="form container">
+              <div>
+                <label class="label-name">Name</label>
+                <input name="name" type="text" class="input-name" />
+              </div>
+              <div>
+                <label class="label-value">Value</label>
+                <textarea name="value" class="input-value"></textarea>
+              </div>
+              <button class="advanced-toggle" type="button">
+                Show Advanced
+              </button>
+              <div class="advanced-form">
+                <div>
+                  <label class="label-domain">Domain</label>
+                  <input name="domain" type="text" class="input-domain" />
                 </div>
-            </div>
-        </li>
+                <div>
+                  <label class="label-path">Path</label>
+                  <input name="path" type="text" class="input-path" />
+                </div>
+                <div>
+                  <label class="label-expiration">Expiration</label>
+                  <input
+                    name="expiration"
+                    type="text"
+                    class="input-expiration"
+                  />
+                </div>
+                <div>
+                  <label class="label-sameSite">Same Site</label>
+                  <select name="sameSite" class="input-sameSite">
+                    <option value="no_restriction">None</option>
+                    <option value="lax">Lax</option>
+                    <option value="strict">Strict</option>
+                  </select>
+                </div>
+                <div class="checkbox-list">
+                  <label class="label-hostOnly">
+                    <input
+                      type="checkbox"
+                      name="hostOnly"
+                      class="input-hostOnly"
+                    />
+                    Host Only
+                  </label>
+                  <label class="label-session">
+                    <input
+                      type="checkbox"
+                      name="session"
+                      class="input-session"
+                    />
+                    Session
+                  </label>
+                  <label class="label-secure">
+                    <input type="checkbox" name="secure" class="input-secure" />
+                    Secure
+                  </label>
+                  <label class="label-httpOnly">
+                    <input
+                      type="checkbox"
+                      name="httpOnly"
+                      class="input-httpOnly"
+                    />
+                    Http Only
+                  </label>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </li>
     </template>
 
     <template id="tmp-import">
-        <form class="form container import">
-            <div>
-                <label for="content-import">Json or Netscape Format</label>
-                <textarea class="json" name="content" id="content-import" placeholder="Paste your JSON/Netscape format here"></textarea>
-            </div>
-        </form>
+      <form class="form container import">
+        <div>
+          <label for="content-import">Json or Netscape Format</label>
+          <textarea
+            class="json"
+            name="content"
+            id="content-import"
+            placeholder="Paste your JSON/Netscape format here"
+          ></textarea>
+        </div>
+      </form>
     </template>
 
     <template id="tmp-export">
-        <form class="form container export sbro">
-            <div>
-                <label for="content-export">Json or Netscape Format Exporter</label>
-                <textarea class="json" 
-                name="content" 
-                id="content-export" 
-                placeholder="Export your  here">
-            </textarea>
-            </div>
-        </form>
+      <form class="form container export sbro">
+        <div>
+          <label for="content-export">Json or Netscape Format Exporter</label>
+          <textarea
+            class="json"
+            name="content"
+            id="content-export"
+            placeholder="Export your  here"
+          >
+          </textarea>
+        </div>
+      </form>
     </template>
 
     <template id="tmp-create">
-        <form class="form container create">
-            <div>
-                <label for="name-create">Name</label>
-                <input name="name" type="text" value="" id="name-create" />
-            </div>
-            <div>
-                <label for="value-create">Value</label>
-                <textarea name="value" id="value-create"></textarea>
-            </div>
-        </form>
+      <form class="form container create">
+        <div>
+          <label for="name-create">Name</label>
+          <input name="name" type="text" value="" id="name-create" />
+        </div>
+        <div>
+          <label for="value-create">Value</label>
+          <textarea name="value" id="value-create"></textarea>
+        </div>
+      </form>
     </template>
 
     <template id="tmp-empty">
-        <p class="container" id="no-cookies">
-            This page does not have any cookies.
-        </p>
+      <p class="container" id="no-cookies">
+        This page does not have any cookies.
+      </p>
     </template>
 
     <template id="tmp-no-permission">
-        <div class="container" id="no-permission">
-            You do not have the permission required to read the cookies for this page.
-            <div>
-                Request permission for
-                <div class="button-container">
-                    <button id="request-permission" title="Request permission to read cookies for this site.">
-                        This site
-                    </button>
-                    <button id="request-permission-all" title="Request permission to read cookies for all sites.">
-                        All sites
-                    </button>
-                </div>
-            </div>
+      <div class="container" id="no-permission">
+        You do not have the permission required to read the cookies for this
+        page.
+        <div>
+          Request permission for
+          <div class="button-container">
+            <button
+              id="request-permission"
+              title="Request permission to read cookies for this site."
+            >
+              This site
+            </button>
+            <button
+              id="request-permission-all"
+              title="Request permission to read cookies for all sites."
+            >
+              All sites
+            </button>
+          </div>
         </div>
+      </div>
     </template>
 
     <template id="tmp-permission-impossible">
-        <div class="container" id="permission-impossible">
-            Cookie-Editor can't display cookies for this page.
-        </div>
+      <div class="container" id="permission-impossible">
+        Cookie-Editor can't display cookies for this page.
+      </div>
     </template>
 
     <template id="tmp-search-bar">
-        <li>
-            <div id="searchContainer">
-                <svg class="icon search"><use href="../sprites/solid.svg#search"></use></svg>
-                <input id="searchField" type="text" placeholder="Search" />
-            </div>
-        </li>
+      <li>
+        <div id="searchContainer">
+          <svg class="icon search">
+            <use href="../sprites/solid.svg#search"></use>
+          </svg>
+          <input id="searchField" type="text" placeholder="Search" />
+        </div>
+      </li>
     </template>
 
     <template id="tmp-export-options">
-        <div id="export-menu">
-            <button id="export-json" type="button">Export as JSON</button>
-            <button id="export-netscape" type="button">Export as Netscape</button>
-        </div>
+      <div id="export-menu">
+        <button id="export-json" type="button">Export as JSON</button>
+        <button id="export-netscape" type="button">Export as Netscape</button>
+      </div>
     </template>
 
     <template id="tmp-ad-item">
-        <div>
-            <span class="ad-tag">Ad</span>
-            <div class="ad-link">
-                <a href="" target="_blank" rel="noopener noreferrer">Ad Text!</a>
-            </div>
-            <div class="ad-actions">
-                <button class="dont-show">Not interested</button>
-                <button class="later">Later</button>
-            </div>
+      <div>
+        <span class="ad-tag">Ad</span>
+        <div class="ad-link">
+          <a href="" target="_blank" rel="noopener noreferrer">Ad Text!</a>
         </div>
+        <div class="ad-actions">
+          <button class="dont-show">Not interested</button>
+          <button class="later">Later</button>
+        </div>
+      </div>
     </template>
-</body>
-
+  </body>
 </html>
