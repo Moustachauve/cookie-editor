@@ -922,10 +922,13 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         } else if (!cookie.session && !!cookie.expirationDate) {
           expiration = Math.trunc(cookie.expirationDate);
         }
+        const includesSubdomain = cookie.domain.startsWith('.')
+          ? 'TRUE'
+          : 'FALSE';
 
         netscapeCookies +=
-          `\n${cookie.domain}	TRUE	${cookie.path}	${secure}	` +
-          `${expiration}	${cookie.name}	${cookie.value}`;
+          `\n${cookie.domain}	${includesSubdomain}	${cookie.path}	` +
+          `${secure}	${expiration}	${cookie.name}	${cookie.value}`;
       }
     }
 
