@@ -1,3 +1,5 @@
+const httpOnlyPrefix = '#HttpOnly_';
+
 /**
  * This class is responsible for parsing and formatting cookies to the
  * Netscape format.
@@ -13,7 +15,15 @@ export class NetscapeFormat {
     const lines = cookieString.split('\n');
     for (let line of lines) {
       line = line.trim();
-      if (!line.length || line[0] == '#') {
+      if (!line.length) {
+        continue;
+      }
+      const isHttpOnly = line.startsWith(httpOnlyPrefix);
+      if (isHttpOnly) {
+        line = line.substring(httpOnlyPrefix.length);
+      }
+      // Skip comments
+      if (line[0] == '#') {
         continue;
       }
 
@@ -23,11 +33,13 @@ export class NetscapeFormat {
       }
       cookies.push({
         domain: elements[0],
+        hostOnly: elements[1].toLowerCase() === 'false',
         path: elements[2],
         secure: elements[3].toLowerCase() === 'true',
         expiration: elements[4],
         name: elements[5],
         value: elements[6],
+        httpOnly: isHttpOnly,
       });
     }
     return cookies;
@@ -35,7 +47,7 @@ export class NetscapeFormat {
 
   /**
    * Formats a list of cookies into a Netscape formatted string.
-   * @param {object} cookies Cookies to format.
+   * @param {Cookie[]} cookies Cookies to format.
    * @return {string} Netscape formatted cookie string.
    */
   static format(cookies) {
@@ -58,13 +70,14 @@ export class NetscapeFormat {
         } else if (!cookie.session && !!cookie.expirationDate) {
           expiration = Math.trunc(cookie.expirationDate);
         }
-        const includesSubdomain = cookie.domain.startsWith('.')
-          ? 'TRUE'
-          : 'FALSE';
+        const includesSubdomain = cookie.hostOnly ? 'FALSE' : 'TRUE';
+
+        const httpOnly = cookie.httpOnly ? httpOnlyPrefix : '';
 
         netscapeCookies +=
-          `\n${cookie.domain}	${includesSubdomain}	${cookie.path}	` +
-          `${secure}	${expiration}	${cookie.name}	${cookie.value}`;
+          `\n${httpOnly}${cookie.domain}	${includesSubdomain}	` +
+          `${cookie.path}	${secure}	${expiration}	${cookie.name}` +
+          `	${cookie.value}`;
       }
     }
     return netscapeCookies;

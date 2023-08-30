@@ -442,8 +442,9 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         }
 
         for (const cookie of cookies) {
-          // Make sure we are using the right store ID. This is in case we are importing from a basic store ID and the
-          // current user is using custom containers
+          // Make sure we are using the right store ID. This is in case we are
+          // importing from a basic store ID and the current user is using
+          // custom containers
           cookie.storeId = cookieHandler.currentTab.cookieStoreId;
 
           if (cookie.sameSite && cookie.sameSite === 'unspecified') {

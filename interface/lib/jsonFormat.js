@@ -14,7 +14,7 @@ export class JsonFormat {
 
   /**
    * Formats a list of cookies into a JSON formatted string.
-   * @param {object} cookies Cookies to format.
+   * @param {Cookie[]} cookies Cookies to format.
    * @return {string} JSON formatted cookie string.
    */
   static format(cookies) {
