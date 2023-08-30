@@ -56,7 +56,7 @@
   #cookie-container li .header:focus,
   #cookie-container #searchField:focus {
     outline-offset: -3px;
-    outline: 2px solid #3562aa;
+    outline: 2px solid #4786ec;
     border-radius: 4px;
   }
 
@@ -69,7 +69,7 @@
     background-color: rgba(255, 255, 255, 0.15);
   }
   .action-btns button:focus {
-    outline: 2px solid #3b5e97;
+    outline: 2px solid #4786ec;
     border-radius: 4px;
   }
   button.delete,
@@ -172,6 +172,10 @@
   .ad-actions button:hover {
     color: #badcf1;
   }
+  
+  .ad-actions button:focus-visible {
+    outline: 2px solid #4786ec;
+  }
 
   @keyframes changed-value {
     0% {
@@ -204,7 +208,7 @@
     color: #fff;
   }
   .advanced-toggle:focus {
-    outline: 2px solid #3562aa;
+    outline: 2px solid #4786ec;
     border-radius: 4px;
   }
 }

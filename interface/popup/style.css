@@ -100,6 +100,10 @@ button:focus {
   color: #000000;
   text-decoration: underline;
 }
+.ad-actions button:focus-visible {
+  outline: 2px solid #444;
+  border-radius: 4px;
+}
 
 #searchContainer {
   display: flex;
