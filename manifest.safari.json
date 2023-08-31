@@ -20,6 +20,9 @@
 		"default_popup": "interface/popup/cookie-list.html"
 	},
 	"devtools_page": "interface/devtools/devtool.html",
+	"options_ui": {
+		"page": "interface/options/options.html"
+	},
 	"permissions": [
 		"cookies",
 		"tabs",

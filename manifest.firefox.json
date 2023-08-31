@@ -49,6 +49,9 @@
 		"default_panel": "interface/sidepanel/cookie-list.html"
 	},
 	"devtools_page": "interface/devtools/devtool.html",
+	"options_ui": {
+		"page": "interface/options/options.html"
+	},
 	"permissions": [
 		"cookies",
 		"tabs",

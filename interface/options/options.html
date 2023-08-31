@@ -1,0 +1,109 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="switch.css" />
+    <link rel="stylesheet" href="dark.css" />
+    <title>Cookie-Editor Options</title>
+  </head>
+  <body>
+    <div class="container">
+      <fieldset>
+        <legend>Options</legend>
+        <div class="input-container">
+          <label for="advanced-cookie">Show Advanced Cookie Options</label>
+          <label class="switch">
+            <input
+              type="checkbox"
+              id="advanced-cookie"
+              aria-describedby="advanced-cookie-hint"
+            />
+            <span class="slider"></span>
+          </label>
+          <div class="hint" id="advanced-cookie-hint">
+            When Enabled, all the values of a cookie are visible in the
+            interface.<br />
+            When Disabled, only the name and the value of the cookie are visible
+            in the interface.
+          </div>
+        </div>
+
+        <div class="input-container">
+          <label for="devtool-show">Enable Devtool panel</label>
+          <label class="switch">
+            <input
+              type="checkbox"
+              id="devtool-show"
+              aria-describedby="devtool-show-hint"
+            />
+            <span class="slider"></span>
+          </label>
+          <div class="hint" id="devtool-show-hint">
+            When Enabled, Cookie-Editor will be added to the DevTools tabs.
+          </div>
+        </div>
+
+        <div class="input-container">
+          <label for="export-format">Export Format</label>
+          <select id="export-format" aria-describedby="export-format-hint">
+            <option>JSON</option>
+            <option>Netscape</option>
+            <option>Ask every time</option>
+          </select>
+          <div class="hint" id="export-format-hint">
+            Selects the behavior of the export button. When "Ask every time" is
+            selected, a menu asking you to chose the format will show up when
+            you press the export button.
+          </div>
+        </div>
+
+        <div class="input-container">
+          <label for="theme">Theme</label>
+          <select id="theme" aria-describedby="theme-hint">
+            <option>Auto</option>
+            <option>Light</option>
+            <option>Dark</option>
+          </select>
+          <div class="hint" id="theme-hint">
+            When selecting "Auto", Cookie-Editor will match your browser's theme
+            automatically.
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>About Cookie-Editor</legend>
+        <p>
+          Cookie-Editor is made by Christophe Gagnier and is fully open source.
+        </p>
+        <p>
+          View the
+          <a href="https://github.com/Moustachauve/cookie-editor">Source code</a
+          >.
+        </p>
+        <p>
+          Read the
+          <a href="https://cookie-editor.cgagnier.ca/privacy.html"
+            >Privacy Policy</a
+          >.
+        </p>
+        <p>
+          Cookie-Editor is published under
+          <a
+            href="https://github.com/Moustachauve/cookie-editor/blob/master/LICENSE"
+            >the GPL-3.0 license</a
+          >.
+        </p>
+        <p>
+          Are you enjoying Cookie-Editor? <br />
+          I would be really greatful if you considered supporting my work by
+          sponsering me on Github.
+          <a href="https://github.com/sponsors/Moustachauve/">Learn more</a>.
+        </p>
+      </fieldset>
+    </div>
+  </body>
+</html>

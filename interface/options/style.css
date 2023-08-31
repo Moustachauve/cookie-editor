@@ -1,0 +1,53 @@
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-size: 100%; 
+}
+
+body * {
+  box-sizing: border-box;
+  text-align: start;
+}
+
+svg.icon {
+  height: 1em;
+  width: 1em;
+  pointer-events: none;
+}
+
+.container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.container > fieldset {
+  margin: 15px;
+  padding: 5px 15px;
+  border: 1px solid #bababa;
+  border-radius: 4px;
+}
+.container > fieldset legend {
+  padding: 0 5px;
+  font-size: 1.25em;
+}
+
+/* == Input styling == */
+
+.input-container {
+  min-height: 2em;
+}
+
+.input-container input, .input-container select, .input-container .switch {
+  float: right;
+}
+.input-container select {
+  min-width: 120px;
+}
+
+.hint {
+  clear: both;
+  color: #555;
+  font-size: 0.8em;
+  padding: 1em;
+  padding-top: 2px;
+}
