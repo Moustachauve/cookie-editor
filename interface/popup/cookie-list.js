@@ -1166,28 +1166,21 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * ads that can be displayed and will select a random one to display if there
    * are more than one valid option.
    */
-  function handleAd() {
+  async function handleAd() {
     if (!ads) {
       return;
     }
-
-    canShowAnyAd((error, canShow) => {
-      if (error) {
-        console.error(error);
-        return;
-      }
-      if (!canShow) {
-        return;
-      }
-
-      showRandomAd();
-    });
+    const canShow = await canShowAnyAd();
+    if (!canShow) {
+      return;
+    }
+    showRandomAd();
   }
 
   /**
    * Shows a random valid ad to the user.
    */
-  function showRandomAd() {
+  async function showRandomAd() {
     if (!ads || !ads.length) {
       console.log('No ads left');
       return;
@@ -1195,21 +1188,15 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     const randIndex = Math.floor(Math.random() * ads.length);
     const selectedAd = ads[randIndex];
     ads.splice(randIndex, 1);
-    isAdValid(selectedAd, (error, isValid) => {
-      if (error) {
-        console.error(error);
-        showRandomAd();
-        return;
-      }
-      if (!isValid) {
-        console.log(selectedAd.id, 'ad is not valid to display');
-        showRandomAd();
-        return;
-      }
-      clearAd();
-      const adItemHtml = createHtmlAd(selectedAd);
-      document.getElementById('ad-container').appendChild(adItemHtml);
-    });
+    const adIsValid = isAdValid(selectedAd);
+    if (!adIsValid) {
+      console.log(selectedAd.id, 'ad is not valid to display');
+      showRandomAd();
+      return;
+    }
+    clearAd();
+    const adItemHtml = createHtmlAd(selectedAd);
+    document.getElementById('ad-container').appendChild(adItemHtml);
   }
 
   /**
@@ -1219,59 +1206,46 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * @param {object} selectedAd The ad to validate.
    * @param {function} callback
    */
-  function isAdValid(selectedAd, callback) {
+  async function isAdValid(selectedAd) {
     if (
       selectedAd.supported_browsers != 'all' &&
       !selectedAd.supported_browsers.includes(browserDetector.getBrowserName())
     ) {
-      callback(null, false);
-      return;
+      return false;
     }
 
-    storageHandler.getLocal(getAdDismissKey(selectedAd.id), (error, data) => {
-      if (error) {
-        callback(error, false);
-        return;
-      }
-      // No data means it was never dismissed
-      if (data === null) {
-        callback(error, true);
-        return;
-      }
+    const dismissedAd = await storageHandler.getLocal(
+      getAdDismissKey(selectedAd.id),
+    );
+    // No data means it was never dismissed
+    if (dismissedAd === null) {
+      return true;
+    }
 
-      // Only show a ad if it has not been dismissed in less than |refresh_days| days
-      if (secondsInOneDay * selectedAd.refresh_days > data.date) {
-        console.log('Not showing ad ' + selectedAd.id + ', it was dismissed.');
-        callback(error, false);
-        return;
-      }
-      callback(error, true);
-    });
+    // Only show a ad if it has not been dismissed in less than |refresh_days| days
+    if (secondsInOneDay * selectedAd.refresh_days > dismissedAd.date) {
+      console.log('Not showing ad ' + selectedAd.id + ', it was dismissed.');
+      return false;
+    }
+    return true;
   }
 
   /**
    * Makes sure to not spam the user with ads if they recently dismissed one.
    * @param {function} callback
    */
-  function canShowAnyAd(callback) {
-    storageHandler.getLocal(getLastDismissKey(), (error, data) => {
-      if (error) {
-        callback(error, false);
-        return;
-      }
-      // No data means it was never dismissed
-      if (data === null) {
-        callback(error, true);
-        return;
-      }
-      // Don't show more ad if one was dismissed in less than 24hrs
-      if (secondsInOneDay > data.date) {
-        console.log('Not showing ads, one was dismissed recently.');
-        callback(error, false);
-        return;
-      }
-      callback(error, true);
-    });
+  async function canShowAnyAd() {
+    const lastDismissedAd = await storageHandler.getLocal(getLastDismissKey());
+    // No data means it was never dismissed
+    if (lastDismissedAd === null) {
+      return true;
+    }
+    // Don't show more ad if one was dismissed in less than 24hrs
+    if (secondsInOneDay > lastDismissedAd.date) {
+      console.log('Not showing ads, one was dismissed recently.');
+      return false;
+    }
+    return true;
   }
 
   /**
