@@ -6,6 +6,9 @@ export class Options {
    * Constructs the options.
    */
   constructor() {
-    this.advancedCookies = null;
+    this.advancedCookies = false;
+    this.devtoolsEnabled = true;
+    this.exportFormat = 'ask';
+    this.theme = 'auto';
   }
 }
