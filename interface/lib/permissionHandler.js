@@ -1,14 +1,13 @@
-import { BrowserDetector } from './browserDetector.js';
-
 /**
  * interface/devtools/permissionHandler.js needs to be kept in sync to the functions in this file
  */
 export class PermissionHandler {
   /**
    * Constructs a PermissionHandler.
+   * @param {BrowserDetector} browserDetector
    */
-  constructor() {
-    this.browserDetector = new BrowserDetector();
+  constructor(browserDetector) {
+    this.browserDetector = browserDetector;
     // Urls that start with these values can't be requested for permission.
     this.impossibleUrls = ['about:', 'chrome:', 'chrome-extension:', 'edge:'];
   }

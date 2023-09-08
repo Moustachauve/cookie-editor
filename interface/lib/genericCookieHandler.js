@@ -1,4 +1,3 @@
-import { BrowserDetector } from './browserDetector.js';
 import { EventEmitter } from './eventEmitter.js';
 
 /**
@@ -7,12 +6,13 @@ import { EventEmitter } from './eventEmitter.js';
 export class GenericCookieHandler extends EventEmitter {
   /**
    * Constructs a GenericCookieHandler.
+   * @param {BrowserDetector} browserDetector
    */
-  constructor() {
+  constructor(browserDetector) {
     super();
     this.cookies = [];
     this.currentTab = null;
-    this.browserDetector = new BrowserDetector();
+    this.browserDetector = browserDetector;
   }
 
   /**

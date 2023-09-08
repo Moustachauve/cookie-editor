@@ -6,9 +6,10 @@ import { GenericCookieHandler } from '../lib/genericCookieHandler.js';
 export class CookieHandlerPopup extends GenericCookieHandler {
   /**
    * Constructs and initializes the cookie handler.
+   * @param {BrowserDetector} browserDetector
    */
-  constructor() {
-    super();
+  constructor(browserDetector) {
+    super(browserDetector);
     console.log('Constructing PopupCookieHandler');
     this.isReady = false;
     this.currentTabId = null;

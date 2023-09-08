@@ -8,9 +8,10 @@ import { GenericCookieHandler } from '../lib/genericCookieHandler.js';
 export class CookieHandlerDevtools extends GenericCookieHandler {
   /**
    * Constructs and initializes the cookie handler.
+   * @param {BrowserDetector} browserDetector
    */
-  constructor() {
-    super();
+  constructor(browserDetector) {
+    super(browserDetector);
     this.isReady = false;
     console.log('Constructing DevToolsCookieHandler');
     this.backgroundPageConnection = this.browserDetector

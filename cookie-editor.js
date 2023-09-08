@@ -5,7 +5,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
   console.log('starting background script');
   const connections = {};
   const browserDetector = new BrowserDetector();
-  const permissionHandler = new PermissionHandler();
+  const permissionHandler = new PermissionHandler(browserDetector);
 
   browserDetector.getApi().runtime.onConnect.addListener(onConnect);
   browserDetector.getApi().runtime.onMessage.addListener(handleMessage);

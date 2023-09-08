@@ -24,13 +24,12 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
 
   const secondsInOneDay = new Date().getTime() + 1 * 24 * 60 * 60 * 1000;
   const browserDetector = new BrowserDetector();
-  const permissionHandler = new PermissionHandler();
-  const optionHandler = new OptionsHandler();
-
+  const permissionHandler = new PermissionHandler(browserDetector);
+  const storageHandler = new GenericStorageHandler(browserDetector);
+  const optionHandler = new OptionsHandler(browserDetector, storageHandler);
   const cookieHandler = window.isDevtools
-    ? new CookieHandlerDevtools()
-    : new CookieHandlerPopup();
-  const storageHandler = new GenericStorageHandler();
+    ? new CookieHandlerDevtools(browserDetector)
+    : new CookieHandlerPopup(browserDetector);
 
   const ads = [
     {

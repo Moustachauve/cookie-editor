@@ -1,7 +1,11 @@
+import { BrowserDetector } from '../lib/browserDetector.js';
+import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
 import { OptionsHandler } from '../lib/optionsHandler.js';
 
 document.addEventListener('DOMContentLoaded', async (event) => {
-  const optionHandler = new OptionsHandler();
+  const browserDetector = new BrowserDetector();
+  const storageHandler = new GenericStorageHandler(browserDetector);
+  const optionHandler = new OptionsHandler(browserDetector, storageHandler);
   const advancedCookieInput = document.getElementById('advanced-cookie');
   const showDevtoolsInput = document.getElementById('devtool-show');
   const exportFormatInput = document.getElementById('export-format');

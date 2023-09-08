@@ -7,10 +7,11 @@ import { EventEmitter } from './eventEmitter.js';
 export class GenericStorageHandler extends EventEmitter {
   /**
    * Constructs a GenericStorageHandler.
+   * @param {BrowserDetector} browserDetector
    */
-  constructor() {
+  constructor(browserDetector) {
     super();
-    this.browserDetector = new BrowserDetector();
+    this.browserDetector = browserDetector;
   }
 
   /**

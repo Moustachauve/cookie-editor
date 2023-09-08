@@ -1,8 +1,6 @@
-import { BrowserDetector } from './browserDetector.js';
 import { ExportFormats } from './data/exportFormats.js';
 import { Options } from './data/options.js';
 import { Themes } from './data/themes.js';
-import { GenericStorageHandler } from './genericStorageHandler.js';
 
 const optionsKey = 'all_options';
 
@@ -12,10 +10,13 @@ const optionsKey = 'all_options';
 export class OptionsHandler {
   /**
    * Constructs an OptionHandler
+   * @param {BrowserDetector} browserDetector
+   * @param {GenericStorageHandler} genericStorageHandler
    */
-  constructor() {
-    this.browserDetector = new BrowserDetector();
-    this.storageHandler = new GenericStorageHandler();
+  constructor(browserDetector, genericStorageHandler) {
+    console.log('constructing an optionsHandler');
+    this.browserDetector = browserDetector;
+    this.storageHandler = genericStorageHandler;
     this.options = null;
   }
 

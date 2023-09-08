@@ -8,6 +8,7 @@ export class BrowserDetector {
    * Constructs the BrowserDetector.
    */
   constructor() {
+    console.log('constructing a browserDetector');
     this.namespace = chrome || window.browser || window.chrome;
     this.supportPromises = false;
     this.supportSidePanel = false;
