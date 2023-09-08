@@ -938,8 +938,11 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   async function initWindow(_tab) {
     handleAd();
     await optionHandler.loadOptions();
+    optionHandler.on('optionsChanged', onOptionsChanged);
     cookieHandler.on('cookiesChanged', onCookiesChanged);
     cookieHandler.on('ready', showCookiesForTab);
+    document.querySelector('#advanced-toggle-all input').checked =
+      optionHandler.getCookieAdvanced();
     if (cookieHandler.isReady) {
       showCookiesForTab();
     }
@@ -1289,5 +1292,18 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       version: 1,
       date: Date.now(),
     };
+  }
+
+  /**
+   * Handles the changes required to the interface when the options are changed
+   * by an external source.
+   * @param {Option} oldOptions the options before changes.
+   */
+  function onOptionsChanged(oldOptions) {
+    if (oldOptions.advancedCookies != optionHandler.getCookieAdvanced()) {
+      document.querySelector('#advanced-toggle-all input').checked =
+        optionHandler.getCookieAdvanced();
+      showCookiesForTab();
+    }
   }
 })();

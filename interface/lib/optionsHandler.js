@@ -1,23 +1,36 @@
 import { ExportFormats } from './data/exportFormats.js';
 import { Options } from './data/options.js';
 import { Themes } from './data/themes.js';
+import { EventEmitter } from './eventEmitter.js';
+import { GUID } from './guid.js';
 
 const optionsKey = 'all_options';
 
 /**
  * Abstract class used to implement basic common Storage API handling.
  */
-export class OptionsHandler {
+export class OptionsHandler extends EventEmitter {
   /**
-   * Constructs an OptionHandler
+   * Constructs an OptionHandler.
    * @param {BrowserDetector} browserDetector
    * @param {GenericStorageHandler} genericStorageHandler
    */
   constructor(browserDetector, genericStorageHandler) {
+    super();
     console.log('constructing an optionsHandler');
     this.browserDetector = browserDetector;
     this.storageHandler = genericStorageHandler;
+    this.isReady = false;
     this.options = null;
+    this.guid = GUID.get();
+
+    this.backgroundPageConnection = this.browserDetector
+      .getApi()
+      .runtime.connect({ name: this.guid });
+    this.backgroundPageConnection.onMessage.addListener(this.onMessage);
+    this.backgroundPageConnection.postMessage({
+      type: 'init_optionsHandler',
+    });
   }
 
   /**
@@ -162,5 +175,54 @@ export class OptionsHandler {
   async saveOptions() {
     console.log('Saving options');
     await this.storageHandler.setLocal(optionsKey, this.options);
+    this.notifyBackgroundOfChanges();
   }
+
+  /**
+   * Notifies the background script that the options changed.
+   */
+  notifyBackgroundOfChanges() {
+    this.sendMessage('optionsChanged', { from: this.guid });
+  }
+
+  /**
+   * Sends a message to the background script.
+   * @param {string} type The type of the message.
+   * @param {object} params The payload of the message
+   * @param {function} callback
+   * @param {function} errorCallback
+   */
+  sendMessage(type, params, callback, errorCallback) {
+    if (this.browserDetector.supportsPromises()) {
+      this.browserDetector
+        .getApi()
+        .runtime.sendMessage({ type: type, params: params })
+        .then(callback, errorCallback);
+    } else {
+      this.browserDetector
+        .getApi()
+        .runtime.sendMessage({ type: type, params: params }, callback);
+    }
+  }
+
+  /**
+   * Handles the reception of messages from the background script.
+   * @param {object} request
+   */
+  onMessage = async (request) => {
+    console.log(
+      '[options] background message received: ' + (request.type || 'unknown'),
+    );
+    switch (request.type) {
+      case 'optionsChanged': {
+        if (request.data.from == this.guid) {
+          return;
+        }
+        const oldOptions = this.options;
+        await this.loadOptions();
+        this.emit('optionsChanged', oldOptions);
+        return;
+      }
+    }
+  };
 }

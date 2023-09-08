@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   const themeInput = document.getElementById('theme');
 
   await optionHandler.loadOptions();
+  optionHandler.on('optionsChanged', setFormValues);
   setFormValues();
   setInputEvents();
 

@@ -28,7 +28,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
     console.log('Devtool init');
     this.backgroundPageConnection.onMessage.addListener(this.onMessage);
     this.backgroundPageConnection.postMessage({
-      type: 'init',
+      type: 'init_cookieHandler',
       tabId: this.browserDetector.getApi().devtools.inspectedWindow.tabId,
     });
 
@@ -90,7 +90,10 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * @param {object} request
    */
   onMessage = (request) => {
-    console.log('background message received: ' + (request.type || 'unknown'));
+    console.log(
+      '[cookieHandler] background message received: ' +
+        (request.type || 'unknown'),
+    );
     switch (request.type) {
       case 'cookiesChanged':
         this.onCookiesChanged(request.data);
