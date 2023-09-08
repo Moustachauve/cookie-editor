@@ -5,6 +5,7 @@ import { Cookie } from '../lib/cookie.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
 import { JsonFormat } from '../lib/jsonFormat.js';
 import { NetscapeFormat } from '../lib/netscapeFormat.js';
+import { OptionsHandler } from '../lib/optionsHandler.js';
 import { PermissionHandler } from '../lib/permissionHandler.js';
 import { CookieHandlerPopup } from './cookieHandlerPopup.js';
 
@@ -18,14 +19,13 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   let loadedCookies = {};
   let disableButtons = false;
 
-  let showAllAdvanced;
-
   const notificationQueue = [];
   let notificationTimeout;
 
   const secondsInOneDay = new Date().getTime() + 1 * 24 * 60 * 60 * 1000;
   const browserDetector = new BrowserDetector();
   const permissionHandler = new PermissionHandler();
+  const optionHandler = new OptionsHandler();
 
   const cookieHandler = window.isDevtools
     ? new CookieHandlerDevtools()
@@ -53,7 +53,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     },
   ];
 
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', async function () {
     containerCookie = document.getElementById('cookie-container');
     notificationElement = document.getElementById('notification');
     pageTitleContainer = document.getElementById('pageTitle');
@@ -474,10 +474,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     document
       .querySelector('#advanced-toggle-all input')
       .addEventListener('change', function (e) {
-        showAllAdvanced = e.target.checked;
-        browserDetector
-          .getApi()
-          .storage.local.set({ showAllAdvanced: showAllAdvanced });
+        optionHandler.setCookieAdvanced(e.target.checked);
         showCookiesForTab();
       });
 
@@ -495,8 +492,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         hideNotification();
       });
 
-    initWindow();
-    showCookiesForTab();
+    await initWindow();
     adjustWidthIfSmaller();
 
     if (chrome && chrome.runtime && chrome.runtime.getBrowserInfo) {
@@ -523,29 +519,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       return;
     }
 
-    if (showAllAdvanced === undefined) {
-      if (browserDetector.supportsPromises()) {
-        browserDetector
-          .getApi()
-          .storage.local.get('showAllAdvanced')
-          .then(function (onGot) {
-            showAllAdvanced = onGot.showAllAdvanced || false;
-            document.querySelector('#advanced-toggle-all input').checked =
-              showAllAdvanced;
-            return showCookiesForTab();
-          });
-      } else {
-        browserDetector
-          .getApi()
-          .storage.local.get('showAllAdvanced', function (onGot) {
-            showAllAdvanced = onGot.showAllAdvanced || false;
-            document.querySelector('#advanced-toggle-all input').checked =
-              showAllAdvanced;
-            return showCookiesForTab();
-          });
-      }
-      return;
-    }
+    console.log('showing cookies');
 
     const domain = getDomainFromUrl(cookieHandler.currentTab.url);
     const subtitleLine = document.querySelector('.titles h2');
@@ -571,6 +545,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     }
 
     cookieHandler.getAllCookies(function (cookies) {
+      const showAllAdvanced = optionHandler.getCookieAdvanced();
       cookies = cookies.sort(sortCookiesByName);
 
       loadedCookies = {};
@@ -961,10 +936,14 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * Initialises the interface.
    * @param {object} _tab The current Tab.
    */
-  function initWindow(_tab) {
+  async function initWindow(_tab) {
+    handleAd();
+    await optionHandler.loadOptions();
     cookieHandler.on('cookiesChanged', onCookiesChanged);
     cookieHandler.on('ready', showCookiesForTab);
-    handleAd();
+    if (cookieHandler.isReady) {
+      showCookiesForTab();
+    }
   }
 
   /**

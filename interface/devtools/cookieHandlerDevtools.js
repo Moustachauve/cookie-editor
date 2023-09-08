@@ -11,8 +11,8 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    */
   constructor() {
     super();
+    this.isReady = false;
     console.log('Constructing DevToolsCookieHandler');
-    this.isInit = false;
     this.backgroundPageConnection = this.browserDetector
       .getApi()
       .runtime.connect({ name: 'panel' });
@@ -31,9 +31,9 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
       tabId: this.browserDetector.getApi().devtools.inspectedWindow.tabId,
     });
 
-    this.isInit = true;
     console.log('Devtool ready');
     this.emit('ready');
+    this.isReady = true;
   };
 
   /**
@@ -140,7 +140,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
           tabInfo[0].url !== self.currentTab.url;
         self.currentTabId = tabInfo[0].id;
         self.currentTab = tabInfo[0];
-        if (newTab && self.isInit) {
+        if (newTab && self.isReady) {
           self.emit('cookiesChanged');
         }
         if (callback) {
