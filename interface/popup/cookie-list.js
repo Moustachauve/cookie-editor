@@ -2,6 +2,7 @@ import { CookieHandlerDevtools } from '../devtools/cookieHandlerDevtools.js';
 import { Animate } from '../lib/animate.js';
 import { BrowserDetector } from '../lib/browserDetector.js';
 import { Cookie } from '../lib/cookie.js';
+import { ExportFormats } from '../lib/data/exportFormats.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
 import { JsonFormat } from '../lib/jsonFormat.js';
 import { NetscapeFormat } from '../lib/netscapeFormat.js';
@@ -344,7 +345,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         hideExportMenu();
         return;
       }
-      toggleExportMenu();
+      handleExportButtonClick();
     });
 
     document.getElementById('import-cookies').addEventListener('click', () => {
@@ -757,6 +758,24 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       true,
     );
     return template.querySelector('form');
+  }
+
+  /**
+   * Handles the logic of the export button, depending on user preferences.
+   */
+  function handleExportButtonClick() {
+    const exportOption = optionHandler.getExportFormat();
+    switch (exportOption) {
+      case ExportFormats.Ask:
+        toggleExportMenu();
+        break;
+      case ExportFormats.JSON:
+        exportToJson();
+        break;
+      case ExportFormats.Netscape:
+        exportToNetscape();
+        break;
+    }
   }
 
   /**
