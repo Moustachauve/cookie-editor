@@ -1,232 +1,87 @@
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #2c2e31;
-    color: #ffffff;
-  }
-  svg.icon {
-    fill: #ffffff;
-  }
+[data-theme='dark'] {
+  --primary-surface-color: #2c2e31;
+  --primary-border-color: #c5c5c5;
+  --primary-outline-color: #4786ec;
+  --primary-text-color: #ffffff;
+  --primary-danger-color: #f71323;
+  --primary-safe-color: #1db464;
 
-  #cookie-container,
-  #cookie-container option {
-    background-color: #303134;
-  }
-  #cookie-container .search {
-    fill: #ffffff;
-  }
-  #cookie-container #searchField {
-    background-color: #383b41;
-    color: #ffffff;
-    border: 1px solid #2c2e31;
-  }
-  #cookie-container #searchField::placeholder {
-    color: #dedee4;
-  }
-  #cookie-container #searchField:hover,
-  #cookie-container #searchField:focus {
-    background-color: #494b50;
-  }
-  #cookie-container #searchField:hover::placeholder,
-  #cookie-container #searchField:focus::placeholder {
-    color: #ffffff;
-  }
-  #cookie-container #searchField.content {
-    background-color: #665f37;
-  }
+  --secondary-surface-color: #303134;
+  --secondary-border-color: #3f4146;
+  --secondary-text-color: #aaaaaa;
+  --secondary-text-onsurface-color: #eaeaea;
 
-  #no-permission button {
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background-color: rgba(255, 255, 255, 0.05);
-    color: #fff;
-  }
+  --changed-surface-color: #3a391a;
+  --success-surface-color: #15531d;
 
-  #no-permission button:hover {
-    border: 1px solid rgba(255, 255, 255, 0.6);
-  }
+  --ad-surface-color: #122738;
+  --ad-text-color: #7ac2ec;
+  --ad-link-color: #8fc9eb;
 
-  #no-permission button:focus {
-    outline: 2px solid rgba(255, 255, 255, 0.6);
-  }
+  --search-surface-color: #383b41;
+  --search-surface-hover-color: #494b50;
+  --search-surface-content-color: #665f37;
 
-  #cookie-container .header {
-    border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    background-color: #303134;
-  }
-  #cookie-container li .header:focus,
-  #cookie-container #searchField:focus {
-    outline-offset: -3px;
-    outline: 2px solid #4786ec;
-    border-radius: 4px;
-  }
+  --button-primary-surface-color: #1b98f1;
+  --button-primary-text-color: #ffffff;
+  --button-danger-surface-color: #f800003f;
 
-  .btns button.delete {
-    background-color: transparent;
-    border: 1px solid #3f4146;
-  }
-  .btns button.delete:hover,
-  .btns button.delete:focus {
-    background-color: rgba(255, 255, 255, 0.15);
-  }
-  .action-btns button:focus {
-    outline: 2px solid #4786ec;
-    border-radius: 4px;
-  }
-  button.delete,
-  button.save {
-    opacity: 0.8;
-    transition: all 100ms ease;
-  }
-  button.delete svg,
-  button.save svg {
-    transition: all 100ms ease;
-  }
-  button.delete:hover,
-  button.delete:focus {
-    opacity: 1;
-  }
-  button.delete:hover svg,
-  button.delete:focus svg {
-    fill: #f71323;
-  }
-  .action-btns button.save:hover,
-  .action-btns button.save:focus {
-    opacity: 1;
-  }
-  .action-btns button.save:hover svg,
-  .action-btns button.save:focus svg {
-    fill: #1db464;
-  }
-  #cookie-container .expando {
-    background-color: rgba(255, 255, 255, 0.04);
-  }
-  .container.form label {
-    color: #eaeaea;
-  }
-  #cookie-container textarea,
-  #cookie-container input[type='text'],
-  #cookie-container select {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.1);
-  }
+  --notification-surface-color: rgba(0, 0, 0, 0.8);
+  --notification-text-color: #fafafa;
+  --notification-dismiss-color: #656565;
+  --notification-dismiss-hover-parent-color: #aaa;
+  --notification-dismiss-hover-color: var(--notification-text-color);
 
-  #cookie-container textarea:hover,
-  #cookie-container input:not([disabled])[type='text']:hover {
-    border-color: rgb(82, 130, 192);
-    box-shadow: 1px 1px 5px rgba(150, 150, 150, 0.4);
-  }
-
-  .button-bar {
-    background-color: #2c2e31;
-  }
-  .panel-section-footer-button {
-    background-color: #303134;
-    color: #bfbfbf;
-    fill: #bfbfbf;
-  }
-
-  .panel-section-footer-button:hover,
-  .panel-section-footer-button:focus {
-    background-color: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #fff;
-    fill: #fff;
-  }
-  .panel-section-footer-button.primary:hover,
-  .panel-section-footer-button.primary:focus {
-    background-color: #1b98f1;
-  }
-  .panel-section-footer-button .tooltip {
-    color: #fff;
-  }
-  .panel-section-footer-button:hover .tooltip,
-  .panel-section-footer-button:focus .tooltip {
-    color: #fff;
-  }
-  .panel-section-footer-button.danger:hover,
-  .panel-section-footer-button.danger:focus {
-    background-color: #f800003f;
-  }
-
-  #ad-container > div {
-    background-color: #122738;
-  }
-
-  .ad-tag {
-    color: #7ac2ec;
-  }
-
-  .ad-link a {
-    color: #8fc9eb;
-  }
-
-  .ad-link a:hover {
-    color: #cce2f0;
-  }
-
-  .ad-actions button {
-    color: #7ac2ec;
-  }
-
-  .ad-actions button:hover {
-    color: #badcf1;
-  }
-  
-  .ad-actions button:focus-visible {
-    outline: 2px solid #4786ec;
-  }
-
-  @keyframes changed-value {
-    0% {
-      background-color: transparent;
-    }
-    50% {
-      background-color: #3a391a;
-    }
-    100% {
-      background-color: transparent;
-    }
-  }
-  @keyframes success {
-    0% {
-      background-color: transparent;
-    }
-    50% {
-      background-color: #15531d;
-    }
-    100% {
-      background-color: transparent;
-    }
-  }
-
-  .advanced-toggle {
-    color: #bababa;
-  }
-  .advanced-toggle:hover,
-  .advanced-toggle:focus {
-    color: #fff;
-  }
-  .advanced-toggle:focus {
-    outline: 2px solid #4786ec;
-    border-radius: 4px;
-  }
-}
-#export-menu {
-  background-color: #383b41;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.35);
+  --export-surface-color: #4e5157;
+  --export-border-color: rgba(255, 255, 255, 0.2);
 }
 
-#export-menu:after {
-  border-top-color: #383b41;
+[data-theme='dark'] #cookie-container #searchField {
+  border: 1px solid var(--secondary-border-color);
 }
 
-#export-menu button {
-  color: #fff;
+[data-theme='dark'] #cookie-container .header {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--secondary-surface-color);
+}
+[data-theme="dark"] .btns button.delete:hover,
+[data-theme="dark"] .btns button.delete:focus {
+  background-color: rgba(150, 150, 150, 0.15);
+}
+
+[data-theme="dark"] #cookie-container .expando {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+[data-theme="dark"] #cookie-container textarea,
+[data-theme="dark"] #cookie-container input[type='text'],
+[data-theme="dark"] #cookie-container select {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] #cookie-container textarea:hover,
+[data-theme="dark"] #cookie-container input:not([disabled])[type='text']:hover {
+  border-color: rgb(82, 130, 192);
+  box-shadow: 1px 1px 5px rgba(150, 150, 150, 0.4);
+}
+
+[data-theme="dark"] .panel-section-footer-button:hover,
+[data-theme="dark"] .panel-section-footer-button:focus {
+  background-color: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--primary-text-color);
+  fill: var(--primary-text-color);
 }
-#export-menu button:hover {
+[data-theme="dark"] .panel-section-footer-button .tooltip {
+  color: var(--primary-text-color);
+}
+[data-theme="dark"] .panel-section-footer-button:hover .tooltip,
+[data-theme="dark"] .panel-section-footer-button:focus .tooltip {
+  color: var(--primary-text-color);
+}
+
+[data-theme="dark"] #export-menu button:hover {
   border-color: rgba(255, 255, 255, 0.3);
   background-color: rgba(255, 255, 255, 0.15);
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);

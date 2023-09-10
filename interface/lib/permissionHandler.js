@@ -37,6 +37,7 @@ export class PermissionHandler {
    */
   async checkPermissions(url) {
     const testPermission = {
+      permissions: ['cookies'],
       origins: [url],
     };
 
@@ -58,6 +59,7 @@ export class PermissionHandler {
    */
   async requestPermission(url) {
     const permission = {
+      permissions: ['cookies'],
       origins: [url],
     };
     return this.browserDetector.getApi().permissions.request(permission);

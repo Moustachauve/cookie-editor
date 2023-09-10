@@ -1,3 +1,41 @@
+:root {
+  --primary-surface-color: #ffffff;
+  --primary-border-color: #c5c5c5;
+  --primary-outline-color: #444;
+  --primary-text-color: #000000;
+  --primary-danger-color: #cf000f;
+  --primary-safe-color: #1e824c;
+
+  --secondary-surface-color: #eaeaea;
+  --secondary-border-color: #aaaaaa;
+  --secondary-text-color: #777777;
+  --secondary-text-onsurface-color: var(--primary-text-color);
+
+  --changed-surface-color: #fdfb8e;
+  --success-surface-color: #9ee7a8;
+
+  --ad-surface-color: #b1d7f7;
+  --ad-text-color: #214357;
+  --ad-link-color: #195179;
+
+  --search-surface-color: #f5f5f5;
+  --search-surface-hover-color: #ffffec;
+  --search-surface-content-color: gold;
+
+  --button-primary-surface-color: #1b98f1;
+  --button-primary-text-color: #ffffff;
+  --button-danger-surface-color: #f800002b;
+
+  --notification-surface-color: rgba(0, 0, 0, 0.8);
+  --notification-text-color: #fafafa;
+  --notification-dismiss-color: #656565;
+  --notification-dismiss-hover-parent-color: #aaa;
+  --notification-dismiss-hover-color: var(--notification-text-color);
+
+  --export-surface-color: var(--primary-surface-color);
+  --export-border-color: var(--primary-border-color);
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -7,8 +45,8 @@ body {
   font-size: 12px;
   overflow: hidden;
   font-family: 'Segoe UI', Tahoma, sans-serif;
-  color: #000000;
-  background-color: #ffffff;
+  color: var(--primary-text-color);
+  background-color: var(--primary-surface-color);
 }
 
 body * {
@@ -24,6 +62,7 @@ svg.icon {
   height: 1em;
   width: 1em;
   pointer-events: none;
+  fill: var(--primary-text-color);
 }
 
 .header-name {
@@ -62,13 +101,13 @@ button:focus {
 
 #ad-container > div {
   padding: 3px 6px;
-  background-color: #b1d7f7;
   display: flex;
+  background-color: var(--ad-surface-color);
 }
 
 .ad-tag {
   font-style: italic;
-  color: #214357;
+  color: var(--ad-text-color);
 }
 
 .ad-link {
@@ -78,11 +117,11 @@ button:focus {
 .ad-link a {
   padding-left: 5px;
   padding-right: 5px;
-  color: #195179;
+  color: var(--ad-link-color);
 }
 
 .ad-link a:hover {
-  color: #000000;
+  color: var(--primary-text-color);
 }
 
 .ad-actions {
@@ -93,15 +132,15 @@ button:focus {
   border: none;
   background: transparent;
   font-size: 12px;
-  color: #195179;
+  color: var(--ad-link-color);
 }
 
 .ad-actions button:hover {
-  color: #000000;
+  color: var(--primary-text-color);
   text-decoration: underline;
 }
 .ad-actions button:focus-visible {
-  outline: 2px solid #444;
+  outline: 2px solid var(--primary-outline-color);
   border-radius: 4px;
 }
 
@@ -117,19 +156,28 @@ button:focus {
 }
 
 #cookie-container #searchField {
-  background-color: #f5f5f5;
   padding: 8px;
   padding-left: 40px;
   transition: background-color 100ms linear;
-  color: #000000;
+  background-color: var(--search-surface-color);
+  color: var(--primary-text-color);
+}
+#cookie-container li .header:focus,
+#cookie-container #searchField:focus {
+  outline-offset: -3px;
+  border-radius: 4px;
 }
 
 #cookie-container #searchField:hover,
 #cookie-container #searchField:focus {
-  background-color: #ffffec;
+  background-color: var(--search-surface-hover-color);
 }
 #cookie-container #searchField.content {
-  background-color: gold;
+  background-color: var(--search-surface-content-color);
+}
+
+#cookie-container #searchField::placeholder {
+  color: var(--secondary-text-color);
 }
 
 #cookie-container {
@@ -137,7 +185,7 @@ button:focus {
   min-width: 300px;
   max-height: 400px;
   overflow-y: auto;
-  background-color: #eaeaea;
+  background-color: var(--secondary-surface-color);
 }
 
 #no-cookies,
@@ -166,22 +214,23 @@ button:focus {
 }
 
 #no-permission button {
-  border: 1px solid #c5c5c5;
+  border: 1px solid var(--primary-border-color);
   border-radius: 3px;
-  background-color: #fff;
+  background-color: var(--primary-surface-color);
+  color: var(--primary-text-color);
   padding: 8px 25px;
   font-size: 14px;
   transition: all 100ms linear;
 }
 
 #no-permission button:hover {
-  border-color: #444;
   border-radius: 4px;
+  border-color: var(--primary-outline-color);
 }
 
-#no-permission button:focus {
-  outline: 2px solid #444;
+#no-permission button:focus-visible {
   border-radius: 4px;
+  outline: 2px solid var(--primary-outline-color);
 }
 
 #cookie-container ul {
@@ -197,12 +246,12 @@ button:focus {
 
 #cookie-container .header {
   display: block;
-  border: 1px solid #cacaca;
   position: relative;
   cursor: pointer;
   -moz-user-select: none;
   user-select: none;
-  background-color: #ffffff;
+  background-color: var(--primary-surface-color);
+  border: 1px solid var(--primary-border-color);
 }
 
 #cookie-container li .header .btns {
@@ -218,7 +267,7 @@ button:focus {
 @-moz-document url-prefix() {
   #cookie-container li .header:focus {
     outline-offset: -3px;
-    outline: 2px solid #444;
+    outline: 2px solid var(--primary-outline-color);
     border-radius: 3px;
   }
 }
@@ -256,9 +305,12 @@ button:focus {
   margin: 0;
   padding: 4px;
   font-family: 'Segoe UI', Tahoma, sans-serif;
-  border: 1px solid rgb(150, 150, 150);
-  background-color: #ffffff;
-  color: #000000;
+  border: 1px solid var(--secondary-border-color);
+  background-color: var(--primary-surface-color);
+  color: var(--primary-text-color);
+}
+#cookie-container select option {
+  background-color: var(--primary-surface-color);
 }
 
 #cookie-container textarea:hover,
@@ -309,7 +361,7 @@ label {
 .button-bar {
   display: none;
   z-index: 5;
-  background-color: #f0f0f0;
+  background-color: var(--primary-surface-color);
 }
 
 .button-bar.active {
@@ -322,6 +374,7 @@ label {
 }
 .container.form label {
   font-weight: 500;
+  color: var(--secondary-text-onsurface-color);
 }
 
 .action-btns {
@@ -336,8 +389,8 @@ label {
 }
 
 .btns button.delete {
-  background-color: #fbfbfb;
-  border: 1px solid #b1b1b1;
+  background-color: var(--primary-surface-color);
+  border: 1px solid var(--secondary-border-color);
   height: 24px;
   outline: 0 !important;
   padding: 0 8px 0;
@@ -363,7 +416,7 @@ label {
 .action-btns button,
 .btns button {
   transition: all 100ms ease;
-  fill: #000000;
+  fill: var(--primary-text-color);
 }
 
 .action-btns button:hover {
@@ -371,18 +424,18 @@ label {
 }
 
 .action-btns button:focus {
-  outline: 2px solid #444;
+  outline: 2px solid var(--primary-outline-color);
   border-radius: 4px;
 }
 
 button.delete:hover,
 button.delete:focus {
-  fill: #cf000f;
+  fill: var(--primary-danger-color);
   opacity: 0.8;
 }
 .action-btns button.save:hover,
 .action-btns button.save:focus {
-  fill: #1e824c;
+  fill: var(--primary-safe-color);
   opacity: 0.8;
 }
 
@@ -396,7 +449,6 @@ body,
 .panel-section-footer {
   background-color: rgba(0, 0, 0, 0.06);
   border-top: 1px solid rgba(0, 0, 0, 0.15);
-  color: #1a1a1a;
   display: flex;
   flex-direction: row;
   height: 41px;
@@ -413,21 +465,22 @@ body,
   cursor: pointer;
   transition: all 150ms ease;
   border: 1px solid transparent;
+  background-color: var(--secondary-surface-color);
 }
 .panel-section-footer-button:hover,
 .panel-section-footer-button:focus {
   background-color: rgba(0, 0, 0, 0.08);
-  border: 1px solid #444;
+  border: 1px solid var(--primary-outline-color);
 }
 .panel-section-footer-button.primary:hover,
 .panel-section-footer-button.primary:focus {
-  background-color: #1b98f1;
-  color: #fff;
-  fill: #fff;
+  background-color: var(--button-primary-surface-color);
+  color: var(--button-primary-text-color);
+  fill: var(--button-primary-text-color);
 }
 .panel-section-footer-button.danger:hover,
 .panel-section-footer-button.danger:focus {
-  background-color: #f800002b;
+  background-color: var(--button-danger-surface-color);
 }
 
 .panel-section-footer-separator {
@@ -446,7 +499,7 @@ body,
 }
 .panel-section-footer-button .tooltip {
   text-align: center;
-  color: #888;
+  color: var(--secondary-text-color);
   transition: all 200ms ease;
   opacity: 0;
 }
@@ -487,9 +540,9 @@ body,
   padding: 10px 20px;
   padding-right: 25px;
   margin: auto;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: var(--notification-surface-color);
   border-radius: 5px;
-  color: #fafafa;
+  color: var(--notification-text-color);
   font-size: 14px;
   pointer-events: auto;
   animation-duration: 0.3s;
@@ -518,7 +571,7 @@ body,
   border: none;
   background-color: transparent;
   cursor: pointer;
-  fill: #656565;
+  fill: var(--notification-dismiss-color);
 }
 
 #notification-dismiss svg {
@@ -526,15 +579,15 @@ body,
   height: 0.9em;
 }
 #notification:hover #notification-dismiss {
-  fill: #aaa;
+  fill: var(--notification-dismiss-hover-parent-color);
 }
 #notification:hover #notification-dismiss:hover,
 #notification #notification-dismiss:focus {
-  fill: #fafafa;
+  fill: var(--notification-dismiss-hover-color);
 }
 
 #notification #notification-dismiss:focus {
-  outline: 2px solid #aaa;
+  outline: 2px solid var(--notification-dismiss-hover-parent-color);
   border-radius: 3px;
 }
 
@@ -571,8 +624,8 @@ body,
   top: 49%;
   padding: 3px 10px;
   min-width: 40px;
-  background-color: rgba(0, 0, 0, 0.85);
-  color: #fff;
+  background-color: var(--notification-surface-color);
+  color: var(--notification-text-color);
   text-align: center;
   border-radius: 4px;
   white-space: nowrap;
@@ -611,13 +664,13 @@ body,
 
 @keyframes changed-value {
   0% {
-    background-color: #fff;
+    background-color: transparent;
   }
   50% {
-    background-color: #fdfb8e;
+    background-color: var(--changed-surface-color);
   }
   100% {
-    background-color: #fff;
+    background-color: transparent;
   }
 }
 
@@ -633,7 +686,7 @@ body,
     background-color: transparent;
   }
   50% {
-    background-color: #9ee7a8;
+    background-color: var(--success-surface-color);
   }
   100% {
     background-color: transparent;
@@ -650,19 +703,20 @@ body,
   display: block;
   width: 100%;
   background: transparent;
+  color: var(--secondary-text-color);
   border: none;
   text-align: right;
-  font-size: 10px;
+  font-size: 11px;
   text-decoration: underline;
   cursor: pointer;
   user-select: none;
 }
 .advanced-toggle:hover,
 .advanced-toggle:focus {
-  color: #888;
+  color: var(--primary-text-color);
 }
-.advanced-toggle:focus {
-  outline: 2px solid #444;
+.advanced-toggle:focus-visible {
+  outline: 2px solid var(--primary-outline-color);
   border-radius: 4px;
 }
 
@@ -687,7 +741,7 @@ body,
   bottom: 51px;
   right: 15px;
   min-width: 100px;
-  background-color: #ffffff;
+  background-color: var(--export-surface-color);
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.35);
   padding: 10px;
 }
@@ -699,21 +753,22 @@ body,
   right: 25px;
   width: 0;
   height: 0;
-  border-top: solid 10px #ffffff;
+  border-top: solid 10px var(--export-surface-color);
   border-left: solid 10px transparent;
   border-right: solid 10px transparent;
 }
 
 #export-menu button {
-  border: 1px solid #c5c5c5;
+  background-color: var(--export-surface-color);
+  color: var(--primary-text-color);
+  border: 1px solid var(--export-border-color);
   border-radius: 3px;
-  background-color: #fff;
   padding: 10px;
   font-size: 14px;
   transition: all 100ms linear;
 }
 #export-menu button:hover {
-  border-color: #575757;
+  border-color: var(--primary-outline-color);
   background-color: rgba(0, 0, 0, 0.03);
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
 }

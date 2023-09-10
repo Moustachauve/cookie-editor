@@ -34,8 +34,6 @@ body {
   padding: 10px;
 }
 
-@media (prefers-color-scheme: dark) {
-  #cookie-container {
-    background-color: #202124;
-  }
+[data-theme='dark'] #cookie-container {
+  background-color: #202124;
 }

@@ -3,6 +3,7 @@ import { Animate } from '../lib/animate.js';
 import { BrowserDetector } from '../lib/browserDetector.js';
 import { Cookie } from '../lib/cookie.js';
 import { ExportFormats } from '../lib/data/exportFormats.js';
+import { Themes } from '../lib/data/themes.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
 import { JsonFormat } from '../lib/jsonFormat.js';
 import { NetscapeFormat } from '../lib/netscapeFormat.js';
@@ -57,6 +58,8 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     containerCookie = document.getElementById('cookie-container');
     notificationElement = document.getElementById('notification');
     pageTitleContainer = document.getElementById('pageTitle');
+
+    await initWindow();
 
     /**
      * Expands the HTML cookie element.
@@ -492,7 +495,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         hideNotification();
       });
 
-    await initWindow();
     adjustWidthIfSmaller();
 
     if (chrome && chrome.runtime && chrome.runtime.getBrowserInfo) {
@@ -955,8 +957,9 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * @param {object} _tab The current Tab.
    */
   async function initWindow(_tab) {
-    handleAd();
     await optionHandler.loadOptions();
+    handleTheme();
+    handleAd();
     optionHandler.on('optionsChanged', onOptionsChanged);
     cookieHandler.on('cookiesChanged', onCookiesChanged);
     cookieHandler.on('ready', showCookiesForTab);
@@ -1323,6 +1326,30 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       document.querySelector('#advanced-toggle-all input').checked =
         optionHandler.getCookieAdvanced();
       showCookiesForTab();
+    }
+    if (oldOptions.theme != optionHandler.getTheme()) {
+      handleTheme();
+    }
+  }
+
+  /**
+   * Handles the initial theme of the page.
+   */
+  function handleTheme() {
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    const selectedTheme = optionHandler.getTheme();
+    switch (selectedTheme) {
+      case Themes.Light:
+      case Themes.Dark:
+        document.body.dataset.theme = selectedTheme;
+        break;
+      default:
+        if (prefersDarkScheme.matches) {
+          document.body.dataset.theme = 'dark';
+        } else {
+          document.body.dataset.theme = 'light';
+        }
+        break;
     }
   }
 })();
