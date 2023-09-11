@@ -40,7 +40,7 @@ export class GenericStorageHandler extends EventEmitter {
       this.browserDetector.getApi().storage.local.get([key], (data) => {
         const error = this.browserDetector.getApi().runtime.lastError;
         if (error) {
-          console.error('Failed to get data', key, error);
+          console.error('Failed to get data', key, error)
           if (callback) {
             const errorMessage =
               (error ? error.message : '') || 'Unknown error';
