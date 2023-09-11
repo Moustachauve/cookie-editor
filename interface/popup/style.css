@@ -1,40 +1,6 @@
-:root {
-  --primary-surface-color: #ffffff;
-  --primary-border-color: #c5c5c5;
-  --primary-outline-color: #444;
-  --primary-text-color: #000000;
-  --primary-danger-color: #cf000f;
-  --primary-safe-color: #1e824c;
-
-  --secondary-surface-color: #eaeaea;
-  --secondary-border-color: #aaaaaa;
-  --secondary-text-color: #777777;
-  --secondary-text-onsurface-color: var(--primary-text-color);
-
-  --changed-surface-color: #fdfb8e;
-  --success-surface-color: #9ee7a8;
-
-  --ad-surface-color: #b1d7f7;
-  --ad-text-color: #214357;
-  --ad-link-color: #195179;
-
-  --search-surface-color: #f5f5f5;
-  --search-surface-hover-color: #ffffec;
-  --search-surface-content-color: gold;
-
-  --button-primary-surface-color: #1b98f1;
-  --button-primary-text-color: #ffffff;
-  --button-danger-surface-color: #f800002b;
-
-  --notification-surface-color: rgba(0, 0, 0, 0.8);
-  --notification-text-color: #fafafa;
-  --notification-dismiss-color: #656565;
-  --notification-dismiss-hover-parent-color: #aaa;
-  --notification-dismiss-hover-color: var(--notification-text-color);
-
-  --export-surface-color: var(--primary-surface-color);
-  --export-border-color: var(--primary-border-color);
-}
+@import url('../theme/light.css');
+@import url('../theme/dark.css');
+@import url('dark.css');
 
 body {
   display: flex;

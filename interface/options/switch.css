@@ -21,7 +21,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: var(--switch-surface-neutral-color);
   -webkit-transition: .4s;
   transition: .4s;
   outline-offset: 2px;
@@ -34,17 +34,17 @@
   width: 16px;
   left: 4px;
   bottom: 3px;
-  background-color: white;
+  background-color: var(--switch-surface-handle-color);
   -webkit-transition: .2s;
   transition: .2s;
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: var(--switch-surface-on-color);
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px var(--switch-surface-on-color);
 }
 
 input:checked + .slider:before {

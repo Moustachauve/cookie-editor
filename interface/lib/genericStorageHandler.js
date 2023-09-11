@@ -1,4 +1,3 @@
-import { BrowserDetector } from './browserDetector.js';
 import { EventEmitter } from './eventEmitter.js';
 
 /**

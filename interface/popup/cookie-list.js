@@ -3,12 +3,12 @@ import { Animate } from '../lib/animate.js';
 import { BrowserDetector } from '../lib/browserDetector.js';
 import { Cookie } from '../lib/cookie.js';
 import { ExportFormats } from '../lib/data/exportFormats.js';
-import { Themes } from '../lib/data/themes.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
 import { JsonFormat } from '../lib/jsonFormat.js';
 import { NetscapeFormat } from '../lib/netscapeFormat.js';
 import { OptionsHandler } from '../lib/optionsHandler.js';
 import { PermissionHandler } from '../lib/permissionHandler.js';
+import { ThemeHandler } from '../lib/themeHandler.js';
 import { CookieHandlerPopup } from './cookieHandlerPopup.js';
 
 (function () {
@@ -29,6 +29,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   const permissionHandler = new PermissionHandler(browserDetector);
   const storageHandler = new GenericStorageHandler(browserDetector);
   const optionHandler = new OptionsHandler(browserDetector, storageHandler);
+  const themeHandler = new ThemeHandler(optionHandler);
   const cookieHandler = window.isDevtools
     ? new CookieHandlerDevtools(browserDetector)
     : new CookieHandlerPopup(browserDetector);
@@ -958,7 +959,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    */
   async function initWindow(_tab) {
     await optionHandler.loadOptions();
-    handleTheme();
+    themeHandler.updateTheme();
     handleAd();
     optionHandler.on('optionsChanged', onOptionsChanged);
     cookieHandler.on('cookiesChanged', onCookiesChanged);
@@ -1326,30 +1327,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       document.querySelector('#advanced-toggle-all input').checked =
         optionHandler.getCookieAdvanced();
       showCookiesForTab();
-    }
-    if (oldOptions.theme != optionHandler.getTheme()) {
-      handleTheme();
-    }
-  }
-
-  /**
-   * Handles the initial theme of the page.
-   */
-  function handleTheme() {
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-    const selectedTheme = optionHandler.getTheme();
-    switch (selectedTheme) {
-      case Themes.Light:
-      case Themes.Dark:
-        document.body.dataset.theme = selectedTheme;
-        break;
-      default:
-        if (prefersDarkScheme.matches) {
-          document.body.dataset.theme = 'dark';
-        } else {
-          document.body.dataset.theme = 'light';
-        }
-        break;
     }
   }
 })();
