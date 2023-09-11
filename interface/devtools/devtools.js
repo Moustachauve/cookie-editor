@@ -30,6 +30,7 @@ import { OptionsHandler } from '../lib/optionsHandler.js';
    * Shows or hides the devtools depending on the options.
    */
   function handleDevtools() {
+    console.log('devtools enabled?', optionHandler.getDevtoolsEnabled());
     if (optionHandler.getDevtoolsEnabled()) {
       createDevtools();
     }

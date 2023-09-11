@@ -58,8 +58,10 @@ a:hover {
 .input-container select {
   min-width: 120px;
   background-color: var(--primary-surface-color);
+  border: 1px solid var(--primary-border-color);
+  border-radius: 4px;
   color: var(--primary-text-color);
-  padding: 2px;
+  padding: 2px 5px;
 }
 
 .hint {

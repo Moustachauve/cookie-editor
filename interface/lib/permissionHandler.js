@@ -9,7 +9,13 @@ export class PermissionHandler {
   constructor(browserDetector) {
     this.browserDetector = browserDetector;
     // Urls that start with these values can't be requested for permission.
-    this.impossibleUrls = ['about:', 'chrome:', 'chrome-extension:', 'edge:'];
+    this.impossibleUrls = [
+      'about:',
+      'moz-extension:',
+      'chrome:',
+      'chrome-extension:',
+      'edge:',
+    ];
   }
 
   /**
