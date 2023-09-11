@@ -45,9 +45,9 @@ export class ThemeHandler {
    * by an external source.
    * @param {Option} oldOptions the options before changes.
    */
-  onOptionsChanged(oldOptions) {
+  onOptionsChanged = (oldOptions) => {
     if (oldOptions.theme != this.optionHandler.getTheme()) {
       this.updateTheme();
     }
-  }
+  };
 }

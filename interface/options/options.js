@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
   await optionHandler.loadOptions();
   themeHandler.updateTheme();
-  optionHandler.on('optionsChanged', setFormValues);
   setFormValues();
+  optionHandler.on('optionsChanged', setFormValues);
   setInputEvents();
 
   /**
@@ -34,16 +34,28 @@ document.addEventListener('DOMContentLoaded', async (event) => {
    * Sets the different input listeners to save the form changes.
    */
   function setInputEvents() {
-    advancedCookieInput.addEventListener('change', (_event) => {
+    advancedCookieInput.addEventListener('change', (event) => {
+      if (!event.isTrusted) {
+        return;
+      }
       optionHandler.setCookieAdvanced(advancedCookieInput.checked);
     });
-    showDevtoolsInput.addEventListener('change', (_event) => {
+    showDevtoolsInput.addEventListener('change', (event) => {
+      if (!event.isTrusted) {
+        return;
+      }
       optionHandler.setDevtoolsEnabled(showDevtoolsInput.checked);
     });
-    exportFormatInput.addEventListener('change', (_event) => {
+    exportFormatInput.addEventListener('change', (event) => {
+      if (!event.isTrusted) {
+        return;
+      }
       optionHandler.setExportFormat(exportFormatInput.value);
     });
-    themeInput.addEventListener('change', (_event) => {
+    themeInput.addEventListener('change', (event) => {
+      if (!event.isTrusted) {
+        return;
+      }
       optionHandler.setTheme(themeInput.value);
       themeHandler.updateTheme();
     });

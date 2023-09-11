@@ -30,7 +30,7 @@ export class GenericStorageHandler extends EventEmitter {
           if (error) {
             reject(error);
           }
-          resolve(data[key] ?? null);
+          resolve(data ?? null);
         });
       });
     }
@@ -47,6 +47,7 @@ export class GenericStorageHandler extends EventEmitter {
    * @return {Promise}
    */
   async setLocal(key, data) {
+    const self = this;
     const dataObj = {};
     dataObj[key] = data;
 
