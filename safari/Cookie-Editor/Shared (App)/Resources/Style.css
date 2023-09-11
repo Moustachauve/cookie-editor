@@ -7,7 +7,7 @@
 :root {
   color-scheme: light dark;
 
-  --spacing: 20px;
+  --spacing: 10px;
 }
 
 html {
@@ -58,4 +58,8 @@ body.state-off :is(.state-on, .state-unknown) {
 
 button {
   font-size: 1em;
+}
+
+.limitations {
+  font-size: 0.8em;
 }
