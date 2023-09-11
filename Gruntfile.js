@@ -43,14 +43,8 @@ module.exports = function (grunt) {
         ],
       },
     },
-    jshint: {
-      options: {
-        jshintrc: true,
-      },
-      all: ['**.js'],
-    },
     eslint: {
-      target: ['**.js', '!Gruntfile.js'],
+      target: ['**.js', 'interface/**/*.js', '!Gruntfile.js'],
     },
     clean: {
       firefox: ['build/firefox'],
@@ -292,7 +286,6 @@ module.exports = function (grunt) {
   });
 
   grunt.loadNpmTasks('grunt-json-replace');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -303,7 +296,6 @@ module.exports = function (grunt) {
   // Default task(s).
   grunt.registerTask('default', [
     'json-replace',
-    'jshint',
     'eslint',
     'clean',
     'copy',
