@@ -27,6 +27,9 @@ export class PermissionHandler {
    *     false.
    */
   canHavePermissions(url) {
+    if (url === "") {
+      return false;
+    }
     for (const impossibleUrl of this.impossibleUrls) {
       if (url.indexOf(impossibleUrl) === 0) {
         return false;
