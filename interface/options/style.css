@@ -1,0 +1,79 @@
+@import url('../theme/light.css');
+@import url('../theme/dark.css');
+
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-size: 100%;
+  background-color: var(--primary-surface-color);
+  color: var(--primary-text-color);
+}
+
+body * {
+  box-sizing: border-box;
+  text-align: start;
+}
+
+svg.icon {
+  height: 1em;
+  width: 1em;
+  pointer-events: none;
+}
+
+a {
+  color: var(--primary-link-color);
+}
+
+a:hover {
+  color: var(--primary-link-hover-color);
+}
+
+.container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.container > fieldset {
+  margin: 15px;
+  padding: 5px 15px;
+  border: 1px solid var(--primary-border-color);
+  border-radius: 4px;
+}
+.container > fieldset legend {
+  padding: 0 5px;
+  font-size: 1.25em;
+}
+
+/* == Input styling == */
+
+.input-container {
+  min-height: 2em;
+}
+
+.input-container input,
+.input-container select,
+.input-container .switch {
+  float: right;
+}
+.input-container select {
+  min-width: 120px;
+  background-color: var(--primary-surface-color);
+  border: 1px solid var(--primary-border-color);
+  border-radius: 4px;
+  color: var(--primary-text-color);
+  padding: 2px 5px;
+}
+
+.hint {
+  clear: both;
+  color: var(--secondary-text-color);
+  font-size: 0.8em;
+  padding: 1em;
+  padding-top: 2px;
+}
+
+.disclaimer {
+  font-size: 0.8em;
+  color: var(--secondary-text-color);
+  padding-top: 5px;
+}

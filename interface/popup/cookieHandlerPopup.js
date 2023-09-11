@@ -6,11 +6,12 @@ import { GenericCookieHandler } from '../lib/genericCookieHandler.js';
 export class CookieHandlerPopup extends GenericCookieHandler {
   /**
    * Constructs and initializes the cookie handler.
+   * @param {BrowserDetector} browserDetector
    */
-  constructor() {
-    super();
+  constructor(browserDetector) {
+    super(browserDetector);
     console.log('Constructing PopupCookieHandler');
-    this.isInit = false;
+    this.isReady = false;
     this.currentTabId = null;
 
     if (this.browserDetector.supportsPromises()) {
@@ -40,8 +41,8 @@ export class CookieHandlerPopup extends GenericCookieHandler {
       api.cookies.onChanged.addListener(this.onCookiesChanged);
     }
 
-    this.isInit = true;
     this.emit('ready');
+    this.isReady = true;
   };
 
   /**
@@ -118,7 +119,7 @@ export class CookieHandlerPopup extends GenericCookieHandler {
     this.currentTabId = tabInfo[0].id;
     this.currentTab = tabInfo[0];
 
-    if (newTab && this.isInit) {
+    if (newTab && this.isReady) {
       this.emit('cookiesChanged');
     }
   };

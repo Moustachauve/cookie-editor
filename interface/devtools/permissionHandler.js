@@ -1,5 +1,3 @@
-import { BrowserDetector } from 'browserDetector.js';
-
 /**
  * Handles tasks related to the permission API.
  *
@@ -9,9 +7,10 @@ import { BrowserDetector } from 'browserDetector.js';
 export class PermissionHandler {
   /**
    * Constructs the permission handler.
+   * @param {BrowserDetector} browserDetector
    */
-  constructor() {
-    this.browserDetector = new BrowserDetector();
+  constructor(browserDetector) {
+    this.browserDetector = browserDetector;
   }
 
   /**

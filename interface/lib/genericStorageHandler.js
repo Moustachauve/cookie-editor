@@ -1,4 +1,3 @@
-import { BrowserDetector } from './browserDetector.js';
 import { EventEmitter } from './eventEmitter.js';
 
 /**
@@ -7,98 +6,62 @@ import { EventEmitter } from './eventEmitter.js';
 export class GenericStorageHandler extends EventEmitter {
   /**
    * Constructs a GenericStorageHandler.
+   * @param {BrowserDetector} browserDetector
    */
-  constructor() {
+  constructor(browserDetector) {
     super();
-    this.browserDetector = new BrowserDetector();
+    this.browserDetector = browserDetector;
   }
 
   /**
    * Gets a value from LocalStorage.
    * @param {string} key Key to identify the value in the LocalStorage.
-   * @param {function} callback
+   * @return {Promise}
    */
-  getLocal(key, callback) {
+  async getLocal(key) {
+    const self = this;
+    let promise;
     if (this.browserDetector.supportsPromises()) {
-      this.browserDetector
-        .getApi()
-        .storage.local.get([key])
-        .then(
-          (data) => {
-            if (callback) {
-              callback(null, data[key] ?? null);
-            }
-          },
-          (error) => {
-            console.error('Failed to retrieve data', key, error);
-            if (callback) {
-              callback(error.message, null);
-            }
-          },
-        );
+      promise = this.browserDetector.getApi().storage.local.get([key]);
     } else {
-      this.browserDetector.getApi().storage.local.get([key], (data) => {
-        const error = this.browserDetector.getApi().runtime.lastError;
-        if (error) {
-          console.error('Failed to get data', key, error);
-          if (callback) {
-            const errorMessage =
-              (error ? error.message : '') || 'Unknown error';
-            return callback(errorMessage, data);
+      promise = new Promise((resolve, reject) => {
+        self.browserDetector.getApi().storage.local.get([key], (data) => {
+          const error = self.browserDetector.getApi().runtime.lastError;
+          if (error) {
+            reject(error);
           }
-          return;
-        }
-
-        if (callback) {
-          return callback(null, data[key] ?? null);
-        }
+          resolve(data ?? null);
+        });
       });
     }
+
+    return promise.then((data) => {
+      return data[key] ?? null;
+    });
   }
 
   /**
    * Sets a value in the LocalStorage.
    * @param {string} key Key to identify the value in the LocalStorage.
    * @param {any} data Data to store in the LocalStorage
-   * @param {function} callback
+   * @return {Promise}
    */
-  setLocal(key, data, callback) {
+  async setLocal(key, data) {
+    const self = this;
     const dataObj = {};
     dataObj[key] = data;
 
     if (this.browserDetector.supportsPromises()) {
-      this.browserDetector
-        .getApi()
-        .storage.local.set(dataObj)
-        .then(
-          () => {
-            if (callback) {
-              callback();
-            }
-          },
-          (error) => {
-            console.error('Failed to set data', key, data, error);
-            if (callback) {
-              callback(error.message);
-            }
-          },
-        );
+      return this.browserDetector.getApi().storage.local.set(dataObj);
     } else {
-      this.browserDetector.getApi().storage.local.set(dataObj, () => {
-        const error = this.browserDetector.getApi().runtime.lastError;
-        if (error) {
-          console.error('Failed to set data', key, data, error);
-          if (callback) {
-            const errorMessage =
-              (error ? error.message : '') || 'Unknown error';
-            return callback(errorMessage);
+      return new Promise((resolve, reject) => {
+        this.browserDetector.getApi().storage.local.set(dataObj, () => {
+          const error = self.browserDetector.getApi().runtime.lastError;
+          if (error) {
+            reject(error);
           }
-          return;
-        }
-
-        if (callback) {
-          return callback(null);
-        }
+          resolve();
+        });
       });
     }
   }

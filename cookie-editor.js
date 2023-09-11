@@ -3,9 +3,12 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
 
 (function () {
   console.log('starting background script');
+  // TODO: Separate connections from CookieHandler and OptionsHandler.
+  // It would also be cool to separate their whole behavior in separate class
+  // that extends a generic one.
   const connections = {};
   const browserDetector = new BrowserDetector();
-  const permissionHandler = new PermissionHandler();
+  const permissionHandler = new PermissionHandler(browserDetector);
 
   browserDetector.getApi().runtime.onConnect.addListener(onConnect);
   browserDetector.getApi().runtime.onMessage.addListener(handleMessage);
@@ -48,12 +51,12 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
    * Devtools require special handling because not all APIs are available in
    * there, such as tab and permissions.
    * @param {object} request contains the message.
-   * @param {MessageSender} _sender references the sender of the message, not
+   * @param {MessageSender} sender references the sender of the message, not
    *    used.
    * @param {function} sendResponse callback to respond to the sender.
    * @return {boolean} sometimes
    */
-  function handleMessage(request, _sender, sendResponse) {
+  function handleMessage(request, sender, sendResponse) {
     console.log('message received: ' + (request.type || 'unknown'));
     switch (request.type) {
       case 'getTabs': {
@@ -141,6 +144,12 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
         permissionHandler.requestPermission(request.params).then(sendResponse);
         return true;
       }
+      case 'optionsChanged': {
+        sendMessageToAllTabs('optionsChanged', {
+          from: request.params.from,
+        });
+        return true;
+      }
     }
   }
 
@@ -150,12 +159,18 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
    *    pages.
    */
   function onConnect(port) {
-    const extensionListener = function (request, _sender) {
+    const extensionListener = function (request, port) {
       console.log('port message received: ' + (request.type || 'unknown'));
       switch (request.type) {
-        case 'init':
-          console.log('Devtool connected on tab ' + request.tabId);
+        case 'init_cookieHandler':
+          console.log(
+            'Devtool cookieHandler connected on tab ' + request.tabId,
+          );
           connections[request.tabId] = port;
+          return;
+        case 'init_optionsHandler':
+          console.log('optionsHandler connected: ' + port.name);
+          connections[port.name] = port;
           return;
       }
 
@@ -168,11 +183,9 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
     port.onDisconnect.addListener(function (port) {
       port.onMessage.removeListener(extensionListener);
       const tabs = Object.keys(connections);
-      let i = 0;
-      const len = tabs.length;
-      for (; i < len; i++) {
+      for (let i = 0; i < tabs.length; i++) {
         if (connections[tabs[i]] === port) {
-          console.log('Devtool disconnected on tab ' + tabs[i]);
+          console.log('script disconnected on tab ' + tabs[i]);
           delete connections[tabs[i]];
           break;
         }
@@ -202,9 +215,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
    */
   function sendMessageToAllTabs(type, data) {
     const tabs = Object.keys(connections);
-    let i = 0;
-    const len = tabs.length;
-    for (; i < len; i++) {
+    for (let i = 0; i < tabs.length; i++) {
       sendMessageToTab(tabs[i], type, data);
     }
   }

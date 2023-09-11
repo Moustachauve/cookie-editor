@@ -2,10 +2,13 @@ import { CookieHandlerDevtools } from '../devtools/cookieHandlerDevtools.js';
 import { Animate } from '../lib/animate.js';
 import { BrowserDetector } from '../lib/browserDetector.js';
 import { Cookie } from '../lib/cookie.js';
+import { ExportFormats } from '../lib/data/exportFormats.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
 import { JsonFormat } from '../lib/jsonFormat.js';
 import { NetscapeFormat } from '../lib/netscapeFormat.js';
+import { OptionsHandler } from '../lib/optionsHandler.js';
 import { PermissionHandler } from '../lib/permissionHandler.js';
+import { ThemeHandler } from '../lib/themeHandler.js';
 import { CookieHandlerPopup } from './cookieHandlerPopup.js';
 
 (function () {
@@ -18,19 +21,18 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   let loadedCookies = {};
   let disableButtons = false;
 
-  let showAllAdvanced;
-
   const notificationQueue = [];
   let notificationTimeout;
 
   const secondsInOneDay = new Date().getTime() + 1 * 24 * 60 * 60 * 1000;
   const browserDetector = new BrowserDetector();
-  const permissionHandler = new PermissionHandler();
-
+  const permissionHandler = new PermissionHandler(browserDetector);
+  const storageHandler = new GenericStorageHandler(browserDetector);
+  const optionHandler = new OptionsHandler(browserDetector, storageHandler);
+  const themeHandler = new ThemeHandler(optionHandler);
   const cookieHandler = window.isDevtools
-    ? new CookieHandlerDevtools()
-    : new CookieHandlerPopup();
-  const storageHandler = new GenericStorageHandler();
+    ? new CookieHandlerDevtools(browserDetector)
+    : new CookieHandlerPopup(browserDetector);
 
   const ads = [
     {
@@ -53,10 +55,12 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     },
   ];
 
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', async function () {
     containerCookie = document.getElementById('cookie-container');
     notificationElement = document.getElementById('notification');
     pageTitleContainer = document.getElementById('pageTitle');
+
+    await initWindow();
 
     /**
      * Expands the HTML cookie element.
@@ -345,7 +349,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         hideExportMenu();
         return;
       }
-      toggleExportMenu();
+      handleExportButtonClick();
     });
 
     document.getElementById('import-cookies').addEventListener('click', () => {
@@ -474,10 +478,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     document
       .querySelector('#advanced-toggle-all input')
       .addEventListener('change', function (e) {
-        showAllAdvanced = e.target.checked;
-        browserDetector
-          .getApi()
-          .storage.local.set({ showAllAdvanced: showAllAdvanced });
+        optionHandler.setCookieAdvanced(e.target.checked);
         showCookiesForTab();
       });
 
@@ -495,8 +496,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         hideNotification();
       });
 
-    initWindow();
-    showCookiesForTab();
     adjustWidthIfSmaller();
 
     if (chrome && chrome.runtime && chrome.runtime.getBrowserInfo) {
@@ -523,29 +522,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       return;
     }
 
-    if (showAllAdvanced === undefined) {
-      if (browserDetector.supportsPromises()) {
-        browserDetector
-          .getApi()
-          .storage.local.get('showAllAdvanced')
-          .then(function (onGot) {
-            showAllAdvanced = onGot.showAllAdvanced || false;
-            document.querySelector('#advanced-toggle-all input').checked =
-              showAllAdvanced;
-            return showCookiesForTab();
-          });
-      } else {
-        browserDetector
-          .getApi()
-          .storage.local.get('showAllAdvanced', function (onGot) {
-            showAllAdvanced = onGot.showAllAdvanced || false;
-            document.querySelector('#advanced-toggle-all input').checked =
-              showAllAdvanced;
-            return showCookiesForTab();
-          });
-      }
-      return;
-    }
+    console.log('showing cookies');
 
     const domain = getDomainFromUrl(cookieHandler.currentTab.url);
     const subtitleLine = document.querySelector('.titles h2');
@@ -571,6 +548,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     }
 
     cookieHandler.getAllCookies(function (cookies) {
+      const showAllAdvanced = optionHandler.getCookieAdvanced();
       cookies = cookies.sort(sortCookiesByName);
 
       loadedCookies = {};
@@ -786,6 +764,24 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   }
 
   /**
+   * Handles the logic of the export button, depending on user preferences.
+   */
+  function handleExportButtonClick() {
+    const exportOption = optionHandler.getExportFormat();
+    switch (exportOption) {
+      case ExportFormats.Ask:
+        toggleExportMenu();
+        break;
+      case ExportFormats.JSON:
+        exportToJson();
+        break;
+      case ExportFormats.Netscape:
+        exportToNetscape();
+        break;
+    }
+  }
+
+  /**
    * Toggles the visibility of the export menu.
    */
   function toggleExportMenu() {
@@ -961,10 +957,18 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * Initialises the interface.
    * @param {object} _tab The current Tab.
    */
-  function initWindow(_tab) {
+  async function initWindow(_tab) {
+    await optionHandler.loadOptions();
+    themeHandler.updateTheme();
+    handleAd();
+    optionHandler.on('optionsChanged', onOptionsChanged);
     cookieHandler.on('cookiesChanged', onCookiesChanged);
     cookieHandler.on('ready', showCookiesForTab);
-    handleAd();
+    document.querySelector('#advanced-toggle-all input').checked =
+      optionHandler.getCookieAdvanced();
+    if (cookieHandler.isReady) {
+      showCookiesForTab();
+    }
   }
 
   /**
@@ -1166,28 +1170,21 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * ads that can be displayed and will select a random one to display if there
    * are more than one valid option.
    */
-  function handleAd() {
+  async function handleAd() {
     if (!ads) {
       return;
     }
-
-    canShowAnyAd((error, canShow) => {
-      if (error) {
-        console.error(error);
-        return;
-      }
-      if (!canShow) {
-        return;
-      }
-
-      showRandomAd();
-    });
+    const canShow = await canShowAnyAd();
+    if (!canShow) {
+      return;
+    }
+    showRandomAd();
   }
 
   /**
    * Shows a random valid ad to the user.
    */
-  function showRandomAd() {
+  async function showRandomAd() {
     if (!ads || !ads.length) {
       console.log('No ads left');
       return;
@@ -1195,21 +1192,15 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     const randIndex = Math.floor(Math.random() * ads.length);
     const selectedAd = ads[randIndex];
     ads.splice(randIndex, 1);
-    isAdValid(selectedAd, (error, isValid) => {
-      if (error) {
-        console.error(error);
-        showRandomAd();
-        return;
-      }
-      if (!isValid) {
-        console.log(selectedAd.id, 'ad is not valid to display');
-        showRandomAd();
-        return;
-      }
-      clearAd();
-      const adItemHtml = createHtmlAd(selectedAd);
-      document.getElementById('ad-container').appendChild(adItemHtml);
-    });
+    const adIsValid = isAdValid(selectedAd);
+    if (!adIsValid) {
+      console.log(selectedAd.id, 'ad is not valid to display');
+      showRandomAd();
+      return;
+    }
+    clearAd();
+    const adItemHtml = createHtmlAd(selectedAd);
+    document.getElementById('ad-container').appendChild(adItemHtml);
   }
 
   /**
@@ -1219,59 +1210,46 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * @param {object} selectedAd The ad to validate.
    * @param {function} callback
    */
-  function isAdValid(selectedAd, callback) {
+  async function isAdValid(selectedAd) {
     if (
       selectedAd.supported_browsers != 'all' &&
       !selectedAd.supported_browsers.includes(browserDetector.getBrowserName())
     ) {
-      callback(null, false);
-      return;
+      return false;
     }
 
-    storageHandler.getLocal(getAdDismissKey(selectedAd.id), (error, data) => {
-      if (error) {
-        callback(error, false);
-        return;
-      }
-      // No data means it was never dismissed
-      if (data === null) {
-        callback(error, true);
-        return;
-      }
+    const dismissedAd = await storageHandler.getLocal(
+      getAdDismissKey(selectedAd.id),
+    );
+    // No data means it was never dismissed
+    if (dismissedAd === null) {
+      return true;
+    }
 
-      // Only show a ad if it has not been dismissed in less than |refresh_days| days
-      if (secondsInOneDay * selectedAd.refresh_days > data.date) {
-        console.log('Not showing ad ' + selectedAd.id + ', it was dismissed.');
-        callback(error, false);
-        return;
-      }
-      callback(error, true);
-    });
+    // Only show a ad if it has not been dismissed in less than |refresh_days| days
+    if (secondsInOneDay * selectedAd.refresh_days > dismissedAd.date) {
+      console.log('Not showing ad ' + selectedAd.id + ', it was dismissed.');
+      return false;
+    }
+    return true;
   }
 
   /**
    * Makes sure to not spam the user with ads if they recently dismissed one.
    * @param {function} callback
    */
-  function canShowAnyAd(callback) {
-    storageHandler.getLocal(getLastDismissKey(), (error, data) => {
-      if (error) {
-        callback(error, false);
-        return;
-      }
-      // No data means it was never dismissed
-      if (data === null) {
-        callback(error, true);
-        return;
-      }
-      // Don't show more ad if one was dismissed in less than 24hrs
-      if (secondsInOneDay > data.date) {
-        console.log('Not showing ads, one was dismissed recently.');
-        callback(error, false);
-        return;
-      }
-      callback(error, true);
-    });
+  async function canShowAnyAd() {
+    const lastDismissedAd = await storageHandler.getLocal(getLastDismissKey());
+    // No data means it was never dismissed
+    if (lastDismissedAd === null) {
+      return true;
+    }
+    // Don't show more ad if one was dismissed in less than 24hrs
+    if (secondsInOneDay > lastDismissedAd.date) {
+      console.log('Not showing ads, one was dismissed recently.');
+      return false;
+    }
+    return true;
   }
 
   /**
@@ -1337,5 +1315,18 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       version: 1,
       date: Date.now(),
     };
+  }
+
+  /**
+   * Handles the changes required to the interface when the options are changed
+   * by an external source.
+   * @param {Option} oldOptions the options before changes.
+   */
+  function onOptionsChanged(oldOptions) {
+    if (oldOptions.advancedCookies != optionHandler.getCookieAdvanced()) {
+      document.querySelector('#advanced-toggle-all input').checked =
+        optionHandler.getCookieAdvanced();
+      showCookiesForTab();
+    }
   }
 })();

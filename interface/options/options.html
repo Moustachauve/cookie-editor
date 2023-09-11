@@ -1,0 +1,119 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="options.js" type="module" defer></script>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="switch.css" />
+    <title>Cookie-Editor Options</title>
+  </head>
+  <body>
+    <div class="container">
+      <fieldset>
+        <legend>Options</legend>
+        <div class="input-container">
+          <label for="advanced-cookie">Show Advanced Cookie Options</label>
+          <label class="switch">
+            <input
+              type="checkbox"
+              id="advanced-cookie"
+              aria-describedby="advanced-cookie-hint"
+            />
+            <span class="slider"></span>
+          </label>
+          <div class="hint" id="advanced-cookie-hint">
+            When Enabled, all the values of a cookie are visible in the
+            interface.<br />
+            When Disabled, only the name and the value of the cookie are visible
+            in the interface.
+          </div>
+        </div>
+
+        <div class="input-container">
+          <label for="devtool-show">Enable Devtool panel</label>
+          <label class="switch">
+            <input
+              type="checkbox"
+              id="devtool-show"
+              aria-describedby="devtool-show-hint"
+            />
+            <span class="slider"></span>
+          </label>
+          <div class="hint" id="devtool-show-hint">
+            When Enabled, Cookie-Editor will be added to the DevTools tabs.
+            Devtools needs to be restarted to take effect when turning this
+            option off.
+          </div>
+        </div>
+
+        <div class="input-container">
+          <label for="export-format">Export Format</label>
+          <select id="export-format" aria-describedby="export-format-hint">
+            <option value="json">JSON</option>
+            <option value="netscape">Netscape</option>
+            <option value="ask">Ask every time</option>
+          </select>
+          <div class="hint" id="export-format-hint">
+            Selects the behavior of the export button. When "Ask every time" is
+            selected, a menu asking you to chose the format will show up when
+            you press the export button.
+          </div>
+        </div>
+
+        <div class="input-container">
+          <label for="theme">Theme</label>
+          <select id="theme" aria-describedby="theme-hint">
+            <option value="auto">Auto</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+          <div class="hint" id="theme-hint">
+            When selecting "Auto", Cookie-Editor will match your browser's theme
+            automatically.
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>About Cookie-Editor</legend>
+        <p>
+          Cookie-Editor is made by Christophe Gagnier and is fully open source.
+        </p>
+        <p>
+          View the
+          <a
+            href="https://github.com/Moustachauve/cookie-editor"
+            target="_blank"
+            >Source code</a
+          >. Read the
+          <a
+            href="https://cookie-editor.cgagnier.ca/privacy.html"
+            target="_blank"
+            >Privacy Policy</a
+          >. <br />
+          Cookie-Editor is published under
+          <a
+            href="https://github.com/Moustachauve/cookie-editor/blob/master/LICENSE"
+            target="_blank"
+            >the GPL-3.0 license</a
+          >.
+        </p>
+        <p>
+          <em>Are you enjoying Cookie-Editor?</em><br />
+          I would be really greatful if you considered supporting my work by
+          sponsering me on Github.
+          <a href="https://github.com/sponsors/Moustachauve/" target="_blank"
+            >Learn more</a
+          >.
+        </p>
+        <p class="disclaimer">
+          This project is not an official Google project. It is not supported by
+          Google and Google specifically disclaims all warranties as to its
+          quality, merchantability, or fitness for a particular purpose.
+        </p>
+      </fieldset>
+    </div>
+  </body>
+</html>

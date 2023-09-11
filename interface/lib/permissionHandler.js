@@ -1,16 +1,21 @@
-import { BrowserDetector } from './browserDetector.js';
-
 /**
  * interface/devtools/permissionHandler.js needs to be kept in sync to the functions in this file
  */
 export class PermissionHandler {
   /**
    * Constructs a PermissionHandler.
+   * @param {BrowserDetector} browserDetector
    */
-  constructor() {
-    this.browserDetector = new BrowserDetector();
+  constructor(browserDetector) {
+    this.browserDetector = browserDetector;
     // Urls that start with these values can't be requested for permission.
-    this.impossibleUrls = ['about:', 'chrome:', 'edge:'];
+    this.impossibleUrls = [
+      'about:',
+      'moz-extension:',
+      'chrome:',
+      'chrome-extension:',
+      'edge:',
+    ];
   }
 
   /**
@@ -38,6 +43,7 @@ export class PermissionHandler {
    */
   async checkPermissions(url) {
     const testPermission = {
+      permissions: ['cookies'],
       origins: [url],
     };
 
@@ -59,6 +65,7 @@ export class PermissionHandler {
    */
   async requestPermission(url) {
     const permission = {
+      permissions: ['cookies'],
       origins: [url],
     };
     return this.browserDetector.getApi().permissions.request(permission);

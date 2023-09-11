@@ -8,11 +8,12 @@ import { GenericCookieHandler } from '../lib/genericCookieHandler.js';
 export class CookieHandlerDevtools extends GenericCookieHandler {
   /**
    * Constructs and initializes the cookie handler.
+   * @param {BrowserDetector} browserDetector
    */
-  constructor() {
-    super();
+  constructor(browserDetector) {
+    super(browserDetector);
+    this.isReady = false;
     console.log('Constructing DevToolsCookieHandler');
-    this.isInit = false;
     this.backgroundPageConnection = this.browserDetector
       .getApi()
       .runtime.connect({ name: 'panel' });
@@ -27,13 +28,13 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
     console.log('Devtool init');
     this.backgroundPageConnection.onMessage.addListener(this.onMessage);
     this.backgroundPageConnection.postMessage({
-      type: 'init',
+      type: 'init_cookieHandler',
       tabId: this.browserDetector.getApi().devtools.inspectedWindow.tabId,
     });
 
-    this.isInit = true;
     console.log('Devtool ready');
     this.emit('ready');
+    this.isReady = true;
   };
 
   /**
@@ -89,7 +90,10 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * @param {object} request
    */
   onMessage = (request) => {
-    console.log('background message received: ' + (request.type || 'unknown'));
+    console.log(
+      '[cookieHandler] background message received: ' +
+        (request.type || 'unknown'),
+    );
     switch (request.type) {
       case 'cookiesChanged':
         this.onCookiesChanged(request.data);
@@ -140,7 +144,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
           tabInfo[0].url !== self.currentTab.url;
         self.currentTabId = tabInfo[0].id;
         self.currentTab = tabInfo[0];
-        if (newTab && self.isInit) {
+        if (newTab && self.isReady) {
           self.emit('cookiesChanged');
         }
         if (callback) {
