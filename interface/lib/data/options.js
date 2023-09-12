@@ -1,6 +1,6 @@
-import { ExportFormats } from "./exportFormats.js";
-import { ExtraInfos } from "./extraInfos.js";
-import { Themes } from "./themes.js";
+import { ExportFormats } from './exportFormats.js';
+import { ExtraInfos } from './extraInfos.js';
+import { Themes } from './themes.js';
 
 /**
  * The Options class contains all the different options for Cookie-Editor.
