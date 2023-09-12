@@ -8,10 +8,6 @@
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   background-color: var(--secondary-surface-color);
 }
-[data-theme="dark"] .btns button.delete:hover,
-[data-theme="dark"] .btns button.delete:focus {
-  background-color: rgba(150, 150, 150, 0.15);
-}
 
 [data-theme="dark"] #cookie-container .expando {
   background-color: rgba(255, 255, 255, 0.04);
