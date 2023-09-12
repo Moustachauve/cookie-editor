@@ -1,4 +1,5 @@
 import { ExportFormats } from './data/exportFormats.js';
+import { ExtraInfos } from './data/extraInfos.js';
 import { Options } from './data/options.js';
 import { Themes } from './data/themes.js';
 import { EventEmitter } from './eventEmitter.js';
@@ -98,7 +99,7 @@ export class OptionsHandler extends EventEmitter {
     this.saveOptions();
   }
   /**
-   *
+   * Checks if a format is a valid ExportFormats format.
    * @param {ExportFormats} exportFormat
    * @return {boolean} True if it is valid, otherwise false.
    */
@@ -106,6 +107,53 @@ export class OptionsHandler extends EventEmitter {
     for (const allowedFormat in ExportFormats) {
       if (Object.prototype.hasOwnProperty.call(ExportFormats, allowedFormat)) {
         if (exportFormat === ExportFormats[allowedFormat]) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Gets the extra info displayed for each row.
+   * @return {ExtraInfos} One of the supported extra info value.
+   */
+  getExtraInfo() {
+    let extraInfo = this.options.extraInfo;
+    if (!this.isExtraInfoValid(extraInfo)) {
+      console.error(
+        "Tried to load an extraInfo that doesn't exists",
+        extraInfo,
+      );
+      extraInfo = ExtraInfos.Nothing;
+      this.setExtraInfo(extraInfo);
+    }
+    return extraInfo;
+  }
+  /**
+   * Sets the extra info displayed for each row.
+   * @param {ExtraInfos} extraInfo One of the supported extra info value.
+   */
+  setExtraInfo(extraInfo) {
+    if (!this.isExtraInfoValid(extraInfo)) {
+      console.error(
+        "Tried to save an extraInfo that doesn't exists",
+        extraInfo,
+      );
+      return;
+    }
+    this.options.extraInfo = extraInfo;
+    this.saveOptions();
+  }
+  /**
+   * Checks if a value is a valid ExtraInfos value.
+   * @param {ExtraInfos} extraInfo
+   * @return {boolean} True if it is valid, otherwise false.
+   */
+  isExtraInfoValid(extraInfo) {
+    for (const allowedValue in ExtraInfos) {
+      if (Object.prototype.hasOwnProperty.call(ExtraInfos, allowedValue)) {
+        if (extraInfo === ExtraInfos[allowedValue]) {
           return true;
         }
       }

@@ -1,3 +1,7 @@
+import { ExportFormats } from "./exportFormats.js";
+import { ExtraInfos } from "./extraInfos.js";
+import { Themes } from "./themes.js";
+
 /**
  * The Options class contains all the different options for Cookie-Editor.
  */
@@ -8,7 +12,8 @@ export class Options {
   constructor() {
     this.advancedCookies = false;
     this.devtoolsEnabled = true;
-    this.exportFormat = 'ask';
-    this.theme = 'auto';
+    this.exportFormat = ExportFormats.Ask;
+    this.extraInfo = ExtraInfos.Nothing;
+    this.theme = Themes.Auto;
   }
 }

@@ -63,6 +63,26 @@
         </div>
 
         <div class="input-container">
+          <label for="extra-info">Show Extra Information</label>
+          <select id="extra-info" aria-describedby="v-hint">
+            <option value="nothing">Nothing</option>
+            <option value="value">Value</option>
+            <option value="domain">Domain</option>
+            <option value="path">Path</option>
+            <option value="expiration">Expiration</option>
+            <option value="samesite">Same Site</option>
+            <option value="hostonly">Host Only</option>
+            <option value="session">Session</option>
+            <option value="secure">Secure</option>
+            <option value="httponly">Http Only</option>
+          </select>
+          <div class="hint" id="extra-info-hint">
+            Selects one extra element to display next to the cookie name in the interface.
+            This can help you identify quickly which cookie you are looking for.
+          </div>
+        </div>
+
+        <div class="input-container">
           <label for="theme">Theme</label>
           <select id="theme" aria-describedby="theme-hint">
             <option value="auto">Auto</option>

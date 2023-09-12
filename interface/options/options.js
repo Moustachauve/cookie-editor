@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   const advancedCookieInput = document.getElementById('advanced-cookie');
   const showDevtoolsInput = document.getElementById('devtool-show');
   const exportFormatInput = document.getElementById('export-format');
+  const extraInfoInput = document.getElementById('extra-info');
   const themeInput = document.getElementById('theme');
 
   await optionHandler.loadOptions();
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     advancedCookieInput.checked = optionHandler.getCookieAdvanced();
     showDevtoolsInput.checked = optionHandler.getDevtoolsEnabled();
     exportFormatInput.value = optionHandler.getExportFormat();
+    extraInfoInput.value = optionHandler.getExtraInfo();
     themeInput.value = optionHandler.getTheme();
   }
 
@@ -51,6 +53,12 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         return;
       }
       optionHandler.setExportFormat(exportFormatInput.value);
+    });
+    extraInfoInput.addEventListener('change', (event) => {
+      if (!event.isTrusted) {
+        return;
+      }
+      optionHandler.setExtraInfo(extraInfoInput.value);
     });
     themeInput.addEventListener('change', (event) => {
       if (!event.isTrusted) {
