@@ -1,4 +1,5 @@
 import { Animate } from './animate.js';
+import { ExtraInfos } from './data/extraInfos.js';
 import { GUID } from './guid.js';
 
 /**
@@ -9,15 +10,14 @@ export class Cookie {
    * Creates a cookie object.
    * @param {string} id HTML id name for this cookie.
    * @param {object} cookie Cookie data.
-   * @param {boolean} showAdvancedForm Whether to display the advanced form or
-   *     not.
+   * @param {OptionsHandler} optionHandler
    */
-  constructor(id, cookie, showAdvancedForm) {
+  constructor(id, cookie, optionHandler) {
     this.id = id;
     this.cookie = cookie;
     this.guid = GUID.get();
     this.baseHtml = false;
-    this.showAdvancedForm = showAdvancedForm;
+    this.optionHandler = optionHandler;
   }
 
   /**
@@ -90,6 +90,7 @@ export class Cookie {
     if (this.cookie.name !== oldCookieName) {
       this.updateName();
     }
+    this.updateExtraInfo();
     if (this.cookie.value !== oldCookieValue) {
       this.updateValue();
     }
@@ -148,6 +149,10 @@ export class Cookie {
     const headerName = this.baseHtml.querySelector('.header-name');
     headerName.textContent = this.cookie.name;
 
+    const headerExtraInfo = this.baseHtml.querySelector('.header-extra-info');
+    headerExtraInfo.textContent = this.getExtraInfoValue();
+    headerExtraInfo.title = this.getExtraInfoTitle();
+
     const labelName = form.querySelector('.label-name');
     labelName.setAttribute('for', 'name-' + this.guid);
     const inputName = form.querySelector('.input-name');
@@ -176,9 +181,7 @@ export class Cookie {
     labelExpiration.setAttribute('for', 'expiration-' + this.guid);
     const inputExpiration = form.querySelector('.input-expiration');
     inputExpiration.id = 'expiration-' + this.guid;
-    inputExpiration.value = this.cookie.expirationDate
-      ? new Date(this.cookie.expirationDate * 1000)
-      : '';
+    inputExpiration.value = this.formatExpirationForDisplay();
 
     const labelSameSite = form.querySelector('.label-sameSite');
     labelSameSite.setAttribute('for', 'sameSite-' + this.guid);
@@ -233,7 +236,7 @@ export class Cookie {
       Animate.resizeSlide(form.parentElement.parentElement);
     });
 
-    if (this.showAdvancedForm) {
+    if (this.optionHandler.getCookieAdvanced()) {
       advancedForm.classList.add('show');
       advancedToggleButton.textContent = 'Hide Advanced';
     }
@@ -244,12 +247,26 @@ export class Cookie {
    */
   updateName() {
     const nameInput = this.baseHtml.querySelector('#name-' + this.guid);
+    const headerName = this.baseHtml.querySelector('.header-name');
     const header = this.baseHtml.querySelector('.header');
     this.baseHtml.setAttribute('data-name', this.cookie.name);
     nameInput.value = this.cookie.name;
+    headerName.textContent = this.cookie.name;
 
     this.animateChangeOnNode(header);
     this.animateChangeOnNode(nameInput);
+  }
+
+  /**
+   * Updates the extra info displayed next to the cookie name.
+   */
+  updateExtraInfo() {
+    const header = this.baseHtml.querySelector('.header');
+    const headerExtraInfo = this.baseHtml.querySelector('.header-extra-info');
+    headerExtraInfo.textContent = this.getExtraInfoValue();
+    headerExtraInfo.title = this.getExtraInfoTitle();
+
+    this.animateChangeOnNode(header);
   }
 
   /**
@@ -294,9 +311,7 @@ export class Cookie {
   updateExpiration() {
     const valueInput = this.baseHtml.querySelector('#expiration-' + this.guid);
     const header = this.baseHtml.querySelector('.header');
-    valueInput.value = this.cookie.expirationDate
-      ? new Date(this.cookie.expirationDate * 1000)
-      : '';
+    valueInput.value = this.formatExpirationForDisplay();
 
     this.animateChangeOnNode(header);
     this.animateChangeOnNode(valueInput);
@@ -420,6 +435,108 @@ export class Cookie {
     setTimeout(() => {
       node.classList.add('anim-success');
     }, 20);
+  }
+
+  /**
+   * Formats the expiration date of the cookie for display.
+   * @return {string}
+   */
+  formatExpirationForDisplay() {
+    return this.cookie.expirationDate
+      ? new Date(this.cookie.expirationDate * 1000)
+      : 'No Expiration';
+  }
+
+  /**
+   * Formats the expiration date of the cookie for display in a shorter format.
+   * @return {string}
+   */
+  formatExpirationForDisplayShort() {
+    const date = new Date(this.cookie.expirationDate * 1000);
+    date.setMilliseconds(0);
+    return this.cookie.expirationDate
+      ? date.toISOString().split('.')[0] + 'Z'
+      : 'No Expiration';
+  }
+
+  /**
+   * Formats a boolean for displaying extra infos
+   * @param {string} name
+   * @param {Boolean} boolValue
+   * @return {string}
+   */
+  formatBoolForDisplayShort(name, boolValue) {
+    const emoji = boolValue ? '☑' : '☐';
+    return emoji + ' ' + name;
+  }
+
+  /**
+   * Gets the extra info value for the prefered type.
+   * @return {string}
+   */
+  getExtraInfoValue() {
+    const extraInfoType = this.optionHandler.getExtraInfo();
+    switch (extraInfoType) {
+      case ExtraInfos.Value:
+        return this.cookie.value;
+      case ExtraInfos.Domain:
+        return this.cookie.domain;
+      case ExtraInfos.Path:
+        return this.cookie.path;
+      case ExtraInfos.Expiration:
+        return this.formatExpirationForDisplayShort();
+      case ExtraInfos.Samesite:
+        return this.cookie.sameSite;
+      case ExtraInfos.Hostonly:
+        return this.formatBoolForDisplayShort(
+          'Host Only',
+          this.cookie.hostOnly,
+        );
+      case ExtraInfos.Session:
+        return this.formatBoolForDisplayShort('Session', this.cookie.session);
+      case ExtraInfos.Secure:
+        return this.formatBoolForDisplayShort('Secure', this.cookie.secure);
+      case ExtraInfos.Httponly:
+        return this.formatBoolForDisplayShort(
+          'Http Only',
+          this.cookie.httpOnly,
+        );
+      case ExtraInfos.Nothing:
+      default:
+        return '';
+    }
+  }
+
+  /**
+   * Gets the extra info title for the prefered type. Used for when a user
+   * hovers the value.
+   * @return {string}
+   */
+  getExtraInfoTitle() {
+    const extraInfoType = this.optionHandler.getExtraInfo();
+    switch (extraInfoType) {
+      case ExtraInfos.Value:
+        return 'Value: ' + this.cookie.value;
+      case ExtraInfos.Domain:
+        return 'Domain: ' + this.cookie.domain;
+      case ExtraInfos.Path:
+        return 'Path: ' + this.cookie.path;
+      case ExtraInfos.Expiration:
+        return 'Expiration: ' + this.formatExpirationForDisplay();
+      case ExtraInfos.Samesite:
+        return 'Same Site: ' + this.cookie.sameSite;
+      case ExtraInfos.Hostonly:
+        return 'Host Only: ' + this.cookie.hostOnly;
+      case ExtraInfos.Session:
+        return 'Session: ' + this.cookie.session;
+      case ExtraInfos.Secure:
+        return 'Secure: ' + this.cookie.secure;
+      case ExtraInfos.Httponly:
+        return 'HTTP Only: ' + this.cookie.httpOnly;
+      case ExtraInfos.Nothing:
+      default:
+        return '';
+    }
   }
 
   /**

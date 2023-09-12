@@ -256,7 +256,6 @@ button:focus {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  pointer-events: none;
 }
 
 #cookie-container li .header .header-name {

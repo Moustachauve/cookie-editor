@@ -272,7 +272,11 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
           target = target.parentNode;
         }
 
-        if (target.classList.contains('header')) {
+        if (
+          target.classList.contains('header') ||
+          target.classList.contains('header-name') ||
+          target.classList.contains('header-extra-info')
+        ) {
           return expandCookie(e);
         }
         if (target.classList.contains('delete')) {
@@ -548,7 +552,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     }
 
     cookieHandler.getAllCookies(function (cookies) {
-      const showAllAdvanced = optionHandler.getCookieAdvanced();
       cookies = cookies.sort(sortCookiesByName);
 
       loadedCookies = {};
@@ -565,7 +568,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         cookiesListHtml.appendChild(generateSearchBar());
         cookies.forEach(function (cookie) {
           const id = Cookie.hashCode(cookie);
-          loadedCookies[id] = new Cookie(id, cookie, showAllAdvanced);
+          loadedCookies[id] = new Cookie(id, cookie, optionHandler);
           cookiesListHtml.appendChild(loadedCookies[id].html);
         });
 
@@ -731,10 +734,14 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * @return {string} the HTML of the cookie.
    */
   function createHtmlForCookie(name, value, id) {
-    const cookie = new Cookie(id, {
-      name: name,
-      value: value,
-    });
+    const cookie = new Cookie(
+      id,
+      {
+        name: name,
+        value: value,
+      },
+      optionHandler,
+    );
 
     return cookie.html;
   }
@@ -926,7 +933,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       return;
     }
 
-    const newCookie = new Cookie(id, changeInfo.cookie);
+    const newCookie = new Cookie(id, changeInfo.cookie, optionHandler);
     loadedCookies[id] = newCookie;
 
     if (!cookiesListHtml && document.getElementById('no-cookies')) {
@@ -1326,6 +1333,10 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     if (oldOptions.advancedCookies != optionHandler.getCookieAdvanced()) {
       document.querySelector('#advanced-toggle-all input').checked =
         optionHandler.getCookieAdvanced();
+      showCookiesForTab();
+    }
+
+    if (oldOptions.extraInfo != optionHandler.getExtraInfo()) {
       showCookiesForTab();
     }
   }
