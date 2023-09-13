@@ -479,11 +479,41 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         showCookiesForTab();
       });
 
+    const mainMenuContent = document.querySelector('#main-menu-content');
     document
-      .querySelector('#advanced-toggle-all input')
+      .querySelector('#main-menu-button')
+      .addEventListener('click', function (e) {
+        mainMenuContent.classList.toggle('visible');
+      });
+
+    document.addEventListener('click', function (e) {
+      // Clicks in the menu should not dismiss it.
+      if (document.querySelector('#main-menu').contains(e.target)) {
+        return;
+      }
+      console.log('main menu blur');
+      mainMenuContent.classList.remove('visible');
+    });
+
+    document
+      .querySelector('#advanced-toggle-all')
       .addEventListener('change', function (e) {
         optionHandler.setCookieAdvanced(e.target.checked);
         showCookiesForTab();
+      });
+
+    document
+      .querySelector('#menu-all-options')
+      .addEventListener('click', function (e) {
+        if (browserDetector.getApi().runtime.openOptionsPage) {
+          browserDetector.getApi().runtime.openOptionsPage();
+        } else {
+          window.open(
+            browserDetector
+              .getApi()
+              .runtime.getURL('interface/options/options.html'),
+          );
+        }
       });
 
     notificationElement.addEventListener('animationend', (e) => {
@@ -971,7 +1001,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     optionHandler.on('optionsChanged', onOptionsChanged);
     cookieHandler.on('cookiesChanged', onCookiesChanged);
     cookieHandler.on('ready', showCookiesForTab);
-    document.querySelector('#advanced-toggle-all input').checked =
+    document.querySelector('#advanced-toggle-all').checked =
       optionHandler.getCookieAdvanced();
     if (cookieHandler.isReady) {
       showCookiesForTab();
@@ -1331,7 +1361,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    */
   function onOptionsChanged(oldOptions) {
     if (oldOptions.advancedCookies != optionHandler.getCookieAdvanced()) {
-      document.querySelector('#advanced-toggle-all input').checked =
+      document.querySelector('#advanced-toggle-all').checked =
         optionHandler.getCookieAdvanced();
       showCookiesForTab();
     }

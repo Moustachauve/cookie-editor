@@ -34,8 +34,9 @@
   --notification-dismiss-hover-parent-color: #aaa;
   --notification-dismiss-hover-color: var(--notification-text-color);
 
-  --export-surface-color: var(--primary-surface-color);
-  --export-border-color: var(--primary-border-color);
+  --menu-surface-color: var(--primary-surface-color);
+  --menu-surface-hover-color: var(--secondary-surface-color);
+  --menu-border-color: var(--primary-border-color);
   
   --switch-surface-handle-color: var(--primary-surface-color);
   --switch-surface-on-color: #2196F3;

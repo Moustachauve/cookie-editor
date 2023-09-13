@@ -15,12 +15,35 @@
         <h1>Cookie Editor</h1>
         <h2></h2>
       </div>
-
-      <div id="advanced-toggle-all">
-        <label>
-          <input type="checkbox" />
-          Show Advanced
-        </label>
+      <div id="main-menu">
+        <button id="main-menu-button">
+          <svg class="icon">
+            <use href="../sprites/solid.svg#ellipsis-v"></use>
+          </svg>
+        </button>
+        <div id="main-menu-content">
+          <label
+            class="menu-item switch"
+            for="advanced-toggle-all"
+            id="advanced-toggle-all-label"
+          >
+            Show Advanced
+            <label class="switch">
+              <input
+                type="checkbox"
+                id="advanced-toggle-all"
+                aria-describedby="advanced-toggle-all-label"
+              />
+              <span class="slider"></span>
+            </label>
+          </label>
+          <button class="menu-item" id="menu-all-options">
+            See All Options
+            <svg class="icon">
+              <use href="../sprites/solid.svg#external-link-alt"></use>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
 
