@@ -1,4 +1,5 @@
 import { CookieHandlerDevtools } from '../devtools/cookieHandlerDevtools.js';
+import { ActiveAds } from '../lib/ads/activeAds.js';
 import { Animate } from '../lib/animate.js';
 import { BrowserDetector } from '../lib/browserDetector.js';
 import { Cookie } from '../lib/cookie.js';
@@ -33,27 +34,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   const cookieHandler = window.isDevtools
     ? new CookieHandlerDevtools(browserDetector)
     : new CookieHandlerPopup(browserDetector);
-
-  const ads = [
-    {
-      id: 'cookie-editor',
-      text: 'Enjoying Cookie-Editor? Buy me a coffee!',
-      tooltip:
-        'Cookie-Editor is always free. Help its development by sponsoring me.',
-      url: 'https://github.com/sponsors/Moustachauve',
-      refresh_days: 80,
-      supported_browsers: 'all',
-    },
-    {
-      id: 'tab-for-cause',
-      text: 'Get Tab For A Cause: Raise money for charity',
-      tooltip:
-        "Raise money for charity every time you open a new browser tab. It's free and incredibly easy. Transform your tabs into a force for good in 30 seconds.",
-      url: ' https://tab.gladly.io/cookieeditor/',
-      refresh_days: 80,
-      supported_browsers: 'chrome safari edge',
-    },
-  ];
 
   document.addEventListener('DOMContentLoaded', async function () {
     containerCookie = document.getElementById('cookie-container');
@@ -1208,7 +1188,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * are more than one valid option.
    */
   async function handleAd() {
-    if (!ads) {
+    if (!ActiveAds) {
       return;
     }
     const canShow = await canShowAnyAd();
@@ -1220,19 +1200,24 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
 
   /**
    * Shows a random valid ad to the user.
+   * @param {Ad[]|null} [adList=null] List of ad to chose from. Used for
+   *     recursion.
    */
-  async function showRandomAd() {
-    if (!ads || !ads.length) {
+  async function showRandomAd(adList = null) {
+    if (!ActiveAds || !ActiveAds.length) {
       console.log('No ads left');
       return;
     }
-    const randIndex = Math.floor(Math.random() * ads.length);
-    const selectedAd = ads[randIndex];
-    ads.splice(randIndex, 1);
+    if (adList === null) {
+      adList = Array.from(ActiveAds);
+    }
+    const randIndex = Math.floor(Math.random() * adList.length);
+    const selectedAd = adList[randIndex];
+    adList.splice(randIndex, 1);
     const adIsValid = isAdValid(selectedAd);
     if (!adIsValid) {
       console.log(selectedAd.id, 'ad is not valid to display');
-      showRandomAd();
+      showRandomAd(adList);
       return;
     }
     clearAd();
@@ -1248,9 +1233,10 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * @param {function} callback
    */
   async function isAdValid(selectedAd) {
+    // TODO: implement start/end date.
     if (
-      selectedAd.supported_browsers != 'all' &&
-      !selectedAd.supported_browsers.includes(browserDetector.getBrowserName())
+      selectedAd.supportedBrowsers != 'all' &&
+      !selectedAd.supportedBrowsers.includes(browserDetector.getBrowserName())
     ) {
       return false;
     }
@@ -1263,8 +1249,9 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       return true;
     }
 
-    // Only show a ad if it has not been dismissed in less than |refresh_days| days
-    if (secondsInOneDay * selectedAd.refresh_days > dismissedAd.date) {
+    // Only show a ad if it has not been dismissed in less than |ad.refreshDays|
+    // days
+    if (secondsInOneDay * selectedAd.refreshDays > dismissedAd.date) {
       console.log('Not showing ad ' + selectedAd.id + ', it was dismissed.');
       return false;
     }
