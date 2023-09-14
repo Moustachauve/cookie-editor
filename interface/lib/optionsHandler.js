@@ -1,9 +1,9 @@
-import { ExportFormats } from './data/exportFormats.js';
-import { ExtraInfos } from './data/extraInfos.js';
-import { Options } from './data/options.js';
-import { Themes } from './data/themes.js';
 import { EventEmitter } from './eventEmitter.js';
 import { GUID } from './guid.js';
+import { ExportFormats } from './options/exportFormats.js';
+import { ExtraInfos } from './options/extraInfos.js';
+import { Options } from './options/options.js';
+import { Themes } from './options/themes.js';
 
 const optionsKey = 'all_options';
 

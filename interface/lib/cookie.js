@@ -1,6 +1,6 @@
 import { Animate } from './animate.js';
-import { ExtraInfos } from './data/extraInfos.js';
 import { GUID } from './guid.js';
+import { ExtraInfos } from './options/extraInfos.js';
 
 /**
  * Helper class to display a cookie.

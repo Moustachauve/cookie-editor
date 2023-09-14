@@ -1,4 +1,4 @@
-import { Themes } from './data/themes.js';
+import { Themes } from './options/themes.js';
 
 /**
  * Class used to handle the theme of a page.
