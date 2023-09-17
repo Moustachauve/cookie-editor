@@ -1,3 +1,4 @@
+import { Browsers } from '../browsers.js';
 import { Ad } from './ad.js';
 
 /**
@@ -10,7 +11,7 @@ export const ActiveAds = Object.freeze([
     tooltip:
       'Cookie-Editor is always free. Help its development by sponsoring me.',
     url: 'https://github.com/sponsors/Moustachauve',
-    supportedBrowsers: 'all',
+    supportedBrowsers: [Browsers.Any],
     refreshDays: 80,
     startDate: null,
     endDate: null,
@@ -22,7 +23,7 @@ export const ActiveAds = Object.freeze([
       "Raise money for charity every time you open a new browser tab. It's free and incredibly easy. Transform your tabs into a force for good in 30 seconds.",
     url: 'https://tab.gladly.io/cookieeditor/',
     // TODO: make this an array from an 'enum'.
-    supportedBrowsers: 'chrome safari edge',
+    supportedBrowsers: [Browsers.Chrome, Browsers.Edge, Browsers.Safari],
     refreshDays: 80,
     startDate: null,
     endDate: null,

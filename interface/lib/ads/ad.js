@@ -8,8 +8,8 @@ export class Ad {
    * @param {string} text Text to display for the ad.
    * @param {string} tooltip Text to display when a user hover the text.
    * @param {string} url Url to redirect the user when they click this ad.
-   * @param {string[]} supportedBrowsers List of supported browsers to show this
-   *     ad to.
+   * @param {Browsers[]} supportedBrowsers List of supported browsers to show
+   *     this ad to.
    * @param {int} refreshDays How many days to wait before showing the ad again.
    * @param {int|null} startDate Timestamp Date before which the ad will not
    *     show to any user yet.

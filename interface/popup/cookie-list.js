@@ -1235,7 +1235,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   async function isAdValid(selectedAd) {
     // TODO: implement start/end date.
     if (
-      selectedAd.supportedBrowsers != 'all' &&
+      selectedAd.supportedBrowsers != 'any' &&
       !selectedAd.supportedBrowsers.includes(browserDetector.getBrowserName())
     ) {
       return false;
