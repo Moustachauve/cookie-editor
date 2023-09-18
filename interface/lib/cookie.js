@@ -217,11 +217,11 @@ export class Cookie {
     inputHttpOnly.id = 'httpOnly-' + this.guid;
     inputHttpOnly.checked = this.cookie.httpOnly;
 
-    inputHostOnly.addEventListener('change', function () {
-      inputDomain.disabled = self.checked;
+    inputHostOnly.addEventListener('change', function (e) {
+      self.afterHostOnlyChanged(e.target.checked);
     });
-    inputSession.addEventListener('change', function () {
-      inputExpiration.disabled = self.checked;
+    inputSession.addEventListener('change', function (e) {
+      self.afterSessionChanged(e.target.checked);
     });
 
     const advancedToggleButton = form.querySelector('.advanced-toggle');
@@ -334,14 +334,21 @@ export class Cookie {
    */
   updateHostOnly() {
     const valueInput = this.baseHtml.querySelector('#hostOnly-' + this.guid);
-    const domainInput = this.baseHtml.querySelector('#domain-' + this.guid);
     const header = this.baseHtml.querySelector('.header');
     valueInput.checked = this.cookie.hostOnly;
-
-    domainInput.disabled = this.cookie.hostOnly;
+    this.afterHostOnlyChanged(this.cookie.hostOnly);
 
     this.animateChangeOnNode(header);
     this.animateChangeOnNode(valueInput);
+  }
+
+  /**
+   * Actions to do whenever the HostOnly input changes.
+   * @param {boolean} inputValue The value of the Session input.
+   */
+  afterHostOnlyChanged(inputValue) {
+    const domainInput = this.baseHtml.querySelector('#domain-' + this.guid);
+    domainInput.disabled = inputValue;
   }
 
   /**
@@ -349,16 +356,32 @@ export class Cookie {
    */
   updateSession() {
     const valueInput = this.baseHtml.querySelector('#session-' + this.guid);
-    const expirationInput = this.baseHtml.querySelector(
-      '#expiration-' + this.guid,
-    );
     const header = this.baseHtml.querySelector('.header');
     valueInput.checked = !this.cookie.expirationDate;
-
-    expirationInput.disabled = !this.cookie.expirationDate;
+    this.afterSessionChanged();
 
     this.animateChangeOnNode(header);
     this.animateChangeOnNode(valueInput);
+  }
+
+  /**
+   * Actions to do whenever the Session input changes.
+   * @param {boolean} inputValue The value of the Session input.
+   */
+  afterSessionChanged(inputValue) {
+    const expirationInput = this.baseHtml.querySelector(
+      '#expiration-' + this.guid,
+    );
+    expirationInput.disabled = inputValue;
+    if (inputValue) {
+      expirationInput.value = 'No Expiration';
+      return;
+    }
+    if (!this.cookie.expirationDate) {
+      this.cookie.expirationDate =
+        new Date(Date.now() + 1 * (60 * 60 * 1000)).getTime() / 1000;
+    }
+    expirationInput.value = this.formatExpirationForDisplay();
   }
 
   /**
