@@ -19,7 +19,7 @@ import { OptionsHandler } from '../lib/optionsHandler.js';
     browserDetector
       .getApi()
       .devtools.panels.create(
-        'Cookie Editor',
+        'Cookie-Editor',
         '/icons/cookie-filled-small.svg',
         '/interface/devtools/cookie-list.html',
         function (panel) {},

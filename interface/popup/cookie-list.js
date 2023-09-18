@@ -283,7 +283,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         return;
       }
 
-      setPageTitle('Cookie Editor - Create a Cookie');
+      setPageTitle('Cookie-Editor - Create a Cookie');
 
       disableButtons = true;
       console.log('strart transition');
@@ -342,7 +342,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         return;
       }
 
-      setPageTitle('Cookie Editor - Import Cookies');
+      setPageTitle('Cookie-Editor - Import Cookies');
 
       disableButtons = true;
       Animate.transitionPage(
@@ -566,7 +566,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
 
       loadedCookies = {};
 
-      setPageTitle('Cookie Editor');
+      setPageTitle('Cookie-Editor');
       document.myThing = 'I like potatoasts';
 
       document.getElementById('button-bar-add').classList.remove('active');
