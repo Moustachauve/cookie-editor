@@ -392,6 +392,12 @@ button:focus {
   box-shadow: 1px 1px 5px rgba(150, 150, 150, 0.4);
 }
 
+#cookie-container textarea:disabled,
+#cookie-container input[type='text']:disabled,
+#cookie-container select:disabled {
+  background-color: var(--secondary-surface-color);
+}
+
 .checkbox-list {
   display: flex;
   justify-content: space-between;
