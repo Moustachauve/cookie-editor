@@ -1,5 +1,5 @@
 import { CookieHandlerDevtools } from '../devtools/cookieHandlerDevtools.js';
-import { ActiveAds } from '../lib/ads/activeAds.js';
+import { AdHandler } from '../lib/ads/adHandler.js';
 import { Animate } from '../lib/animate.js';
 import { BrowserDetector } from '../lib/browserDetector.js';
 import { Cookie } from '../lib/cookie.js';
@@ -25,12 +25,12 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   const notificationQueue = [];
   let notificationTimeout;
 
-  const secondsInOneDay = new Date().getTime() + 1 * 24 * 60 * 60 * 1000;
   const browserDetector = new BrowserDetector();
   const permissionHandler = new PermissionHandler(browserDetector);
   const storageHandler = new GenericStorageHandler(browserDetector);
   const optionHandler = new OptionsHandler(browserDetector, storageHandler);
   const themeHandler = new ThemeHandler(optionHandler);
+  const adHandler = new AdHandler(browserDetector, storageHandler);
   const cookieHandler = window.isDevtools
     ? new CookieHandlerDevtools(browserDetector)
     : new CookieHandlerPopup(browserDetector);
@@ -1118,6 +1118,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     document.body.appendChild(fakeText);
     fakeText.focus();
     fakeText.select();
+    // TODO: switch to clipboard API.
     document.execCommand('Copy');
     document.body.removeChild(fakeText);
   }
@@ -1188,94 +1189,19 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * are more than one valid option.
    */
   async function handleAd() {
-    if (!ActiveAds) {
-      return;
-    }
-    const canShow = await canShowAnyAd();
+    const canShow = await adHandler.canShowAnyAd();
     if (!canShow) {
       return;
     }
-    showRandomAd();
-  }
-
-  /**
-   * Shows a random valid ad to the user.
-   * @param {Ad[]|null} [adList=null] List of ad to chose from. Used for
-   *     recursion.
-   */
-  async function showRandomAd(adList = null) {
-    if (!ActiveAds || !ActiveAds.length) {
-      console.log('No ads left');
-      return;
-    }
-    if (adList === null) {
-      adList = Array.from(ActiveAds);
-    }
-    const randIndex = Math.floor(Math.random() * adList.length);
-    const selectedAd = adList[randIndex];
-    adList.splice(randIndex, 1);
-    const adIsValid = isAdValid(selectedAd);
-    if (!adIsValid) {
-      console.log(selectedAd.id, 'ad is not valid to display');
-      showRandomAd(adList);
+    const selectedAd = await adHandler.getRandomValidAd();
+    if (selectedAd === false) {
+      console.log('No valid ads to display');
       return;
     }
     clearAd();
-    const adItemHtml = createHtmlAd(selectedAd);
+    const adItemHtml = displayAd(selectedAd);
     document.getElementById('ad-container').appendChild(adItemHtml);
   }
-
-  /**
-   * Checks if an ad is valid to display to the user. To be valid, an ad needs
-   * to be available for the user's browser and respect the choice of the user
-   * if they have marked it as not interested.
-   * @param {object} selectedAd The ad to validate.
-   * @param {function} callback
-   */
-  async function isAdValid(selectedAd) {
-    // TODO: implement start/end date.
-    if (
-      selectedAd.supportedBrowsers != 'any' &&
-      !selectedAd.supportedBrowsers.includes(browserDetector.getBrowserName())
-    ) {
-      return false;
-    }
-
-    const dismissedAd = await storageHandler.getLocal(
-      getAdDismissKey(selectedAd.id),
-    );
-    // No data means it was never dismissed
-    if (dismissedAd === null) {
-      return true;
-    }
-
-    // Only show a ad if it has not been dismissed in less than |ad.refreshDays|
-    // days
-    if (secondsInOneDay * selectedAd.refreshDays > dismissedAd.date) {
-      console.log('Not showing ad ' + selectedAd.id + ', it was dismissed.');
-      return false;
-    }
-    return true;
-  }
-
-  /**
-   * Makes sure to not spam the user with ads if they recently dismissed one.
-   * @param {function} callback
-   */
-  async function canShowAnyAd() {
-    const lastDismissedAd = await storageHandler.getLocal(getLastDismissKey());
-    // No data means it was never dismissed
-    if (lastDismissedAd === null) {
-      return true;
-    }
-    // Don't show more ad if one was dismissed in less than 24hrs
-    if (secondsInOneDay > lastDismissedAd.date) {
-      console.log('Not showing ads, one was dismissed recently.');
-      return false;
-    }
-    return true;
-  }
-
   /**
    * Removes the currently displayed ad from the interface.
    */
@@ -1284,11 +1210,11 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   }
 
   /**
-   * Creates the HTML to display an ad.
+   * Creates the HTML to display an ad and assigns the event handlers.
    * @param {object} adObject Ad to display.
    * @return {string} The HTML representation of the ad.
    */
-  function createHtmlAd(adObject) {
+  function displayAd(adObject) {
     const template = document.importNode(
       document.getElementById('tmp-ad-item').content,
       true,
@@ -1300,45 +1226,13 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
 
     template.querySelector('.dont-show').addEventListener('click', (e) => {
       clearAd();
-      storageHandler.setLocal(
-        getAdDismissKey(adObject.id),
-        createDismissObjV1(),
-      );
-      storageHandler.setLocal(getLastDismissKey(), createDismissObjV1());
+      adHandler.markAdAsDismissed(adObject);
     });
     template.querySelector('.later').addEventListener('click', (e) => {
       clearAd();
     });
 
     return template;
-  }
-
-  /**
-   * Gets the key to get the last dismissed ad.
-   * @return {string} The key.
-   */
-  function getLastDismissKey() {
-    return 'adDismissLast';
-  }
-
-  /**
-   * Gets the key to get the time a specific ad was dismissed.
-   * @param {string} id Id of the ad to check.
-   * @return {string} The key.
-   */
-  function getAdDismissKey(id) {
-    return 'adDismiss.' + id;
-  }
-
-  /**
-   * Creates the data to log the time a specific ad was dismissed.
-   * @return {object} Data about the dismissal.
-   */
-  function createDismissObjV1() {
-    return {
-      version: 1,
-      date: Date.now(),
-    };
   }
 
   /**

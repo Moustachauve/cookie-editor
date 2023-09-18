@@ -35,6 +35,4 @@ export class Ad {
     this.startDate = startDate;
     this.endDate = endDate;
   }
-
-  // TODO: move some logic from cookie-list to here.
 }
