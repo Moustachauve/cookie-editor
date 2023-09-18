@@ -69,6 +69,11 @@ svg.icon {
   background-color: var(--secondary-surface-color);
 }
 
+#main-menu-button:focus-visible {
+  outline: 2px solid var(--primary-outline-color);
+}
+
+
 #main-menu-content {
   opacity: 0;
   position: absolute;
