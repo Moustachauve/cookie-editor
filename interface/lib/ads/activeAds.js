@@ -25,7 +25,7 @@ export const ActiveAds = Object.freeze([
     // TODO: make this an array from an 'enum'.
     supportedBrowsers: [Browsers.Chrome, Browsers.Edge, Browsers.Safari],
     refreshDays: 80,
-    startDate: null,
-    endDate: null,
+    startDate: new Date('2023/09/01'),
+    endDate: new Date('2024/09/01'),
   }),
 ]);

@@ -53,6 +53,29 @@ export class AdHandler {
   }
 
   /**
+   * Checks if an ad timeframe is currently active.
+   * @param {Ad} selectedAd
+   * @return {boolean} True if the time is valid, otherwise false.
+   */
+  isAdTimeframeValid(selectedAd) {
+    if (selectedAd.startDate === null && selectedAd.endDate === null) {
+      return true;
+    }
+    const now = new Date().getTime();
+
+    if (selectedAd.startDate !== null && selectedAd.startDate.getTime() > now) {
+      console.log('ad is not started yet');
+      return false;
+    }
+    if (selectedAd.endDate !== null && selectedAd.endDate.getTime() < now) {
+      console.log('ad is already finished');
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
    * Makes sure to not spam the user with ads if they recently dismissed one.
    * @param {function} callback
    */
@@ -93,9 +116,12 @@ export class AdHandler {
     const randIndex = Math.floor(Math.random() * adList.length);
     const selectedAd = adList[randIndex];
     adList.splice(randIndex, 1);
-    const adIsValid = this.isAdValid(selectedAd);
-    if (!adIsValid) {
-      console.log(selectedAd.id, 'ad is not valid to display');
+    if (!this.isAdValid(selectedAd)) {
+      console.log(selectedAd.id, 'ad is not valid to display.');
+      return this.getRandomValidAd(adList);
+    }
+    if (!this.isAdTimeframeValid(selectedAd)) {
+      console.log(selectedAd.id, 'ad is not in the current timeframe.');
       return this.getRandomValidAd(adList);
     }
     return selectedAd;
