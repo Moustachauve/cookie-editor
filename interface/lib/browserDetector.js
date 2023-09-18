@@ -1,3 +1,4 @@
+import { Browsers } from './browsers.js';
 import { Env } from './env.js';
 
 /**
@@ -29,8 +30,10 @@ export class BrowserDetector {
     }
 
     if (Env.browserName === '@@browser_name') {
-      Env.browserName = 'chrome';
-      console.warn('undefined browser name, using chrome as fallback');
+      Env.browserName = Browsers.Chrome;
+      console.warn(
+        'undefined browser name, using ' + Env.browserName + ' as fallback',
+      );
     }
 
     console.log(Env.browserName);
@@ -49,7 +52,7 @@ export class BrowserDetector {
    * @return {boolean} true if the current browser is Firefox, otherwise false.
    */
   isFirefox() {
-    return Env.browserName === 'firefox';
+    return Env.browserName === Browsers.Firefox;
   }
 
   /**
@@ -57,7 +60,7 @@ export class BrowserDetector {
    * @return {boolean} true if the current browser is Chrome, otherwise false.
    */
   isChrome() {
-    return Env.browserName === 'chrome';
+    return Env.browserName === Browsers.Chrome;
   }
 
   /**
@@ -65,7 +68,7 @@ export class BrowserDetector {
    * @return {boolean} true if the current browser is Edge, otherwise false.
    */
   isEdge() {
-    return Env.browserName === 'edge';
+    return Env.browserName === Browsers.Edge;
   }
 
   /**
@@ -73,7 +76,7 @@ export class BrowserDetector {
    * @return {boolean} true if the current browser is Safari, otherwise false.
    */
   isSafari() {
-    return Env.browserName === 'safari';
+    return Env.browserName === Browsers.Safari;
   }
 
   /**
