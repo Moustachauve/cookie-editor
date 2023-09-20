@@ -21,7 +21,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
   isFirefoxAndroid(function (response) {
     if (response) {
       const popupOptions = {
-        popup: '/interface/popup-android/cookie-list.html',
+        popup: '/interface/popup-mobile/cookie-list.html',
       };
       browserDetector.getApi().action.setPopup(popupOptions);
     }
@@ -30,7 +30,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
     if (response) {
       console.log('Setting up iOS popup');
       const popupOptions = {
-        popup: '/interface/popup-ios/cookie-list.html',
+        popup: '/interface/popup-mobile/cookie-list.html',
       };
       browserDetector.getApi().action.setPopup(popupOptions);
     }

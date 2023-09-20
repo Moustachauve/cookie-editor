@@ -340,7 +340,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         return;
       }
 
-      setPageTitle('Cookie-Editor - Import Cookies');
+      setPageTitle('Cookie-Editor - Import');
 
       disableButtons = true;
       Animate.transitionPage(

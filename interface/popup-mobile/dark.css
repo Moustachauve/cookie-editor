@@ -1,0 +1,30 @@
+
+[data-theme='dark'] #cookie-container #searchField {
+  border: 1px solid var(--secondary-border-color);
+}
+
+[data-theme='dark'] #cookie-container .header {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--secondary-surface-color);
+}
+
+[data-theme="dark"] #cookie-container .expando {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+[data-theme="dark"] #cookie-container textarea,
+[data-theme="dark"] #cookie-container input[type='text'],
+[data-theme="dark"] #cookie-container select {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .panel-section-footer-button:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--primary-text-color);
+  fill: var(--primary-text-color);
+}
+[data-theme="dark"] .panel-section-footer-button:focus .tooltip {
+  color: var(--primary-text-color);
+}

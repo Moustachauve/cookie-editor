@@ -1,4 +1,6 @@
 [data-theme='dark'] {
+  color-scheme: dark;
+
   --primary-surface-color: #2c2e31;
   --primary-border-color: #696969;
   --primary-outline-color: #4786ec;
@@ -37,7 +39,7 @@
   --menu-surface-color: #45474d;
   --menu-surface-hover-color: #373b44;
   --menu-border-color: rgba(255, 255, 255, 0.2);
-  
+
   --switch-surface-handle-color: var(--secondary-surface-color);
   --switch-surface-on-color: #1b7bca;
   --switch-surface-neutral-color: var(--primary-border-color);
