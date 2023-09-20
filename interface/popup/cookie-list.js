@@ -279,7 +279,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     }
 
     document.getElementById('create-cookie').addEventListener('click', () => {
-      hideExportMenu();
       if (disableButtons) {
         return;
       }
@@ -308,7 +307,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     document
       .getElementById('delete-all-cookies')
       .addEventListener('click', () => {
-        hideExportMenu();
         const buttonIcon = document
           .getElementById('delete-all-cookies')
           .querySelector('use');
@@ -338,7 +336,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     });
 
     document.getElementById('import-cookies').addEventListener('click', () => {
-      hideExportMenu();
       if (disableButtons) {
         return;
       }
@@ -564,6 +561,11 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
 
     console.log('showing cookies');
 
+    setPageTitle('Cookie-Editor');
+    document.getElementById('button-bar-add').classList.remove('active');
+    document.getElementById('button-bar-import').classList.remove('active');
+    document.getElementById('button-bar-default').classList.add('active');
+    document.myThing = 'DarkSide';
     const domain = getDomainFromUrl(cookieHandler.currentTab.url);
     const subtitleLine = document.querySelector('.titles h2');
     if (subtitleLine) {
@@ -591,13 +593,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       cookies = cookies.sort(sortCookiesByName);
 
       loadedCookies = {};
-
-      setPageTitle('Cookie-Editor');
-      document.myThing = 'I like potatoasts';
-
-      document.getElementById('button-bar-add').classList.remove('active');
-      document.getElementById('button-bar-import').classList.remove('active');
-      document.getElementById('button-bar-default').classList.add('active');
 
       if (cookies.length > 0) {
         cookiesListHtml = document.createElement('ul');
