@@ -4,6 +4,7 @@ import { Animate } from '../lib/animate.js';
 import { BrowserDetector } from '../lib/browserDetector.js';
 import { Cookie } from '../lib/cookie.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
+import { HeaderstringFormat } from '../lib/headerstringFormat.js';
 import { JsonFormat } from '../lib/jsonFormat.js';
 import { NetscapeFormat } from '../lib/netscapeFormat.js';
 import { ExportFormats } from '../lib/options/exportFormats.js';
@@ -403,25 +404,31 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         try {
           cookies = JsonFormat.parse(json);
         } catch (error) {
+          console.warn(error);
           try {
-            cookies = NetscapeFormat.parse(json);
+            cookies = HeaderstringFormat.parse(json);
           } catch (error) {
-            console.log("Couldn't parse Data", error);
-            sendNotification('Could not parse the value');
-            buttonIcon.setAttribute('href', '../sprites/solid.svg#times');
-            setTimeout(() => {
-              buttonIcon.setAttribute(
-                'href',
-                '../sprites/solid.svg#file-import',
-              );
-            }, 1500);
-            return;
+            console.warn(error);
+            try {
+              cookies = NetscapeFormat.parse(json);
+            } catch (error) {
+              console.warn("Couldn't parse Data", error);
+              sendNotification('The input is not in a valid format.');
+              buttonIcon.setAttribute('href', '../sprites/solid.svg#times');
+              setTimeout(() => {
+                buttonIcon.setAttribute(
+                  'href',
+                  '../sprites/solid.svg#file-import',
+                );
+              }, 1500);
+              return;
+            }
           }
         }
 
-        if (!isArray(cookies)) {
-          console.log('Invalid Json/Netscape');
-          sendNotification('The input is not valid Json/Netscape format');
+        if (!isArray(cookies) || cookies.length === 0) {
+          console.log('No cookies were imported.');
+          sendNotification('No cookies were imported. Verify your input.');
           buttonIcon.setAttribute('href', '../sprites/solid.svg#times');
           setTimeout(() => {
             buttonIcon.setAttribute('href', '../sprites/solid.svg#file-import');
@@ -467,12 +474,31 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       });
 
     document.addEventListener('click', function (e) {
-      // Clicks in the menu should not dismiss it.
-      if (document.querySelector('#main-menu').contains(e.target)) {
+      // Clicks in the main menu should not dismiss it.
+      if (
+        document.querySelector('#main-menu').contains(e.target) ||
+        !mainMenuContent.classList.contains('visible')
+      ) {
         return;
       }
       console.log('main menu blur');
       mainMenuContent.classList.remove('visible');
+    });
+
+    document.addEventListener('click', function (e) {
+      const exportMenu = document.querySelector('#export-menu');
+      // Clicks in the export menu should not dismiss it.
+      if (!exportMenu || exportMenu.contains(e.target)) {
+        return;
+      }
+
+      const exportButton = document.querySelector('#export-cookies');
+      if (!exportButton || exportButton.contains(e.target)) {
+        return;
+      }
+
+      console.log('export menu blur');
+      hideExportMenu();
     });
 
     document
@@ -792,6 +818,9 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       case ExportFormats.JSON:
         exportToJson();
         break;
+      case ExportFormats.HeaderString:
+        exportToHeaderstring();
+        break;
       case ExportFormats.Netscape:
         exportToNetscape();
         break;
@@ -824,6 +853,11 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       .getElementById('export-json')
       .addEventListener('click', (event) => {
         exportToJson();
+      });
+    document
+      .getElementById('export-headerstring')
+      .addEventListener('click', (event) => {
+        exportToHeaderstring();
       });
     document
       .getElementById('export-netscape')
@@ -865,6 +899,27 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     copyText(JsonFormat.format(loadedCookies));
 
     sendNotification('Cookies exported to clipboard as JSON');
+    setTimeout(() => {
+      buttonIcon.setAttribute('href', '../sprites/solid.svg#file-export');
+    }, 1500);
+  }
+
+  /**
+   * Exports all the cookies for the current tab in the header string format.
+   */
+  function exportToHeaderstring() {
+    hideExportMenu();
+    const buttonIcon = document
+      .getElementById('export-cookies')
+      .querySelector('use');
+    if (buttonIcon.getAttribute('href') === '../sprites/solid.svg#check') {
+      return;
+    }
+
+    buttonIcon.setAttribute('href', '../sprites/solid.svg#check');
+    copyText(HeaderstringFormat.format(loadedCookies));
+
+    sendNotification('Cookies exported to clipboard as Header String');
     setTimeout(() => {
       buttonIcon.setAttribute('href', '../sprites/solid.svg#file-export');
     }, 1500);

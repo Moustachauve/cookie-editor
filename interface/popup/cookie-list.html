@@ -308,12 +308,14 @@
     <template id="tmp-import">
       <form class="form container import">
         <div>
-          <label for="content-import">Json or Netscape Format</label>
+          <label for="content-import">
+            Supported format: JSON, Header string, Netscape.
+          </label>
           <textarea
             class="json"
             name="content"
             id="content-import"
-            placeholder="Paste your JSON/Netscape format here"
+            placeholder='JSON:	&#10;[{"name":"Cookie","value":"text",[...]}] &#10;&#10;Header String:	&#10;Cookie=text;Editor=yes	&#10;&#10;Netscape:	&#10;# Netscape HTTP Cookie File	&#10;# [...]	&#10;cookie-editor.cgagnier.ca[...]	Cookie	text'
           ></textarea>
         </div>
       </form>
@@ -322,7 +324,7 @@
     <template id="tmp-export">
       <form class="form container export sbro">
         <div>
-          <label for="content-export">Json or Netscape Format Exporter</label>
+          <label for="content-export">Json Only Format Exporter</label>
           <textarea
             class="json"
             name="content"
@@ -396,8 +398,10 @@
 
     <template id="tmp-export-options">
       <div id="export-menu">
-        <button id="export-json" type="button">Export as JSON</button>
-        <button id="export-netscape" type="button">Export as Netscape</button>
+        <h3>Export As:</h3>
+        <button id="export-json" type="button">JSON</button>
+        <button id="export-headerstring" type="button">Header String</button>
+        <button id="export-netscape" type="button">Netscape</button>
       </div>
     </template>
 

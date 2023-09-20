@@ -802,6 +802,7 @@ body,
   background-color: var(--menu-surface-color);
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.35);
   padding: 10px;
+  padding-top: 5px;
 }
 
 #export-menu:after {
@@ -814,6 +815,13 @@ body,
   border-top: solid 10px var(--menu-surface-color);
   border-left: solid 10px transparent;
   border-right: solid 10px transparent;
+}
+
+#export-menu h3 {
+  margin-top: 0;
+  margin-left: 2px;
+  margin-bottom: 5px;
+  font-size: 1.2em;
 }
 
 #export-menu button {
