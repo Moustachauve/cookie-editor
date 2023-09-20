@@ -65,6 +65,9 @@ export class GenericCookieHandler extends EventEmitter {
     if (this.browserDetector.isSafari() && newCookie.domain) {
       newCookie.url = 'http://' + newCookie.domain;
     }
+    if (this.browserDetector.isSafari() && !newCookie.path) {
+      newCookie.path = '/';
+    }
 
     if (
       cookie.hostOnly ||
