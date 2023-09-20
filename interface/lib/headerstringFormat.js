@@ -6,10 +6,9 @@ export class HeaderstringFormat {
   /**
    * Parses a string of cookie in the JSON format to a cookie object.
    * @param {string} cookieString Cookies in the JSON format.
-   * @param {string} currentDomain Current domain the user is on.
    * @return {object} List of Cookies.
    */
-  static parse(cookieString, currentDomain) {
+  static parse(cookieString) {
     const cookies = [];
     const rawCookies = cookieString.split(';');
     for (let rawCookie of rawCookies) {
@@ -23,7 +22,6 @@ export class HeaderstringFormat {
         continue;
       }
       cookies.push({
-        domain: currentDomain,
         name: decodeURIComponent(cookieParts[0]),
         value: decodeURIComponent(cookieParts[1]),
       });
