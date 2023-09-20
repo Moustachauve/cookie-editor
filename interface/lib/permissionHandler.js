@@ -15,6 +15,7 @@ export class PermissionHandler {
       'chrome:',
       'chrome-extension:',
       'edge:',
+      'safari-web-extension:',
     ];
   }
 

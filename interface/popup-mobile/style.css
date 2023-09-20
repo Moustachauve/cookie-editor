@@ -6,7 +6,7 @@
 html,
 body {
   height: 100%;
-  min-height: 400px;
+  min-height: 450px;
   min-width: 250px;
 }
 
@@ -401,10 +401,15 @@ form.import > div {
 
 #cookie-container li .expando .wrapper {
   flex: 1;
-  padding: 1.25em 1em;
-  padding-bottom: 0.4em;
+  padding: 0.4em 0.7em;
+  padding-bottom: 0;
   display: flex;
   flex-direction: column-reverse;
+}
+
+.container.form label {
+  font-weight: 500;
+  color: var(--secondary-text-onsurface-color);
 }
 
 .form.container div:first-child {
@@ -419,7 +424,7 @@ form.import > div {
   font-family: inherit;
   resize: vertical;
   margin: 0;
-  padding: 1em 0.5em;
+  padding: 0.65em 0.5em;
   border: 1px solid var(--secondary-border-color);
   background-color: var(--primary-surface-color);
   color: var(--primary-text-color);
@@ -427,9 +432,9 @@ form.import > div {
 
 #cookie-container textarea {
   resize: none;
-  height: 90px;
-  max-height: 90px;
-  min-height: 90px;
+  height: 70px;
+  max-height: 70px;
+  min-height: 70px;
 }
 
 label {
