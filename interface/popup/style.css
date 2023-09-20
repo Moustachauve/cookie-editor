@@ -39,7 +39,7 @@ svg.icon {
 #pageTitle {
   overflow: hidden;
   display: flex;
-	justify-content: space-between;
+  justify-content: space-between;
 }
 
 #pageTitle h1 {
@@ -176,11 +176,11 @@ button:focus {
 
 .ad-link {
   flex: 1;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 .ad-link a {
-  padding-left: 5px;
-  padding-right: 5px;
   color: var(--ad-link-color);
 }
 
@@ -207,6 +207,21 @@ button:focus {
   outline: 2px solid var(--primary-outline-color);
   border-radius: 4px;
 }
+
+@media (max-width: 400px) {
+  #ad-container > div {
+    display: block;
+  }
+  .ad-link {
+    display: inline;
+  }
+  .ad-actions {
+    display: block;
+    text-align: right;
+    margin-top: 8px;
+  }
+}
+
 
 #searchContainer {
   display: flex;
