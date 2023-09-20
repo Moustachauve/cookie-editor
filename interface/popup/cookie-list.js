@@ -283,7 +283,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         return;
       }
 
-      setPageTitle('Cookie-Editor - Create a Cookie');
+      setPageTitle('Cookie-Editor - Add a Cookie');
 
       disableButtons = true;
       console.log('strart transition');
@@ -758,6 +758,14 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   }
 
   /**
+   * Shows the current version number in the interface.
+   */
+  function showVersion() {
+    const version = browserDetector.getApi().runtime.getManifest().version;
+    document.getElementById('version').textContent = 'v' + version;
+  }
+
+  /**
    * Creates the HTML representation of a cookie.
    * @param {string} name Name of the cookie.
    * @param {string} value Value of the cookie.
@@ -1036,6 +1044,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     if (cookieHandler.isReady) {
       showCookiesForTab();
     }
+    showVersion();
   }
 
   /**

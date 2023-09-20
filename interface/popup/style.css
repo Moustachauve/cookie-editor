@@ -52,6 +52,14 @@ svg.icon {
   min-width: 0;
 }
 
+#version {
+  position: absolute;
+  top: 14px;
+  right: 36px;
+  font-size: 10px;
+  color: var(--primary-border-color);
+  user-select: none;
+}
 
 #main-menu-button {
   position: absolute;
@@ -59,10 +67,16 @@ svg.icon {
   right: 6px;
   height: 30px;
   width: 30px;
+  display: flex;
+  align-items: center;
   background: none;
   border: none;
   text-align: center;
   border-radius: 40px;
+}
+#main-menu-button svg {
+  margin: 0 auto;
+  display: block;
 }
 
 #main-menu-button:hover {
