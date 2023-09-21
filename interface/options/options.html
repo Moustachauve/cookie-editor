@@ -78,8 +78,9 @@
             <option value="httponly">Http Only</option>
           </select>
           <div class="hint" id="extra-info-hint">
-            Selects one extra element to display next to the cookie name in the interface.
-            This can help you identify quickly which cookie you are looking for.
+            Selects one extra element to display next to the cookie name in the
+            interface. This can help you identify quickly which cookie you are
+            looking for.
           </div>
         </div>
 
@@ -93,6 +94,39 @@
           <div class="hint" id="theme-hint">
             When selecting "Auto", Cookie-Editor will match your browser's theme
             automatically.
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>All Cookies</legend>
+        <div class="notice danger">
+          <svg class="icon">
+            <use href="../sprites/solid.svg#exclamation-triangle"></use>
+          </svg>
+          Operations in this section will apply to ALL sites.
+          <strong>Be careful.</strong> <br />
+          Do not share your cookies exported from here to anyone you do not
+          fully trust. Giving some your cookies this way will give them access
+          to every account you are currently logged in.
+        </div>
+        <div class="input-container">
+          Export All Cookies
+          <div class="button-group">
+            <button id="export-all-json">As JSON</button>
+            <button id="export-all-netscape">As Netscape</button>
+          </div>
+          <div class="hint">
+            Header string is not available for browser-wide export since it does
+            not contain information about which site it comes from.
+          </div>
+        </div>
+        <div class="input-container">
+          Delete All Cookies
+          <button class="danger" id="delete-all">Delete All</button>
+          <div class="hint danger">
+            This will delete all the cookies on all the site on this browser.
+            This action is irreversible. Be very careful.
           </div>
         </div>
       </fieldset>

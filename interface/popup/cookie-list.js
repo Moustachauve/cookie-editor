@@ -594,31 +594,32 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
 
       loadedCookies = {};
 
-      if (cookies.length > 0) {
-        cookiesListHtml = document.createElement('ul');
-        cookiesListHtml.appendChild(generateSearchBar());
-        cookies.forEach(function (cookie) {
-          const id = Cookie.hashCode(cookie);
-          loadedCookies[id] = new Cookie(id, cookie, optionHandler);
-          cookiesListHtml.appendChild(loadedCookies[id].html);
-        });
-
-        if (containerCookie.firstChild) {
-          disableButtons = true;
-          Animate.transitionPage(
-            containerCookie,
-            containerCookie.firstChild,
-            cookiesListHtml,
-            'right',
-            () => {
-              disableButtons = false;
-            },
-          );
-        } else {
-          containerCookie.appendChild(cookiesListHtml);
-        }
-      } else {
+      if (cookies.length === 0) {
         showNoCookies();
+        return;
+      }
+
+      cookiesListHtml = document.createElement('ul');
+      cookiesListHtml.appendChild(generateSearchBar());
+      cookies.forEach(function (cookie) {
+        const id = Cookie.hashCode(cookie);
+        loadedCookies[id] = new Cookie(id, cookie, optionHandler);
+        cookiesListHtml.appendChild(loadedCookies[id].html);
+      });
+
+      if (containerCookie.firstChild) {
+        disableButtons = true;
+        Animate.transitionPage(
+          containerCookie,
+          containerCookie.firstChild,
+          cookiesListHtml,
+          'right',
+          () => {
+            disableButtons = false;
+          },
+        );
+      } else {
+        containerCookie.appendChild(cookiesListHtml);
       }
     });
   }

@@ -7,6 +7,7 @@
   --primary-link-hover-color: #85b9fc;
   --primary-danger-color: #cf000f;
   --primary-safe-color: #1e824c;
+  --secondary-danger-color: #970707;
 
   --secondary-surface-color: #eaeaea;
   --secondary-border-color: #aaaaaa;
@@ -41,4 +42,6 @@
   --switch-surface-handle-color: var(--primary-surface-color);
   --switch-surface-on-color: #2196F3;
   --switch-surface-neutral-color: var(--primary-border-color);
+
+  --notice-danger-surface-color: #f8000011;
 }

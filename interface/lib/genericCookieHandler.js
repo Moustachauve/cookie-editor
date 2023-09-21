@@ -192,4 +192,21 @@ export class GenericCookieHandler extends EventEmitter {
       );
     }
   }
+
+  /**
+   * Gets all the cookies from the browser.
+   * @param {function} callback
+   */
+  getAllCookiesInBrowser(callback) {
+    if (this.browserDetector.supportsPromises()) {
+      this.browserDetector
+        .getApi()
+        .cookies.getAll({})
+        .then(callback, function (e) {
+          console.error('Failed to retrieve cookies', e);
+        });
+    } else {
+      this.browserDetector.getApi().cookies.getAll({}, callback);
+    }
+  }
 }

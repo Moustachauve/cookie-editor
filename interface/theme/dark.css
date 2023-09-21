@@ -14,6 +14,7 @@
   --secondary-border-color: #3f4146;
   --secondary-text-color: #aaaaaa;
   --secondary-text-onsurface-color: #eaeaea;
+  --secondary-danger-color: #f8abb0;
 
   --changed-surface-color: #3a391a;
   --success-surface-color: #15531d;
@@ -43,4 +44,6 @@
   --switch-surface-handle-color: var(--secondary-surface-color);
   --switch-surface-on-color: #1b7bca;
   --switch-surface-neutral-color: var(--primary-border-color);
+
+  --notice-danger-surface-color: #f8000015;
 }
