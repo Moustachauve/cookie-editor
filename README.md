@@ -1,6 +1,6 @@
 [![grunt ESLint](https://github.com/Moustachauve/cookie-editor/actions/workflows/npm-grunt.yml/badge.svg)](https://github.com/Moustachauve/cookie-editor/actions/workflows/npm-grunt.yml)
 # Cookie-Editor
-[Cookie-Editor](https://cookie-editor.cgagnier.ca/) is a browser extension/add-on that lets you efficiently create, edit and delete cookies for the current tab. Perfect for developing, quickly testing or even manually managing your cookies for your privacy.
+[Cookie-Editor](https://cookie-editor.com/) is a browser extension/add-on that lets you efficiently create, edit and delete cookies for the current tab. Perfect for developing, quickly testing or even manually managing your cookies for your privacy.
 
 ## Description
 Cookie-Editor is designed to have a simple to use interface that let you do most standard cookie operations quickly. It is ideal for developing and testing web pages.
