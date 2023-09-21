@@ -41,3 +41,10 @@ To submit a feature suggestion or file a bug report, please [create a new issue 
 1. Run npm install to make sure you have all the required packages installed.
 2. Run the command `grunt`
 3. All the files are in the `dist` directory created
+
+
+## Disclaimer
+
+This project is not an official Google project. It is not supported by
+Google and Google specifically disclaims all warranties as to its quality,
+merchantability, or fitness for a particular purpose.
