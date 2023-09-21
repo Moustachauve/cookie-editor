@@ -229,7 +229,7 @@ module.exports = function (grunt) {
       firefox: {
         options: {
           archive:
-            'dist/<%= pkg.name %>-<%= grunt.task.current.target %>-<%= pkg.version %>.zip',
+            'dist/<%= pkg.version %>/<%= pkg.name %>-<%= grunt.task.current.target %>-<%= pkg.version %>.zip',
         },
         files: [
           {
@@ -243,7 +243,7 @@ module.exports = function (grunt) {
       chrome: {
         options: {
           archive:
-            'dist/<%= pkg.name %>-<%= grunt.task.current.target %>-<%= pkg.version %>.zip',
+            'dist/<%= pkg.version %>/<%= pkg.name %>-<%= grunt.task.current.target %>-<%= pkg.version %>.zip',
         },
         files: [
           {
@@ -257,7 +257,7 @@ module.exports = function (grunt) {
       edge: {
         options: {
           archive:
-            'dist/<%= pkg.name %>-<%= grunt.task.current.target %>-<%= pkg.version %>.zip',
+            'dist/<%= pkg.version %>/<%= pkg.name %>-<%= grunt.task.current.target %>-<%= pkg.version %>.zip',
         },
         files: [
           {
@@ -271,7 +271,7 @@ module.exports = function (grunt) {
       opera: {
         options: {
           archive:
-            'dist/<%= pkg.name %>-<%= grunt.task.current.target %>-<%= pkg.version %>.zip',
+            'dist/<%= pkg.version %>/<%= pkg.name %>-<%= grunt.task.current.target %>-<%= pkg.version %>.zip',
         },
         files: [
           {
