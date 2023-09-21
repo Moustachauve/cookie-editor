@@ -7,15 +7,6 @@
     <link rel="preload" href="https://fonts.googleapis.com/css?family=Roboto&display=swap" as="style">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
     <link href="style/main.css?cache=5" rel="stylesheet" />
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CYQRH9EK28"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-    
-      gtag('config', 'G-CYQRH9EK28');
-    </script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8" />
@@ -104,32 +95,6 @@
                 });
             });
         });
-
-        document.querySelectorAll('a').forEach(anchor => {
-            anchor.addEventListener('click', function () {
-                if (anchor.href.indexOf(window.location.href) > -1) {
-                    return;
-                }
-
-                trackOutboundLink(anchor.href);
-            });
-        });
-
-        document.getElementById('download-cta-med').addEventListener("click", function () {
-            gtag('event', 'download-cta', {
-                event_category: 'click',
-                event_label: 'Big Button'
-            });
-        });
-
-        function trackOutboundLink(url) {
-            gtag('event', 'outbound', {
-                event_category: 'click',
-                event_label: url,
-	            transport: 'beacon',
-                hitCallback: function(){document.location = url;}
-            });
-        }
     </script>
 </body>
 </html>
