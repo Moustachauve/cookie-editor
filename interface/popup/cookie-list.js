@@ -668,6 +668,9 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       .importNode(document.getElementById('tmp-no-permission').content, true)
       .querySelector('div');
 
+    document.getElementById('button-bar-add').classList.remove('active');
+    document.getElementById('button-bar-import').classList.remove('active');
+    document.getElementById('button-bar-default').classList.remove('active');
     // Firefox can't request permissions from devTools due to
     // https://bugzilla.mozilla.org/show_bug.cgi?id=1796933
     if (
@@ -739,6 +742,10 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         true,
       )
       .querySelector('div');
+
+    document.getElementById('button-bar-add').classList.remove('active');
+    document.getElementById('button-bar-import').classList.remove('active');
+    document.getElementById('button-bar-default').classList.remove('active');
     if (containerCookie.firstChild) {
       if (containerCookie.firstChild.id === 'permission-impossible') {
         return;
