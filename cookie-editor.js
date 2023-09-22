@@ -275,6 +275,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
       .getApi()
       .runtime.getPlatformInfo()
       .then((info) => {
+        console.log('check for safari on ios: ', info.os);
         callback(info.os === 'ios');
       });
   }
