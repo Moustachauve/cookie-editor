@@ -115,7 +115,8 @@ export class AdHandler {
     const randIndex = Math.floor(Math.random() * adList.length);
     const selectedAd = adList[randIndex];
     adList.splice(randIndex, 1);
-    if (!this.isAdValid(selectedAd)) {
+    const isAdValid = await this.isAdValid(selectedAd);
+    if (!isAdValid) {
       console.log(selectedAd.id, 'ad is not valid to display.');
       return this.getRandomValidAd(adList);
     }
