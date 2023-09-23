@@ -125,3 +125,7 @@ a:hover {
   color: var(--secondary-text-color);
   padding-top: 5px;
 }
+
+.hidden {
+  display: none;
+}

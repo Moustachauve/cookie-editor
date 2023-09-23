@@ -37,6 +37,11 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     exportFormatInput.value = optionHandler.getExportFormat();
     extraInfoInput.value = optionHandler.getExtraInfo();
     themeInput.value = optionHandler.getTheme();
+
+    if (!browserDetector.isSafari()) {
+      document.getElementById('github-sponsor').classList.remove('hidden');
+    }
+
   }
 
   /**
