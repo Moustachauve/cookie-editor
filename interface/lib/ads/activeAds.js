@@ -11,7 +11,13 @@ export const ActiveAds = Object.freeze([
     tooltip:
       'Cookie-Editor is always free. Help its development by sponsoring me.',
     url: 'https://github.com/sponsors/Moustachauve',
-    supportedBrowsers: [Browsers.Any],
+    // Apple doesn't allow Github sponsors (external payment)
+    supportedBrowsers: [
+      Browsers.Chrome,
+      Browsers.Edge,
+      Browsers.Firefox,
+      Browsers.Opera,
+    ],
     refreshDays: 80,
     startDate: null,
     endDate: null,
