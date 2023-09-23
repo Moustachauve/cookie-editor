@@ -28,7 +28,6 @@ export const ActiveAds = Object.freeze([
     tooltip:
       "Raise money for charity every time you open a new browser tab. It's free and incredibly easy. Transform your tabs into a force for good in 30 seconds.",
     url: 'https://tab.gladly.io/cookieeditor/',
-    // TODO: make this an array from an 'enum'.
     supportedBrowsers: [Browsers.Chrome, Browsers.Edge, Browsers.Safari],
     refreshDays: 80,
     startDate: new Date('2023/09/01'),

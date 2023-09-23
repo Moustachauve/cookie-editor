@@ -25,7 +25,6 @@ export class AdHandler {
    * @param {object} selectedAd The ad to validate.
    */
   async isAdValid(selectedAd) {
-    // TODO: implement start/end date.
     if (
       selectedAd.supportedBrowsers != 'any' &&
       !selectedAd.supportedBrowsers.includes(
