@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C9D2F7712ABFCD74003C6560 /* interface in Resources */ = {isa = PBXBuildFile; fileRef = C9D2F76D2ABFCD74003C6560 /* interface */; };
+		C9D2F7722ABFCD74003C6560 /* cookie-editor.js in Resources */ = {isa = PBXBuildFile; fileRef = C9D2F76E2ABFCD74003C6560 /* cookie-editor.js */; };
+		C9D2F7732ABFCD74003C6560 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D2F76F2ABFCD74003C6560 /* manifest.json */; };
+		C9D2F7742ABFCD74003C6560 /* icons in Resources */ = {isa = PBXBuildFile; fileRef = C9D2F7702ABFCD74003C6560 /* icons */; };
+		C9D2F7792ABFCDB0003C6560 /* cookie-editor.js in Resources */ = {isa = PBXBuildFile; fileRef = C9D2F7752ABFCDB0003C6560 /* cookie-editor.js */; };
+		C9D2F77A2ABFCDB0003C6560 /* interface in Resources */ = {isa = PBXBuildFile; fileRef = C9D2F7762ABFCDB0003C6560 /* interface */; };
+		C9D2F77B2ABFCDB0003C6560 /* icons in Resources */ = {isa = PBXBuildFile; fileRef = C9D2F7772ABFCDB0003C6560 /* icons */; };
+		C9D2F77C2ABFCDB0003C6560 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D2F7782ABFCDB0003C6560 /* manifest.json */; };
 		C9D61EF629BBF85A00399458 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D61EF529BBF85A00399458 /* AppDelegate.swift */; };
 		C9D61EF829BBF85A00399458 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D61EF729BBF85A00399458 /* SceneDelegate.swift */; };
 		C9D61EFB29BBF85A00399458 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C9D61EF929BBF85A00399458 /* LaunchScreen.storyboard */; };
@@ -29,38 +37,6 @@
 		C9D61F2D29BBF85A00399458 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9D61EEB29BBF85A00399458 /* Assets.xcassets */; };
 		C9D61F2E29BBF85A00399458 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D61EED29BBF85A00399458 /* SafariWebExtensionHandler.swift */; };
 		C9D61F2F29BBF85A00399458 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D61EED29BBF85A00399458 /* SafariWebExtensionHandler.swift */; };
-		C9D61F5129BBF85A00399458 /* Gruntfile.js in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4129BBF85A00399458 /* Gruntfile.js */; };
-		C9D61F5229BBF85A00399458 /* interface in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4229BBF85A00399458 /* interface */; };
-		C9D61F5329BBF85A00399458 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4329BBF85A00399458 /* LICENSE */; };
-		C9D61F5429BBF85A00399458 /* cookie-editor.js in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4429BBF85A00399458 /* cookie-editor.js */; };
-		C9D61F5529BBF85A00399458 /* manifest.firefox.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4529BBF85A00399458 /* manifest.firefox.json */; };
-		C9D61F5629BBF85A00399458 /* manifest.chrome.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4629BBF85A00399458 /* manifest.chrome.json */; };
-		C9D61F5729BBF85A00399458 /* manifest.edge.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4729BBF85A00399458 /* manifest.edge.json */; };
-		C9D61F5829BBF85A00399458 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4829BBF85A00399458 /* README.md */; };
-		C9D61F5929BBF85A00399458 /* build.ps1 in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4929BBF85A00399458 /* build.ps1 */; };
-		C9D61F5A29BBF85A00399458 /* package-lock.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4A29BBF85A00399458 /* package-lock.json */; };
-		C9D61F5B29BBF85A00399458 /* package.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4B29BBF85A00399458 /* package.json */; };
-		C9D61F5C29BBF85A00399458 /* safari in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4C29BBF85A00399458 /* safari */; };
-		C9D61F5D29BBF85A00399458 /* icons in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4D29BBF85A00399458 /* icons */; };
-		C9D61F5E29BBF85A00399458 /* manifest.opera.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4E29BBF85A00399458 /* manifest.opera.json */; };
-		C9D61F5F29BBF85A00399458 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4F29BBF85A00399458 /* manifest.json */; };
-		C9D61F6029BBF85A00399458 /* site in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F5029BBF85A00399458 /* site */; };
-		C9D61F6129BBF85A00399458 /* Gruntfile.js in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4129BBF85A00399458 /* Gruntfile.js */; };
-		C9D61F6229BBF85A00399458 /* interface in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4229BBF85A00399458 /* interface */; };
-		C9D61F6329BBF85A00399458 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4329BBF85A00399458 /* LICENSE */; };
-		C9D61F6429BBF85A00399458 /* cookie-editor.js in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4429BBF85A00399458 /* cookie-editor.js */; };
-		C9D61F6529BBF85A00399458 /* manifest.firefox.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4529BBF85A00399458 /* manifest.firefox.json */; };
-		C9D61F6629BBF85A00399458 /* manifest.chrome.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4629BBF85A00399458 /* manifest.chrome.json */; };
-		C9D61F6729BBF85A00399458 /* manifest.edge.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4729BBF85A00399458 /* manifest.edge.json */; };
-		C9D61F6829BBF85A00399458 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4829BBF85A00399458 /* README.md */; };
-		C9D61F6929BBF85A00399458 /* build.ps1 in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4929BBF85A00399458 /* build.ps1 */; };
-		C9D61F6A29BBF85A00399458 /* package-lock.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4A29BBF85A00399458 /* package-lock.json */; };
-		C9D61F6B29BBF85A00399458 /* package.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4B29BBF85A00399458 /* package.json */; };
-		C9D61F6C29BBF85A00399458 /* safari in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4C29BBF85A00399458 /* safari */; };
-		C9D61F6D29BBF85A00399458 /* icons in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4D29BBF85A00399458 /* icons */; };
-		C9D61F6E29BBF85A00399458 /* manifest.opera.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4E29BBF85A00399458 /* manifest.opera.json */; };
-		C9D61F6F29BBF85A00399458 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F4F29BBF85A00399458 /* manifest.json */; };
-		C9D61F7029BBF85A00399458 /* site in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F5029BBF85A00399458 /* site */; };
 		C9FE16E12AAFBCD7002A01AE /* screenshot-ios.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C9FE16E02AAFBCD7002A01AE /* screenshot-ios.jpg */; };
 /* End PBXBuildFile section */
 
@@ -107,6 +83,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C9D2F76D2ABFCD74003C6560 /* interface */ = {isa = PBXFileReference; lastKnownFileType = folder; name = interface; path = ../../build/safari/interface; sourceTree = "<group>"; };
+		C9D2F76E2ABFCD74003C6560 /* cookie-editor.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "cookie-editor.js"; path = "../../build/safari/cookie-editor.js"; sourceTree = "<group>"; };
+		C9D2F76F2ABFCD74003C6560 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../build/safari/manifest.json; sourceTree = "<group>"; };
+		C9D2F7702ABFCD74003C6560 /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = icons; path = ../../build/safari/icons; sourceTree = "<group>"; };
+		C9D2F7752ABFCDB0003C6560 /* cookie-editor.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "cookie-editor.js"; path = "../../build/safari/cookie-editor.js"; sourceTree = "<group>"; };
+		C9D2F7762ABFCDB0003C6560 /* interface */ = {isa = PBXFileReference; lastKnownFileType = folder; name = interface; path = ../../build/safari/interface; sourceTree = "<group>"; };
+		C9D2F7772ABFCDB0003C6560 /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = icons; path = ../../build/safari/icons; sourceTree = "<group>"; };
+		C9D2F7782ABFCDB0003C6560 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../build/safari/manifest.json; sourceTree = "<group>"; };
 		C9D61EE629BBF85900399458 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = ../Base.lproj/Main.html; sourceTree = "<group>"; };
 		C9D61EE729BBF85900399458 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		C9D61EE829BBF85900399458 /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
@@ -184,6 +168,14 @@
 		C9D61EDE29BBF85900399458 = {
 			isa = PBXGroup;
 			children = (
+				C9D2F76E2ABFCD74003C6560 /* cookie-editor.js */,
+				C9D2F7702ABFCD74003C6560 /* icons */,
+				C9D2F7772ABFCDB0003C6560 /* icons */,
+				C9D2F76D2ABFCD74003C6560 /* interface */,
+				C9D2F76F2ABFCD74003C6560 /* manifest.json */,
+				C9D2F7752ABFCDB0003C6560 /* cookie-editor.js */,
+				C9D2F7762ABFCDB0003C6560 /* interface */,
+				C9D2F7782ABFCDB0003C6560 /* manifest.json */,
 				C9D61EE329BBF85900399458 /* Shared (App) */,
 				C9D61EEC29BBF85A00399458 /* Shared (Extension) */,
 				C9D61EF429BBF85A00399458 /* iOS (App) */,
@@ -347,6 +339,7 @@
 			buildPhases = (
 				C9D61F0D29BBF85A00399458 /* Sources */,
 				C9D61F0E29BBF85A00399458 /* Frameworks */,
+				C9D2F77E2ABFCF40003C6560 /* ShellScript */,
 				C9D61F0F29BBF85A00399458 /* Resources */,
 			);
 			buildRules = (
@@ -364,6 +357,7 @@
 			buildPhases = (
 				C9D61F1729BBF85A00399458 /* Sources */,
 				C9D61F1829BBF85A00399458 /* Frameworks */,
+				C9D2F77D2ABFCEC2003C6560 /* ShellScript */,
 				C9D61F1929BBF85A00399458 /* Resources */,
 			);
 			buildRules = (
@@ -453,22 +447,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9D61F6329BBF85A00399458 /* LICENSE in Resources */,
-				C9D61F6E29BBF85A00399458 /* manifest.opera.json in Resources */,
-				C9D61F6729BBF85A00399458 /* manifest.edge.json in Resources */,
-				C9D61F6929BBF85A00399458 /* build.ps1 in Resources */,
-				C9D61F6B29BBF85A00399458 /* package.json in Resources */,
-				C9D61F6429BBF85A00399458 /* cookie-editor.js in Resources */,
-				C9D61F6229BBF85A00399458 /* interface in Resources */,
-				C9D61F6F29BBF85A00399458 /* manifest.json in Resources */,
-				C9D61F6529BBF85A00399458 /* manifest.firefox.json in Resources */,
-				C9D61F7029BBF85A00399458 /* site in Resources */,
-				C9D61F6129BBF85A00399458 /* Gruntfile.js in Resources */,
-				C9D61F6C29BBF85A00399458 /* safari in Resources */,
-				C9D61F6A29BBF85A00399458 /* package-lock.json in Resources */,
-				C9D61F6829BBF85A00399458 /* README.md in Resources */,
-				C9D61F6629BBF85A00399458 /* manifest.chrome.json in Resources */,
-				C9D61F6D29BBF85A00399458 /* icons in Resources */,
+				C9D2F7712ABFCD74003C6560 /* interface in Resources */,
+				C9D2F7722ABFCD74003C6560 /* cookie-editor.js in Resources */,
+				C9D2F7732ABFCD74003C6560 /* manifest.json in Resources */,
+				C9D2F7742ABFCD74003C6560 /* icons in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -476,26 +458,51 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9D61F5329BBF85A00399458 /* LICENSE in Resources */,
-				C9D61F5E29BBF85A00399458 /* manifest.opera.json in Resources */,
-				C9D61F5729BBF85A00399458 /* manifest.edge.json in Resources */,
-				C9D61F5929BBF85A00399458 /* build.ps1 in Resources */,
-				C9D61F5B29BBF85A00399458 /* package.json in Resources */,
-				C9D61F5429BBF85A00399458 /* cookie-editor.js in Resources */,
-				C9D61F5229BBF85A00399458 /* interface in Resources */,
-				C9D61F5F29BBF85A00399458 /* manifest.json in Resources */,
-				C9D61F5529BBF85A00399458 /* manifest.firefox.json in Resources */,
-				C9D61F6029BBF85A00399458 /* site in Resources */,
-				C9D61F5129BBF85A00399458 /* Gruntfile.js in Resources */,
-				C9D61F5C29BBF85A00399458 /* safari in Resources */,
-				C9D61F5A29BBF85A00399458 /* package-lock.json in Resources */,
-				C9D61F5829BBF85A00399458 /* README.md in Resources */,
-				C9D61F5629BBF85A00399458 /* manifest.chrome.json in Resources */,
-				C9D61F5D29BBF85A00399458 /* icons in Resources */,
+				C9D2F7792ABFCDB0003C6560 /* cookie-editor.js in Resources */,
+				C9D2F77A2ABFCDB0003C6560 /* interface in Resources */,
+				C9D2F77B2ABFCDB0003C6560 /* icons in Resources */,
+				C9D2F77C2ABFCDB0003C6560 /* manifest.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C9D2F77D2ABFCEC2003C6560 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "grunt\n";
+		};
+		C9D2F77E2ABFCF40003C6560 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "grunt\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C9D61EEE29BBF85A00399458 /* Sources */ = {

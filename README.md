@@ -42,6 +42,10 @@ To submit a feature suggestion or file a bug report, please [create a new issue 
 2. Run the command `grunt`
 3. All the files are in the `dist` directory created
 
+### Note for Safari
+
+Safari needs to be built in Xcode. I have only tested building Cookie-Editor on Xcode 15.
+
 
 ## Disclaimer
 
