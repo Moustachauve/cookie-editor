@@ -42,6 +42,14 @@ module.exports = function (grunt) {
           },
         ],
       },
+      safari: {
+        files: [
+          {
+            src: 'manifest.<%= grunt.task.current.target %>.json',
+            dest: 'manifest.<%= grunt.task.current.target %>.json',
+          },
+        ],
+      },
     },
     eslint: {
       target: ['**.js', 'interface/**/*.js', '!Gruntfile.js'],
@@ -51,6 +59,7 @@ module.exports = function (grunt) {
       chrome: ['build/chrome'],
       edge: ['build/edge'],
       opera: ['build/opera'],
+      safari: ['build/safari'],
     },
     copy: {
       firefox: {
@@ -169,6 +178,35 @@ module.exports = function (grunt) {
           },
         ],
       },
+      safari: {
+        files: [
+          {
+            expand: true,
+            src: ['cookie-editor.js'],
+            dest: 'build/<%= grunt.task.current.target %>/',
+            filter: 'isFile',
+          },
+          {
+            expand: true,
+            src: ['interface/**'],
+            dest: 'build/<%= grunt.task.current.target %>/',
+          },
+          {
+            expand: true,
+            src: ['icons/**'],
+            dest: 'build/<%= grunt.task.current.target %>/',
+          },
+          {
+            expand: true,
+            src: 'manifest.<%= grunt.task.current.target %>.json',
+            dest: 'build/<%= grunt.task.current.target %>/',
+            filter: 'isFile',
+            rename: function (dest, src) {
+              return dest + src.replace('.' + grunt.task.current.target, '');
+            },
+          },
+        ],
+      },
     },
     replace: {
       options: {
@@ -210,6 +248,16 @@ module.exports = function (grunt) {
         ],
       },
       opera: {
+        files: [
+          {
+            expand: true,
+            flatten: true,
+            src: ['interface/lib/env.js'],
+            dest: 'build/<%= grunt.task.current.target %>/interface/lib/',
+          },
+        ],
+      },
+      safari: {
         files: [
           {
             expand: true,

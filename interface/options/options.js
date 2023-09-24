@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     if (!browserDetector.isSafari()) {
       document.getElementById('github-sponsor').classList.remove('hidden');
     }
-
   }
 
   /**
