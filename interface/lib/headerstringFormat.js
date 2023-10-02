@@ -22,8 +22,8 @@ export class HeaderstringFormat {
         continue;
       }
       cookies.push({
-        name: decodeURIComponent(cookieParts[0]),
-        value: decodeURIComponent(cookieParts[1]),
+        name: cookieParts[0],
+        value: cookieParts[1],
       });
     }
 
@@ -46,8 +46,8 @@ export class HeaderstringFormat {
         continue;
       }
       const exportedCookie = cookies[cookieId].cookie;
-      const name = encodeURIComponent(exportedCookie.name);
-      const value = encodeURIComponent(exportedCookie.value);
+      const name = exportedCookie.name;
+      const value = exportedCookie.value;
       exportedCookies.push(`${name}=${value}`);
     }
     return exportedCookies.join(';');
