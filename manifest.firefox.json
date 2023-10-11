@@ -71,6 +71,10 @@
 		"gecko": {
 			"id": "{c3c10168-4186-445c-9c5b-63f12b8e2c87}",
 			"strict_min_version": "112.0"
+		},
+		"gecko_android": {
+			"id": "cookie-editor@cookie-editor.com",
+			"strict_min_version": "112.0"
 		}
 	}
 }
