@@ -1,3 +1,4 @@
+import { Browsers } from '../browsers.js';
 import { ActiveAds } from './activeAds.js';
 
 const secondsInOneDay = Object.freeze(1 * 24 * 60 * 60 * 1000);
@@ -24,7 +25,7 @@ export class AdHandler {
    */
   async isAdValid(selectedAd) {
     if (
-      selectedAd.supportedBrowsers != 'any' &&
+      selectedAd.supportedBrowsers != Browsers.Any &&
       !selectedAd.supportedBrowsers.includes(
         this.browserDetector.getBrowserName(),
       )

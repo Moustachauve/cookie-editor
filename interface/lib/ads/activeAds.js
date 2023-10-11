@@ -22,6 +22,7 @@ export const ActiveAds = Object.freeze([
     startDate: null,
     endDate: null,
   }),
+
   new Ad({
     id: 'tab-for-cause',
     text: 'Get Tab For A Cause: Raise money for charity',
@@ -32,5 +33,41 @@ export const ActiveAds = Object.freeze([
     refreshDays: 80,
     startDate: new Date('2023/09/01'),
     endDate: new Date('2024/09/01'),
+  }),
+
+  new Ad({
+    id: 'moosend',
+    text: 'Turn email into your ally with Moosend’s email marketing tools!',
+    tooltip:
+      'Manage your audience, segment it and use the data you collected to deliver messages that will make them click and convert! Start your journey today.',
+    url: 'https://trymoo.moosend.com/cookie-editor',
+    supportedBrowsers: Browsers.Any,
+    refreshDays: 100,
+    startDate: new Date('2023/11/01'),
+    endDate: new Date('2024/11/01'),
+  }),
+
+  new Ad({
+    id: 'skillshare',
+    text: 'Join Skillshare Today and Get 30% Off Annual Membership.',
+    tooltip:
+      'Get unlimited access to classes on illustration, photography, design, film, music, and more.',
+    url: 'https://skillshare.eqcm.net/da3B7M',
+    supportedBrowsers: Browsers.Any,
+    refreshDays: 90,
+    startDate: new Date('2023/10/21'),
+    endDate: new Date('2024/12/01'),
+  }),
+
+  new Ad({
+    id: 'nordvpn',
+    text: 'With NordVPN, you can browse like no one’s watching — because no one is.',
+    tooltip:
+      'Get NordVPN now to protect yourself online every day, wherever you are. Securely access apps, websites, and entertainment.',
+    url: 'https://go.nordvpn.net/aff_c?offer_id=15&aff_id=93111&url_id=902',
+    supportedBrowsers: Browsers.Any,
+    refreshDays: 105,
+    startDate: new Date('2023/10/01'),
+    endDate: new Date('2024/12/01'),
   }),
 ]);
