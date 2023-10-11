@@ -1,8 +1,6 @@
 import { ActiveAds } from './activeAds.js';
 
-const secondsInOneDay = Object.freeze(
-  new Date().getTime() + 1 * 24 * 60 * 60 * 1000,
-);
+const secondsInOneDay = Object.freeze(1 * 24 * 60 * 60 * 1000);
 
 /**
  * class used to handle all the ad logic.
@@ -44,7 +42,10 @@ export class AdHandler {
 
     // Only show a ad if it has not been dismissed in less than |ad.refreshDays|
     // days
-    if (secondsInOneDay * selectedAd.refreshDays > dismissedAd.date) {
+    if (
+      secondsInOneDay * selectedAd.refreshDays + new Date().getTime() >
+      dismissedAd.date
+    ) {
       console.log('Not showing ad ' + selectedAd.id + ', it was dismissed.');
       return false;
     }
@@ -91,7 +92,7 @@ export class AdHandler {
       return true;
     }
     // Don't show more ad if one was dismissed in less than 24hrs
-    if (secondsInOneDay > lastDismissedAd.date) {
+    if (new Date().getTime() - secondsInOneDay < lastDismissedAd.date) {
       console.log('Not showing ads, one was dismissed recently.');
       return false;
     }
