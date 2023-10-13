@@ -52,7 +52,7 @@ export const ActiveAds = Object.freeze([
     text: 'Join Skillshare Today and Get 30% Off Annual Membership.',
     tooltip:
       'Get unlimited access to classes on illustration, photography, design, film, music, and more.',
-    url: 'https://skillshare.eqcm.net/da3B7M',
+    url: 'https://skillshare.eqcm.net/Mmo4oM',
     supportedBrowsers: Browsers.Any,
     refreshDays: 90,
     startDate: new Date('2023/10/21'),
@@ -68,6 +68,18 @@ export const ActiveAds = Object.freeze([
     supportedBrowsers: Browsers.Any,
     refreshDays: 105,
     startDate: new Date('2023/10/01'),
+    endDate: new Date('2024/12/01'),
+  }),
+
+  new Ad({
+    id: 'aura',
+    text: 'Aura | Intelligent Digital Safety for the Whole Family',
+    tooltip:
+      'Aura protects your identity, finances and sensitive data. All plans include a $1M insurance policy that covers eligible losses. Try Aura 14-days free.',
+    url: 'https://aurainc.sjv.io/c/4869326/1835216/12398',
+    supportedBrowsers: Browsers.Any,
+    refreshDays: 125,
+    startDate: new Date('2023/10/07'),
     endDate: new Date('2024/12/01'),
   }),
 ]);
