@@ -49,6 +49,12 @@ export class PermissionHandler {
     const testPermission = {
       origins: [url],
     };
+    try {
+      const { protocol, hostname } = new URL(url);
+      testPermission.origins = [`${protocol}//${hostname}/*`];
+    } catch (err) {
+      console.error(err);
+    }
 
     // If we don't have access to the permission API, assume we have
     // access. Safari devtools can't access the API.
@@ -70,6 +76,12 @@ export class PermissionHandler {
     const permission = {
       origins: [url],
     };
+    try {
+      const { protocol, hostname } = new URL(url);
+      permission.origins = [`${protocol}//${hostname}/*`];
+    } catch (err) {
+      console.error(err);
+    }
     return this.browserDetector.getApi().permissions.request(permission);
   }
 }
