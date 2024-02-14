@@ -21,6 +21,13 @@ body * {
   text-align: start;
 }
 
+.notransition *, .notransition *::before {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
+}
+
 button::-moz-focus-inner {
   border: 0;
 }

@@ -299,6 +299,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         () => {
           disableButtons = false;
         },
+        optionHandler.getAnimationsEnabled(),
       );
       console.log('after transition');
 
@@ -355,6 +356,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         () => {
           disableButtons = false;
         },
+        optionHandler.getAnimationsEnabled(),
       );
 
       document.getElementById('button-bar-default').classList.remove('active');
@@ -621,6 +623,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
           () => {
             disableButtons = false;
           },
+          optionHandler.getAnimationsEnabled(),
         );
       } else {
         containerCookie.appendChild(cookiesListHtml);
@@ -653,6 +656,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         () => {
           disableButtons = false;
         },
+        optionHandler.getAnimationsEnabled(),
       );
     } else {
       containerCookie.appendChild(html);
@@ -700,6 +704,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         () => {
           disableButtons = false;
         },
+        optionHandler.getAnimationsEnabled(),
       );
     } else {
       containerCookie.appendChild(html);
@@ -763,6 +768,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         () => {
           disableButtons = false;
         },
+        optionHandler.getAnimationsEnabled(),
       );
     } else {
       containerCookie.appendChild(html);
@@ -775,6 +781,17 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   function showVersion() {
     const version = browserDetector.getApi().runtime.getManifest().version;
     document.getElementById('version').textContent = 'v' + version;
+  }
+
+  /**
+   * Enables or disables the animations based on the options.
+   */
+  function handleAnimationsEnabled() {
+    if (optionHandler.getAnimationsEnabled()) {
+      document.body.classList.remove('notransition');
+    } else {
+      document.body.classList.add('notransition');
+    }
   }
 
   /**
@@ -1048,6 +1065,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     await optionHandler.loadOptions();
     themeHandler.updateTheme();
     handleAd();
+    handleAnimationsEnabled();
     optionHandler.on('optionsChanged', onOptionsChanged);
     cookieHandler.on('cookiesChanged', onCookiesChanged);
     cookieHandler.on('ready', showCookiesForTab);
@@ -1312,6 +1330,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * @param {Option} oldOptions the options before changes.
    */
   function onOptionsChanged(oldOptions) {
+    handleAnimationsEnabled();
     if (oldOptions.advancedCookies != optionHandler.getCookieAdvanced()) {
       document.querySelector('#advanced-toggle-all').checked =
         optionHandler.getCookieAdvanced();

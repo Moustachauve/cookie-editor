@@ -43,6 +43,18 @@
       </div>
 
       <div class="input-container">
+        <label for="animations-enabled">Enable Animations</label>
+        <label class="switch">
+          <input type="checkbox" id="animations-enabled" aria-describedby="animations-enabled-hint" />
+          <span class="slider"></span>
+        </label>
+        <div class="hint" id="animations-enabled-hint">
+          When Enabled, Cookie-Editor will show transitions and other various
+          animations in the interface. This is for appearance only.
+        </div>
+      </div>
+
+      <div class="input-container">
         <label for="export-format">Export Format</label>
         <select id="export-format" aria-describedby="export-format-hint">
           <option value="json">JSON</option>
