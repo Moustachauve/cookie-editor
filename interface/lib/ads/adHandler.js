@@ -11,10 +11,12 @@ export class AdHandler {
    * Constructs an AdHandler.
    * @param {BrowserDetector} browserDetector
    * @param {GenericStorageHandler} storageHandler
+   * @param {OptionsHandler} optionHandler
    */
-  constructor(browserDetector, storageHandler) {
+  constructor(browserDetector, storageHandler, optionHandler) {
     this.browserDetector = browserDetector;
     this.storageHandler = storageHandler;
+    this.optionHandler = optionHandler;
   }
 
   /**
@@ -82,6 +84,9 @@ export class AdHandler {
    */
   async canShowAnyAd() {
     if (ActiveAds.length === 0) {
+      return false;
+    }
+    if (!this.optionHandler.getAdsEnabled()) {
       return false;
     }
 

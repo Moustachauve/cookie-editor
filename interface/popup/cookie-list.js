@@ -31,7 +31,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   const storageHandler = new GenericStorageHandler(browserDetector);
   const optionHandler = new OptionsHandler(browserDetector, storageHandler);
   const themeHandler = new ThemeHandler(optionHandler);
-  const adHandler = new AdHandler(browserDetector, storageHandler);
+  const adHandler = new AdHandler(browserDetector, storageHandler, optionHandler);
   const cookieHandler = window.isDevtools
     ? new CookieHandlerDevtools(browserDetector)
     : new CookieHandlerPopup(browserDetector);
