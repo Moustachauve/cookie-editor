@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   const exportFormatInput = document.getElementById('export-format');
   const extraInfoInput = document.getElementById('extra-info');
   const themeInput = document.getElementById('theme');
+  const adsEnabledInput = document.getElementById('ads-enabled');
 
   await optionHandler.loadOptions();
   themeHandler.updateTheme();
@@ -37,9 +38,12 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     exportFormatInput.value = optionHandler.getExportFormat();
     extraInfoInput.value = optionHandler.getExtraInfo();
     themeInput.value = optionHandler.getTheme();
+    adsEnabledInput.checked = optionHandler.getAdsEnabled();
 
     if (!browserDetector.isSafari()) {
-      document.getElementById('github-sponsor').classList.remove('hidden');
+      document
+        .querySelectorAll('.github-sponsor')
+        .forEach((el) => el.classList.remove('hidden'));
     }
   }
 
@@ -77,6 +81,12 @@ document.addEventListener('DOMContentLoaded', async (event) => {
       }
       optionHandler.setTheme(themeInput.value);
       themeHandler.updateTheme();
+    });
+    adsEnabledInput.addEventListener('change', (event) => {
+      if (!event.isTrusted) {
+        return;
+      }
+      optionHandler.setAdsEnabled(adsEnabledInput.checked);
     });
 
     document
