@@ -12,6 +12,7 @@ export class Options {
   constructor() {
     this.advancedCookies = false;
     this.devtoolsEnabled = true;
+    this.animationsEnabled = true;
     this.exportFormat = ExportFormats.Ask;
     this.extraInfo = ExtraInfos.Nothing;
     this.theme = Themes.Auto;
