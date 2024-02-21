@@ -68,6 +68,25 @@ export class OptionsHandler extends EventEmitter {
   }
 
   /**
+   * Gets whether the animations are enabled or not.
+   * @return {boolean} True if the animations are enabled, otherwise false.
+   */
+  getAnimationsEnabled() {
+    // Uses `!==` false in order to be opt-in by default, since it was added at
+    // a later time.
+    return this.options.animationsEnabled !== false;
+  }
+  /**
+   * Sets whether the animations are enabled or not.
+   * @param {boolean} animationsEnabled True if the animations are enabled,
+   *     otherwise false.
+   */
+  setAnimationsEnabled(animationsEnabled) {
+    this.options.animationsEnabled = animationsEnabled;
+    this.saveOptions();
+  }
+
+  /**
    * Gets the export format used by the export button.
    * @return {ExportFormats} One of the supported export format.
    */
@@ -207,7 +226,9 @@ export class OptionsHandler extends EventEmitter {
    * @return {boolean} True if ads are enabled, otherwise false.
    */
   getAdsEnabled() {
-    return this.options.adsEnabled;
+    // Uses `!==` false in order to be opt-in by default, since it was added at
+    // a later time.
+    return this.options.adsEnabled !== false;
   }
   /**
    * Sets whether the ads are enabled or not.

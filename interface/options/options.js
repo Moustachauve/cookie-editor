@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
   const permissionHandler = new PermissionHandler(browserDetector);
   const advancedCookieInput = document.getElementById('advanced-cookie');
   const showDevtoolsInput = document.getElementById('devtool-show');
+  const animationsEnabledInput = document.getElementById('animations-enabled');
   const exportFormatInput = document.getElementById('export-format');
   const extraInfoInput = document.getElementById('extra-info');
   const themeInput = document.getElementById('theme');
@@ -33,8 +34,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
    */
   function setFormValues() {
     console.log('Setting up the form');
+    handleAnimationsEnabled();
     advancedCookieInput.checked = optionHandler.getCookieAdvanced();
     showDevtoolsInput.checked = optionHandler.getDevtoolsEnabled();
+    animationsEnabledInput.checked = optionHandler.getAnimationsEnabled();
     exportFormatInput.value = optionHandler.getExportFormat();
     extraInfoInput.value = optionHandler.getExtraInfo();
     themeInput.value = optionHandler.getTheme();
@@ -62,6 +65,13 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         return;
       }
       optionHandler.setDevtoolsEnabled(showDevtoolsInput.checked);
+    });
+    animationsEnabledInput.addEventListener('change', (event) => {
+      if (!event.isTrusted) {
+        return;
+      }
+      optionHandler.setAnimationsEnabled(animationsEnabledInput.checked);
+      handleAnimationsEnabled();
     });
     exportFormatInput.addEventListener('change', (event) => {
       if (!event.isTrusted) {
@@ -190,5 +200,16 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     // TODO: switch to clipboard API.
     document.execCommand('Copy');
     document.body.removeChild(fakeText);
+  }
+
+  /**
+   * Enables or disables the animations based on the options.
+   */
+  function handleAnimationsEnabled() {
+    if (optionHandler.getAnimationsEnabled()) {
+      document.body.classList.remove('notransition');
+    } else {
+      document.body.classList.add('notransition');
+    }
   }
 });

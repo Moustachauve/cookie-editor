@@ -110,6 +110,7 @@ export class Animate {
    * @param {Element} newPage Page that will be inserted in the container.
    * @param {string} direction Which direction to slide the old page towards.
    * @param {function} callback Called after the animation is done.
+   * @param {boolean} animationsEnabled If the animations are enabled or not.
    */
   static transitionPage(
     container,
@@ -117,7 +118,16 @@ export class Animate {
     newPage,
     direction = 'left',
     callback = null,
+    animationsEnabled = true,
   ) {
+    if (!animationsEnabled) {
+      if (oldPage) {
+        oldPage.remove();
+      }
+      container.appendChild(newPage);
+      callback();
+      return;
+    }
     const animationTime = '0.3s';
 
     container.addEventListener(
