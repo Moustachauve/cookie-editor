@@ -1064,6 +1064,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   async function initWindow(_tab) {
     await optionHandler.loadOptions();
     themeHandler.updateTheme();
+    moveButtonBar();
     handleAd();
     handleAnimationsEnabled();
     optionHandler.on('optionsChanged', onOptionsChanged);
@@ -1331,6 +1332,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    */
   function onOptionsChanged(oldOptions) {
     handleAnimationsEnabled();
+    moveButtonBar();
     if (oldOptions.advancedCookies != optionHandler.getCookieAdvanced()) {
       document.querySelector('#advanced-toggle-all').checked =
         optionHandler.getCookieAdvanced();
@@ -1340,5 +1342,22 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     if (oldOptions.extraInfo != optionHandler.getExtraInfo()) {
       showCookiesForTab();
     }
+  }
+
+  /**
+   * Moves the button bar to the top or bottom depending on the user preference
+   */
+  function moveButtonBar() {
+    const siblingElement = optionHandler.getButtonBarTop()
+      ? document.getElementById('pageTitle').nextSibling
+      : document.body.lastChild;
+    document.querySelectorAll('.button-bar').forEach((bar) => {
+      siblingElement.parentNode.insertBefore(bar, siblingElement);
+      if (optionHandler.getButtonBarTop()) {
+        document.body.classList.add('button-bar-top');
+      } else {
+        document.body.classList.remove('button-bar-top');
+      }
+    });
   }
 })();

@@ -16,6 +16,7 @@ export class Options {
     this.exportFormat = ExportFormats.Ask;
     this.extraInfo = ExtraInfos.Nothing;
     this.theme = Themes.Auto;
+    this.buttonBarTop = false;
     this.adsEnabled = true;
   }
 }
