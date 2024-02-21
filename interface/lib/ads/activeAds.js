@@ -32,6 +32,18 @@ export const ActiveAds = Object.freeze([
     supportedBrowsers: [Browsers.Chrome, Browsers.Edge, Browsers.Safari],
     refreshDays: 90,
     startDate: new Date('2023/09/01'),
+    endDate: new Date('2024/02/29'),
+  }),
+
+  new Ad({
+    id: 'tab-for-cause2',
+    text: 'Have 47+ tabs open? Try Tab for a Cause to raise money for non-profits',
+    tooltip:
+      "Raise money for charity every time you open a new browser tab. It's free and incredibly easy. Transform your tabs into a force for good in 30 seconds.",
+    url: 'https://tab.gladly.io/cookieeditor/',
+    supportedBrowsers: [Browsers.Chrome, Browsers.Edge, Browsers.Safari],
+    refreshDays: 90,
+    startDate: new Date('2023/04/01'),
     endDate: new Date('2025/09/01'),
   }),
 
@@ -55,7 +67,19 @@ export const ActiveAds = Object.freeze([
     supportedBrowsers: Browsers.Any,
     refreshDays: 120,
     startDate: new Date('2023/11/15'),
-    endDate: new Date('2024/12/01'),
+    endDate: new Date('2024/03/15'),
+  }),
+
+  new Ad({
+    id: 'nordvpn-deal',
+    text: "Don't miss a chance and grab a limited NordVPN deal!",
+    tooltip:
+      'Get NordVPN now to protect yourself online every day, wherever you are. Securely access apps, websites, and entertainment.',
+    url: 'https://go.nordvpn.net/aff_c?offer_id=15&aff_id=93111&url_id=902',
+    supportedBrowsers: Browsers.Any,
+    refreshDays: 120,
+    startDate: new Date('2024/03/16'),
+    endDate: new Date('2024/12/31'),
   }),
 
   new Ad({
@@ -79,6 +103,18 @@ export const ActiveAds = Object.freeze([
     supportedBrowsers: Browsers.Any,
     refreshDays: 140,
     startDate: new Date('2023/10/07'),
+    endDate: new Date('2024/12/01'),
+  }),
+
+  new Ad({
+    id: 'incogni-code',
+    text: 'Incogni | Want to stop robocalls and spam emails today?',
+    tooltip:
+      'Thousands of companies are collecting, aggregating, and trading your personal data without you knowing anything about it. Incogni makes them remove it so your data stays secure and private.',
+    url: 'https://get.incogni.io/aff_c?offer_id=1150&aff_id=25909',
+    supportedBrowsers: Browsers.Any,
+    refreshDays: 140,
+    startDate: new Date('2024/03/07'),
     endDate: new Date('2024/12/01'),
   }),
 
