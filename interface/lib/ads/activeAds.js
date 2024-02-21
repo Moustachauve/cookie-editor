@@ -30,33 +30,32 @@ export const ActiveAds = Object.freeze([
       "Raise money for charity every time you open a new browser tab. It's free and incredibly easy. Transform your tabs into a force for good in 30 seconds.",
     url: 'https://tab.gladly.io/cookieeditor/',
     supportedBrowsers: [Browsers.Chrome, Browsers.Edge, Browsers.Safari],
-    refreshDays: 80,
+    refreshDays: 90,
     startDate: new Date('2023/09/01'),
-    endDate: new Date('2024/09/01'),
+    endDate: new Date('2024/02/29'),
   }),
 
   new Ad({
-    id: 'moosend',
-    text: 'Turn email into your ally with Moosend’s email marketing tools!',
+    id: 'tab-for-cause2',
+    text: 'Have 47+ tabs open? Try Tab for a Cause to raise money for non-profits',
     tooltip:
-      'Manage your audience, segment it and use the data you collected to deliver messages that will make them click and convert! Start your journey today.',
-    url: 'https://trymoo.moosend.com/cookie-editor',
-    supportedBrowsers: Browsers.Any,
-    refreshDays: 100,
-    startDate: new Date('2023/11/01'),
-    endDate: new Date('2024/11/01'),
+      "Raise money for charity every time you open a new browser tab. It's free and incredibly easy. Transform your tabs into a force for good in 30 seconds.",
+    url: 'https://tab.gladly.io/cookieeditor/',
+    supportedBrowsers: [Browsers.Chrome, Browsers.Edge, Browsers.Safari],
+    refreshDays: 90,
+    startDate: new Date('2023/04/01'),
+    endDate: new Date('2025/09/01'),
   }),
 
   new Ad({
     id: 'skillshare',
-    text: 'Join Skillshare Today and Get 30% Off Annual Membership.',
-    tooltip:
-      'Get unlimited access to classes on illustration, photography, design, film, music, and more.',
+    text: 'Skillshare | Explore your creativity with thousands of hands‑on classes.',
+    tooltip: 'Join Skillshare Today and Get 30% Off Annual Membership.',
     url: 'https://skillshare.eqcm.net/Mmo4oM',
     supportedBrowsers: Browsers.Any,
-    refreshDays: 90,
+    refreshDays: 110,
     startDate: new Date('2023/10/21'),
-    endDate: new Date('2024/12/01'),
+    endDate: new Date('2025/05/01'),
   }),
 
   new Ad({
@@ -66,33 +65,33 @@ export const ActiveAds = Object.freeze([
       'Get NordVPN now to protect yourself online every day, wherever you are. Securely access apps, websites, and entertainment.',
     url: 'https://go.nordvpn.net/aff_c?offer_id=15&aff_id=93111&url_id=902',
     supportedBrowsers: Browsers.Any,
-    refreshDays: 105,
+    refreshDays: 120,
     startDate: new Date('2023/11/15'),
-    endDate: new Date('2024/12/01'),
+    endDate: new Date('2024/03/15'),
   }),
 
   new Ad({
     id: 'nordvpn-deal',
-    text: 'Get 65% off the 2-year NordVPN plan + 3 months extra.',
+    text: "Don't miss a chance and grab a limited NordVPN deal!",
     tooltip:
-      'Stay safer online with the leading VPN service. Detect malware during download. Block trackers and intrusive ads.',
+      'Get NordVPN now to protect yourself online every day, wherever you are. Securely access apps, websites, and entertainment.',
     url: 'https://go.nordvpn.net/aff_c?offer_id=15&aff_id=93111&url_id=902',
     supportedBrowsers: Browsers.Any,
-    refreshDays: 105,
-    startDate: new Date('2023/10/01'),
-    endDate: new Date('2023/11/14'),
+    refreshDays: 120,
+    startDate: new Date('2024/03/16'),
+    endDate: new Date('2024/12/31'),
   }),
 
   new Ad({
     id: 'aura',
-    text: 'Aura | Intelligent Digital Safety for the Whole Family',
+    text: 'Aura | #1 Rated Identity Theft Protection - Try Aura 14-days free.',
     tooltip:
-      'Aura protects your identity, finances and sensitive data. All plans include a $1M insurance policy that covers eligible losses. Try Aura 14-days free.',
+      'Aura protects your identity, finances and sensitive data. All plans include a $1M insurance policy that covers eligible losses.',
     url: 'https://aurainc.sjv.io/c/4869326/1835216/12398',
     supportedBrowsers: Browsers.Any,
-    refreshDays: 125,
+    refreshDays: 130,
     startDate: new Date('2023/10/07'),
-    endDate: new Date('2024/12/01'),
+    endDate: new Date('2025/02/01'),
   }),
 
   new Ad({
@@ -102,8 +101,42 @@ export const ActiveAds = Object.freeze([
       'Thousands of companies are collecting, aggregating, and trading your personal data without you knowing anything about it. Incogni makes them remove it so your data stays secure and private.',
     url: 'https://get.incogni.io/aff_c?offer_id=1150&aff_id=25909',
     supportedBrowsers: Browsers.Any,
-    refreshDays: 125,
+    refreshDays: 140,
     startDate: new Date('2023/10/07'),
     endDate: new Date('2024/12/01'),
+  }),
+
+  new Ad({
+    id: 'incogni-code',
+    text: 'Incogni | Want to stop robocalls and spam emails today?',
+    tooltip:
+      'Thousands of companies are collecting, aggregating, and trading your personal data without you knowing anything about it. Incogni makes them remove it so your data stays secure and private.',
+    url: 'https://get.incogni.io/aff_c?offer_id=1150&aff_id=25909',
+    supportedBrowsers: Browsers.Any,
+    refreshDays: 140,
+    startDate: new Date('2024/03/07'),
+    endDate: new Date('2024/12/01'),
+  }),
+
+  new Ad({
+    id: 'namecheap',
+    text: 'Namecheap | Get a .COM for just $5.98!',
+    tooltip: 'All domains for great prices. Prices are succeptible to change.',
+    url: 'https://namecheap.pxf.io/zNkAPe',
+    supportedBrowsers: Browsers.Any,
+    refreshDays: 130,
+    startDate: new Date('2024/03/14'),
+    endDate: new Date('2025/03/14'),
+  }),
+
+  new Ad({
+    id: 'curiosity-box',
+    text: 'Try the Curiosity Box by VSauce and get a FREE Lightyear Bottle!',
+    tooltip: "The world's best science toys by science legend, VSauce.",
+    url: 'https://the-curiosity-box.pxf.io/DKrYOo',
+    supportedBrowsers: Browsers.Any,
+    refreshDays: 100,
+    startDate: new Date('2024/03/14'),
+    endDate: new Date('2025/03/14'),
   }),
 ]);

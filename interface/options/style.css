@@ -54,6 +54,7 @@ a:hover {
 
 .input-container {
   min-height: 2em;
+  margin-top: 5px;
 }
 
 .input-container input,
@@ -101,7 +102,7 @@ a:hover {
   color: var(--secondary-text-color);
   font-size: 0.8em;
   padding: 1em;
-  padding-top: 2px;
+  padding-top: 4px;
 }
 
 .notice {

@@ -521,6 +521,12 @@ label {
   user-select: none;
   overflow: hidden;
 }
+
+.button-bar-top .panel-section-footer {
+  border-top: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
 .panel-section-footer-button {
   flex: 1 1;
   font-size: 18px;
@@ -562,6 +568,10 @@ label {
   transition: opacity 150ms ease-in 0s;
   pointer-events: none;
   padding: 0 25px;
+}
+
+.button-bar-top #notification-container {
+  bottom: 30px;
 }
 
 #notification {
@@ -758,6 +768,17 @@ label {
   border-top: solid 10px var(--menu-surface-color);
   border-left: solid 15px transparent;
   border-right: solid 15px transparent;
+}
+
+.button-bar-top #export-menu {
+  top: 142px;
+  bottom: auto;
+}
+.button-bar-top #export-menu:after {
+  top: auto;
+  bottom: 100%;
+  border-top: none;
+  border-bottom: solid 10px var(--menu-surface-color);
 }
 
 #export-menu button {
