@@ -51,7 +51,11 @@ export class PermissionHandler {
     };
     try {
       const { protocol, hostname } = new URL(url);
-      testPermission.origins = [`${protocol}//${hostname}/*`];
+      const rootDomain = this.getRootDomainName(hostname);
+      testPermission.origins = [
+        `${protocol}//${hostname}/*`,
+        `${protocol}//*.${rootDomain}/*`,
+      ];
     } catch (err) {
       console.error(err);
     }
@@ -78,10 +82,31 @@ export class PermissionHandler {
     };
     try {
       const { protocol, hostname } = new URL(url);
-      permission.origins = [`${protocol}//${hostname}/*`];
+      const rootDomain = this.getRootDomainName(hostname);
+      permission.origins = [
+        `${protocol}//${hostname}/*`,
+        `${protocol}//*.${rootDomain}/*`,
+      ];
     } catch (err) {
       console.error(err);
     }
     return this.browserDetector.getApi().permissions.request(permission);
+  }
+
+  /**
+   * Gets the root domain of an URL
+   * @param {string} domain
+   * @return {string}
+   */
+  getRootDomainName(domain) {
+    const parts = domain.split('.').reverse();
+    const cnt = parts.length;
+    if (cnt >= 3) {
+      // see if the second level domain is a common SLD.
+      if (parts[1].match(/^(com|edu|gov|net|mil|org|nom|co|name|info|biz)$/i)) {
+        return parts[2] + '.' + parts[1] + '.' + parts[0];
+      }
+    }
+    return parts[1] + '.' + parts[0];
   }
 }
