@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Cookie-Editor",
-	"version": "1.12.2",
+	"version": "1.13.0",
 	"author": "Moustachauve",
 	"description": "Simple yet powerful Cookie Editor that allow you to quickly create, edit and delete cookies without leaving your tab.",
 	"background": {
