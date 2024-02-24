@@ -4,7 +4,5 @@
 <dict>
 	<key>SFSafariWebExtensionConverterVersion</key>
 	<string>14.2</string>
-	<key>LSApplicationCategoryType</key>
-	<string>public.app-category.developer-tools</string>
 </dict>
 </plist>
