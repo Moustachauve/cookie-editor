@@ -199,15 +199,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
    * @param {string} text Text to copy.
    */
   function copyText(text) {
-    const fakeText = document.createElement('textarea');
-    fakeText.classList.add('clipboardCopier');
-    fakeText.textContent = text;
-    document.body.appendChild(fakeText);
-    fakeText.focus();
-    fakeText.select();
-    // TODO: switch to clipboard API.
-    document.execCommand('Copy');
-    document.body.removeChild(fakeText);
+    navigator.clipboard.writeText(text);
   }
 
   /**
