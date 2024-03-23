@@ -639,6 +639,12 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     if (disableButtons) {
       return;
     }
+    // If on a different page (e.g: import page) - don't show the no-cookies message.
+    const pageTitle =
+      pageTitleContainer?.querySelector('h1')?.textContent ?? '';
+    if (pageTitle !== 'Cookie-Editor') {
+      return;
+    }
     cookiesListHtml = null;
     const html = document
       .importNode(document.getElementById('tmp-empty').content, true)
