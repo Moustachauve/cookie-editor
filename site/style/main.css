@@ -360,11 +360,29 @@ header .btn-cta {
   font-weight: 700;
 }
 
-.ad {
+.ad-container {
+  display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: baseline;
+	align-content: flex-start;
+  gap: 50px
+}
+
+.ad { 
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
+  margin-top: 40px;
+  max-width: 560px;
+  flex: 1;
+}
+
+.ad p {
+  line-height: 1.2em;
+  font-size: 0.95em;
+  padding: 5px 0;
 }
 
 .ad > img {
@@ -373,6 +391,12 @@ header .btn-cta {
 
 .ad .btn-cta {
   margin-top: 5px;
+}
+
+.ad .ad-disclaimer {
+  display: inline-block;
+  margin-left: 10px;
+  color: #CACACA
 }
 
 #contribution {
