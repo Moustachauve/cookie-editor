@@ -16,14 +16,14 @@ export class HeaderstringFormat {
       if (!rawCookie.length) {
         continue;
       }
-      const cookieParts = rawCookie.split('=');
-      if (cookieParts.length != 2) {
+      const eqPos = rawCookie.indexOf('=');
+      if (eqPos === -1) {
         console.log('invalid cookie: ', rawCookie);
         continue;
       }
       cookies.push({
-        name: cookieParts[0],
-        value: cookieParts[1],
+        name: rawCookie.substring(0, eqPos),
+        value: rawCookie.substring(eqPos + 1),
       });
     }
 
