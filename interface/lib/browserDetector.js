@@ -104,7 +104,11 @@ export class BrowserDetector {
   getBrowserName() {
     return Env.browserName;
   }
-
+  
+  /**
+   * Overrides the detected browser name.
+   * @param {string} browserName The new browser name to set.
+   */
   overrideBrowserName(browserName) {
     Env.browserName = browserName;
   }
