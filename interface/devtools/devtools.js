@@ -22,7 +22,7 @@ import { OptionsHandler } from '../lib/optionsHandler.js';
         'Cookie-Editor',
         '/icons/cookie-filled-small.svg',
         '/interface/devtools/cookie-list.html',
-        function (panel) {},
+        function (panel) {}
       );
   }
 

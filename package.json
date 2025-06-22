@@ -23,5 +23,9 @@
     "prettier": "^3.5.3",
     "prettier-eslint": "^16.4.2",
     "prettier-plugin-organize-imports": "^4.1.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix --ext .js,.jsx ."
   }
 }

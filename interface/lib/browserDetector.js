@@ -32,7 +32,7 @@ export class BrowserDetector {
     if (Env.browserName === '@@browser_name') {
       Env.browserName = Browsers.Chrome;
       console.warn(
-        'undefined browser name, using ' + Env.browserName + ' as fallback',
+        'undefined browser name, using ' + Env.browserName + ' as fallback'
       );
     }
 
