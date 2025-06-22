@@ -25,7 +25,7 @@ export class GenericStorageHandler extends EventEmitter {
       promise = this.browserDetector.getApi().storage.local.get([key]);
     } else {
       promise = new Promise((resolve, reject) => {
-        self.browserDetector.getApi().storage.local.get([key], (data) => {
+        self.browserDetector.getApi().storage.local.get([key], data => {
           const error = self.browserDetector.getApi().runtime.lastError;
           if (error) {
             reject(error);
@@ -35,7 +35,7 @@ export class GenericStorageHandler extends EventEmitter {
       });
     }
 
-    return promise.then((data) => {
+    return promise.then(data => {
       return data[key] ?? null;
     });
   }

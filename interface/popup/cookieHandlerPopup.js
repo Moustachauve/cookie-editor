@@ -31,7 +31,7 @@ export class CookieHandlerPopup extends GenericCookieHandler {
    * current tab.
    * @param {*} tabInfo Info about the current tab.
    */
-  init = (tabInfo) => {
+  init = tabInfo => {
     this.currentTabId = tabInfo[0].id;
     this.currentTab = tabInfo[0];
     const api = this.browserDetector.getApi();
@@ -50,7 +50,7 @@ export class CookieHandlerPopup extends GenericCookieHandler {
    * @param {object} changeInfo An object containing details of the change that
    *     occurred.
    */
-  onCookiesChanged = (changeInfo) => {
+  onCookiesChanged = changeInfo => {
     const domain = changeInfo.cookie.domain.substring(1);
     if (
       this.currentTab.url.indexOf(domain) !== -1 &&
@@ -82,7 +82,7 @@ export class CookieHandlerPopup extends GenericCookieHandler {
           .getApi()
           .tabs.query(
             { active: true, currentWindow: true },
-            this.updateCurrentTab,
+            this.updateCurrentTab
           );
       }
     }
@@ -92,7 +92,7 @@ export class CookieHandlerPopup extends GenericCookieHandler {
    * Event handler for when a tab is being activated.
    * @param {object} activeInfo Info about the event.
    */
-  onTabActivated = (activeInfo) => {
+  onTabActivated = activeInfo => {
     if (this.browserDetector.supportsPromises()) {
       this.browserDetector
         .getApi()
@@ -103,7 +103,7 @@ export class CookieHandlerPopup extends GenericCookieHandler {
         .getApi()
         .tabs.query(
           { active: true, currentWindow: true },
-          this.updateCurrentTab,
+          this.updateCurrentTab
         );
     }
   };
@@ -112,7 +112,7 @@ export class CookieHandlerPopup extends GenericCookieHandler {
    * Emits a signal that the current tab changed if needed.
    * @param {object} tabInfo Info about the new current tab.
    */
-  updateCurrentTab = (tabInfo) => {
+  updateCurrentTab = tabInfo => {
     const newTab =
       tabInfo[0].id !== this.currentTabId ||
       tabInfo[0].url !== this.currentTab.url;

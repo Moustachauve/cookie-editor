@@ -36,7 +36,7 @@ export class GenericCookieHandler extends EventEmitter {
           url: this.currentTab.url,
           storeId: this.currentTab.cookieStoreId,
         },
-        callback,
+        callback
       );
     }
   }
@@ -106,15 +106,15 @@ export class GenericCookieHandler extends EventEmitter {
               callback(null, cookie);
             }
           },
-          (error) => {
+          error => {
             console.error('Failed to create cookie', error);
             if (callback) {
               callback(error.message, null);
             }
-          },
+          }
         );
     } else {
-      this.browserDetector.getApi().cookies.set(cookie, (cookieResponse) => {
+      this.browserDetector.getApi().cookies.set(cookie, cookieResponse => {
         const error = this.browserDetector.getApi().runtime.lastError;
         if (!cookieResponse || error) {
           console.error('Failed to create cookie', error);
@@ -145,7 +145,7 @@ export class GenericCookieHandler extends EventEmitter {
     // to be able to delete it.
     // TODO: Check if this hack is needed on devtools.
     if (this.browserDetector.isSafari() && !isRecursive) {
-      this.getAllCookies((cookies) => {
+      this.getAllCookies(cookies => {
         for (const cookie of cookies) {
           if (cookie.name === name) {
             this.removeCookie(name, 'http://' + cookie.domain, callback, true);
@@ -173,7 +173,7 @@ export class GenericCookieHandler extends EventEmitter {
           url: url,
           storeId: this.currentTab.cookieStoreId,
         },
-        (cookieResponse) => {
+        cookieResponse => {
           const error = this.browserDetector.getApi().runtime.lastError;
           if (!cookieResponse || error) {
             console.error('Failed to remove cookie', error);
@@ -188,7 +188,7 @@ export class GenericCookieHandler extends EventEmitter {
           if (callback) {
             return callback(null, cookieResponse);
           }
-        },
+        }
       );
     }
   }

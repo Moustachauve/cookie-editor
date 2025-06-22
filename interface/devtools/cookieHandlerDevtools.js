@@ -48,7 +48,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
         url: this.currentTab.url,
         storeId: this.currentTab.cookieStoreId,
       },
-      callback,
+      callback
     );
   }
 
@@ -63,7 +63,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
     this.sendMessage(
       'saveCookie',
       { cookie: this.prepareCookie(cookie, url) },
-      callback,
+      callback
     );
   }
 
@@ -81,7 +81,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
         url: url,
         storeId: this.currentTab.cookieStoreId,
       },
-      callback,
+      callback
     );
   }
 
@@ -89,10 +89,10 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * Handles the reception of messages from the background script.
    * @param {object} request
    */
-  onMessage = (request) => {
+  onMessage = request => {
     console.log(
       '[cookieHandler] background message received: ' +
-        (request.type || 'unknown'),
+        (request.type || 'unknown')
     );
     switch (request.type) {
       case 'cookiesChanged':
@@ -110,7 +110,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * @param {object} changeInfo An object containing details of the change that
    *     occurred.
    */
-  onCookiesChanged = (changeInfo) => {
+  onCookiesChanged = changeInfo => {
     const domain = changeInfo.cookie.domain.substring(1);
     if (this.currentTab.url.indexOf(domain) !== -1) {
       this.emit('cookiesChanged', changeInfo);
@@ -121,7 +121,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * Handles the event that is fired when a tab is updated.
    * @param {object} changeInfo Properties of the tab that changed.
    */
-  onTabsChanged = (changeInfo) => {
+  onTabsChanged = changeInfo => {
     console.log('devtools: tab changed', changeInfo);
     if (changeInfo.url || changeInfo.status === 'complete') {
       console.log('tabChanged!');
@@ -133,7 +133,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * Retrieves the informations of the current tab from the background script.
    * @param {*} callback
    */
-  updateCurrentTab = (callback) => {
+  updateCurrentTab = callback => {
     const self = this;
     this.sendMessage(
       'getCurrentTab',
@@ -153,7 +153,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
       },
       function (e) {
         console.log('failed to update current tab', e);
-      },
+      }
     );
   };
 

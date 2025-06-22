@@ -34,7 +34,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   const adHandler = new AdHandler(
     browserDetector,
     storageHandler,
-    optionHandler,
+    optionHandler
   );
   const cookieHandler = window.isDevtools
     ? new CookieHandlerDevtools(browserDetector)
@@ -117,7 +117,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         hostOnly,
         session,
         secure,
-        httpOnly,
+        httpOnly
       );
 
       if (form.classList.contains('create')) {
@@ -152,7 +152,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       hostOnly,
       session,
       secure,
-      httpOnly,
+      httpOnly
     ) {
       console.log('saving cookie...');
 
@@ -222,7 +222,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
               if (cookieContainer) {
                 cookieContainer.showSuccessAnimation();
               }
-            },
+            }
           );
         });
       } else {
@@ -242,13 +242,13 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
             if (cookieContainer) {
               cookieContainer.showSuccessAnimation();
             }
-          },
+          }
         );
       }
     }
 
     if (containerCookie) {
-      containerCookie.addEventListener('click', (e) => {
+      containerCookie.addEventListener('click', e => {
         let target = e.target;
         if (target.nodeName === 'path') {
           target = target.parentNode;
@@ -271,7 +271,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
           return saveCookieForm(e.target.closest('li').querySelector('form'));
         }
       });
-      document.addEventListener('keydown', (e) => {
+      document.addEventListener('keydown', e => {
         if (e.code === 'Space' || e.code === 'Enter') {
           const target = e.target;
           if (target.classList.contains('header')) {
@@ -299,7 +299,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         () => {
           disableButtons = false;
         },
-        optionHandler.getAnimationsEnabled(),
+        optionHandler.getAnimationsEnabled()
       );
       console.log('after transition');
 
@@ -356,7 +356,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         () => {
           disableButtons = false;
         },
-        optionHandler.getAnimationsEnabled(),
+        optionHandler.getAnimationsEnabled()
       );
 
       document.getElementById('button-bar-default').classList.remove('active');
@@ -375,7 +375,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         showCookiesForTab();
       });
 
-    containerCookie.addEventListener('submit', (e) => {
+    containerCookie.addEventListener('submit', e => {
       e.preventDefault();
       saveCookieForm(e.target);
       return false;
@@ -389,7 +389,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
 
     document
       .getElementById('save-import-cookie')
-      .addEventListener('click', (e) => {
+      .addEventListener('click', e => {
         const buttonIcon = document
           .getElementById('save-import-cookie')
           .querySelector('use');
@@ -421,7 +421,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
               setTimeout(() => {
                 buttonIcon.setAttribute(
                   'href',
-                  '../sprites/solid.svg#file-import',
+                  '../sprites/solid.svg#file-import'
                 );
               }, 1500);
               return;
@@ -457,7 +457,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
                 if (error) {
                   sendNotification(error);
                 }
-              },
+              }
             );
           } catch (error) {
             console.error(error);
@@ -520,12 +520,12 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
           window.open(
             browserDetector
               .getApi()
-              .runtime.getURL('interface/options/options.html'),
+              .runtime.getURL('interface/options/options.html')
           );
         }
       });
 
-    notificationElement.addEventListener('animationend', (e) => {
+    notificationElement.addEventListener('animationend', e => {
       if (notificationElement.classList.contains('fadeInUp')) {
         return;
       }
@@ -535,7 +535,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
 
     document
       .getElementById('notification-dismiss')
-      .addEventListener('click', (e) => {
+      .addEventListener('click', e => {
         hideNotification();
       });
 
@@ -588,7 +588,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       return;
     }
     const hasPermissions = await permissionHandler.checkPermissions(
-      cookieHandler.currentTab.url,
+      cookieHandler.currentTab.url
     );
     if (!hasPermissions) {
       showNoPermission();
@@ -623,7 +623,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
           () => {
             disableButtons = false;
           },
-          optionHandler.getAnimationsEnabled(),
+          optionHandler.getAnimationsEnabled()
         );
       } else {
         containerCookie.appendChild(cookiesListHtml);
@@ -662,7 +662,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         () => {
           disableButtons = false;
         },
-        optionHandler.getAnimationsEnabled(),
+        optionHandler.getAnimationsEnabled()
       );
     } else {
       containerCookie.appendChild(html);
@@ -710,7 +710,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         () => {
           disableButtons = false;
         },
-        optionHandler.getAnimationsEnabled(),
+        optionHandler.getAnimationsEnabled()
       );
     } else {
       containerCookie.appendChild(html);
@@ -718,10 +718,10 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     document.getElementById('request-permission').focus();
     document
       .getElementById('request-permission')
-      .addEventListener('click', async (event) => {
+      .addEventListener('click', async event => {
         console.log('requesting permissions!');
         const isPermissionGranted = await permissionHandler.requestPermission(
-          cookieHandler.currentTab.url,
+          cookieHandler.currentTab.url
         );
         console.log('permission granted? ', isPermissionGranted);
         if (isPermissionGranted) {
@@ -730,7 +730,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       });
     document
       .getElementById('request-permission-all')
-      .addEventListener('click', async (event) => {
+      .addEventListener('click', async event => {
         console.log('requesting all permissions!');
         const isPermissionGranted =
           await permissionHandler.requestPermission('<all_urls>');
@@ -754,7 +754,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     const html = document
       .importNode(
         document.getElementById('tmp-permission-impossible').content,
-        true,
+        true
       )
       .querySelector('div');
 
@@ -774,7 +774,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         () => {
           disableButtons = false;
         },
-        optionHandler.getAnimationsEnabled(),
+        optionHandler.getAnimationsEnabled()
       );
     } else {
       containerCookie.appendChild(html);
@@ -814,7 +814,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         name: name,
         value: value,
       },
-      optionHandler,
+      optionHandler
     );
 
     return cookie.html;
@@ -827,7 +827,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   function createHtmlFormCookie() {
     const template = document.importNode(
       document.getElementById('tmp-create').content,
-      true,
+      true
     );
     return template.querySelector('form');
   }
@@ -839,7 +839,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   function createHtmlFormImport() {
     const template = document.importNode(
       document.getElementById('tmp-import').content,
-      true,
+      true
     );
     return template.querySelector('form');
   }
@@ -882,24 +882,22 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   function showExportMenu() {
     const template = document.importNode(
       document.getElementById('tmp-export-options').content,
-      true,
+      true
     );
     containerCookie.appendChild(template.getElementById('export-menu'));
 
     document.getElementById('export-json').focus();
-    document
-      .getElementById('export-json')
-      .addEventListener('click', (event) => {
-        exportToJson();
-      });
+    document.getElementById('export-json').addEventListener('click', event => {
+      exportToJson();
+    });
     document
       .getElementById('export-headerstring')
-      .addEventListener('click', (event) => {
+      .addEventListener('click', event => {
         exportToHeaderstring();
       });
     document
       .getElementById('export-netscape')
-      .addEventListener('click', (event) => {
+      .addEventListener('click', event => {
         exportToNetscape();
       });
   }
@@ -1122,13 +1120,11 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   function generateSearchBar() {
     const searchBarContainer = document.importNode(
       document.getElementById('tmp-search-bar').content,
-      true,
+      true
     );
     searchBarContainer
       .getElementById('searchField')
-      .addEventListener('keyup', (e) =>
-        filterCookies(e.target, e.target.value),
-      );
+      .addEventListener('keyup', e => filterCookies(e.target, e.target.value));
     return searchBarContainer;
   }
 
@@ -1313,18 +1309,18 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   function displayAd(adObject) {
     const template = document.importNode(
       document.getElementById('tmp-ad-item').content,
-      true,
+      true
     );
     const link = template.querySelector('.ad-link a');
     link.textContent = adObject.text;
     link.title = adObject.tooltip;
     link.href = adObject.url;
 
-    template.querySelector('.dont-show').addEventListener('click', (e) => {
+    template.querySelector('.dont-show').addEventListener('click', e => {
       clearAd();
       adHandler.markAdAsDismissed(adObject);
     });
-    template.querySelector('.later').addEventListener('click', (e) => {
+    template.querySelector('.later').addEventListener('click', e => {
       clearAd();
     });
 
@@ -1357,7 +1353,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     const siblingElement = optionHandler.getButtonBarTop()
       ? document.getElementById('pageTitle').nextSibling
       : document.body.lastChild;
-    document.querySelectorAll('.button-bar').forEach((bar) => {
+    document.querySelectorAll('.button-bar').forEach(bar => {
       siblingElement.parentNode.insertBefore(bar, siblingElement);
       if (optionHandler.getButtonBarTop()) {
         document.body.classList.add('button-bar-top');
