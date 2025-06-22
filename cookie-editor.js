@@ -37,7 +37,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
       .getApi()
       .sidePanel.setPanelBehavior({ openPanelOnActionClick: false })
       // eslint-disable-next-line prettier/prettier
-      .catch((error) => {
+      .catch(error => {
         console.error(error);
       });
   }
@@ -267,10 +267,10 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
 
   /**
    * Special function to detect if we are running on Safari on iOS.
-   * 
+   *
    * Any browser running on iOS would be considered Safari since they
    * all are wrappers.
-   * 
+   *
    * @param {function} callback Responds true if it is Safari on iOS,
    *     otherwise false.
    */
