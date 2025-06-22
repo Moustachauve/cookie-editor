@@ -1,4 +1,5 @@
 import { BrowserDetector } from './interface/lib/browserDetector.js';
+import { Browsers } from './interface/lib/Browsers.js';
 import { PermissionHandler } from './interface/lib/permissionHandler.js';
 
 (function () {
@@ -10,14 +11,6 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
   const browserDetector = new BrowserDetector();
   const permissionHandler = new PermissionHandler(browserDetector);
 
-  browserDetector.getApi().runtime.onConnect.addListener(onConnect);
-  browserDetector.getApi().runtime.onMessage.addListener(handleMessage);
-  browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
-
-  if (!browserDetector.isSafari()) {
-    browserDetector.getApi().cookies.onChanged.addListener(onCookiesChanged);
-  }
-
   isFirefoxAndroid(function (response) {
     if (response) {
       const popupOptions = {
@@ -28,6 +21,9 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
   });
   isSafariIos(function (response) {
     if (response) {
+      // If we detect the user is on iOS, mark the browser
+      // as Safari in case it was edge or something else.
+      browserDetector.overrideBrowserName(Browsers.Safari);
       console.log('Setting up iOS popup');
       const popupOptions = {
         popup: '/interface/popup-mobile/cookie-list.html',
@@ -41,9 +37,18 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
       .getApi()
       .sidePanel.setPanelBehavior({ openPanelOnActionClick: false })
       // eslint-disable-next-line prettier/prettier
-      .catch((error) => {
+      .catch(error => {
         console.error(error);
       });
+  }
+
+  // Setting up event listeners
+  browserDetector.getApi().runtime.onConnect.addListener(onConnect);
+  browserDetector.getApi().runtime.onMessage.addListener(handleMessage);
+  browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
+
+  if (!browserDetector.isSafari()) {
+    browserDetector.getApi().cookies.onChanged.addListener(onCookiesChanged);
   }
 
   /**
@@ -262,15 +267,14 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
 
   /**
    * Special function to detect if we are running on Safari on iOS.
+   *
+   * Any browser running on iOS would be considered Safari since they
+   * all are wrappers.
+   *
    * @param {function} callback Responds true if it is Safari on iOS,
    *     otherwise false.
    */
   function isSafariIos(callback) {
-    if (!browserDetector.isSafari()) {
-      callback(false);
-      return;
-    }
-
     browserDetector
       .getApi()
       .runtime.getPlatformInfo()
