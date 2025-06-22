@@ -8,9 +8,19 @@ Cookie-Editor is designed to have a simple to use interface that let you do most
 You can easily create, edit and delete a cookie for the current page that you are visiting.
 There is also a handy button to mass delete all the cookies for the current page.
 
-Cookie-Editor is available for Google Chrome, Firefox, Safari, Edge and Opera. It should be possible to install it on any webkit browser, but keep in mind that only the previous four browsers are officially supported.
+Cookie-Editor is available for:
+- Google Chrome
+- Firefox
+- Safari
+- Edge
+- Opera.
 
-Cookie-Editor is available on Firefox for Android and Safari for iOS, with an interface optimised for touchscreens.
+It should be possible to install it on any webkit browser, but keep in mind that only the previous five browsers are officially supported.
+
+Cookie-Editor is available on mobile devices with an interface optimised for touchscreens:
+- Firefox for Android 
+- Safari for iOS
+- Edge for Android and iOS
 
 ## Installation
 ### Install on Google Chrome
