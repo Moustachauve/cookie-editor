@@ -104,4 +104,8 @@ export class BrowserDetector {
   getBrowserName() {
     return Env.browserName;
   }
+
+  overrideBrowserName(browserName) {
+    Env.browserName = browserName;
+  }
 }
