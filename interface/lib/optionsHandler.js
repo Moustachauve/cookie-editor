@@ -95,7 +95,7 @@ export class OptionsHandler extends EventEmitter {
     if (!this.isExportFormatValid(exportFormat)) {
       console.error(
         "Tried to load an exportFormat that doesn't exists",
-        exportFormat,
+        exportFormat
       );
       exportFormat = ExportFormats.Ask;
       this.setExportFormat(exportFormat);
@@ -110,7 +110,7 @@ export class OptionsHandler extends EventEmitter {
     if (!this.isExportFormatValid(exportFormat)) {
       console.error(
         "Tried to save an exportFormat that doesn't exists",
-        exportFormat,
+        exportFormat
       );
       return;
     }
@@ -142,7 +142,7 @@ export class OptionsHandler extends EventEmitter {
     if (!this.isExtraInfoValid(extraInfo)) {
       console.error(
         "Tried to load an extraInfo that doesn't exists",
-        extraInfo,
+        extraInfo
       );
       extraInfo = ExtraInfos.Nothing;
       this.setExtraInfo(extraInfo);
@@ -157,7 +157,7 @@ export class OptionsHandler extends EventEmitter {
     if (!this.isExtraInfoValid(extraInfo)) {
       console.error(
         "Tried to save an extraInfo that doesn't exists",
-        extraInfo,
+        extraInfo
       );
       return;
     }
@@ -310,9 +310,9 @@ export class OptionsHandler extends EventEmitter {
    * Handles the reception of messages from the background script.
    * @param {object} request
    */
-  onMessage = async (request) => {
+  onMessage = async request => {
     console.log(
-      '[options] background message received: ' + (request.type || 'unknown'),
+      '[options] background message received: ' + (request.type || 'unknown')
     );
     switch (request.type) {
       case 'optionsChanged': {

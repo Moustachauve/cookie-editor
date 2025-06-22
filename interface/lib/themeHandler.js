@@ -13,7 +13,7 @@ export class ThemeHandler {
     optionHandler.on('optionsChanged', this.onOptionsChanged);
     window
       .matchMedia('(prefers-color-scheme: dark)')
-      .addEventListener('change', (event) => {
+      .addEventListener('change', event => {
         console.log('theme changed!');
         this.updateTheme();
       });
@@ -45,7 +45,7 @@ export class ThemeHandler {
    * by an external source.
    * @param {Option} oldOptions the options before changes.
    */
-  onOptionsChanged = (oldOptions) => {
+  onOptionsChanged = oldOptions => {
     if (oldOptions.theme != this.optionHandler.getTheme()) {
       this.updateTheme();
     }

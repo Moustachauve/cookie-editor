@@ -53,34 +53,34 @@ export class Cookie {
     this.cookie = cookie;
 
     const oldCookieName = this.baseHtml.querySelector(
-      '#name-' + this.guid,
+      '#name-' + this.guid
     ).value;
     const oldCookieValue = this.baseHtml.querySelector(
-      '#value-' + this.guid,
+      '#value-' + this.guid
     ).value;
     const oldCookieDomain = this.baseHtml.querySelector(
-      '#domain-' + this.guid,
+      '#domain-' + this.guid
     ).value;
     const oldCookiePath = this.baseHtml.querySelector(
-      '#path-' + this.guid,
+      '#path-' + this.guid
     ).value;
     const oldCookieSameSite = this.baseHtml.querySelector(
-      '#sameSite-' + this.guid,
+      '#sameSite-' + this.guid
     ).value;
     const oldCookieHostOnly = this.baseHtml.querySelector(
-      '#hostOnly-' + this.guid,
+      '#hostOnly-' + this.guid
     ).checked;
     const oldCookieSession = this.baseHtml.querySelector(
-      '#session-' + this.guid,
+      '#session-' + this.guid
     ).checked;
     const oldCookieSecure = this.baseHtml.querySelector(
-      '#secure-' + this.guid,
+      '#secure-' + this.guid
     ).checked;
     const oldCookieHttpOnly = this.baseHtml.querySelector(
-      '#httpOnly-' + this.guid,
+      '#httpOnly-' + this.guid
     ).checked;
     let oldCookieExpiration = this.baseHtml.querySelector(
-      '#expiration-' + this.guid,
+      '#expiration-' + this.guid
     ).value;
     oldCookieExpiration = new Date(oldCookieExpiration).getTime() / 1000;
     if (isNaN(oldCookieExpiration)) {
@@ -127,7 +127,7 @@ export class Cookie {
     const self = this;
     const template = document.importNode(
       document.getElementById('tmp-cookie').content,
-      true,
+      true
     );
     this.baseHtml = template.querySelector('li');
     this.baseHtml.setAttribute('data-name', this.cookie.name);
@@ -370,7 +370,7 @@ export class Cookie {
    */
   afterSessionChanged(inputValue) {
     const expirationInput = this.baseHtml.querySelector(
-      '#expiration-' + this.guid,
+      '#expiration-' + this.guid
     );
     expirationInput.disabled = inputValue;
     if (inputValue) {
@@ -513,7 +513,7 @@ export class Cookie {
       case ExtraInfos.Hostonly:
         return this.formatBoolForDisplayShort(
           'Host Only',
-          this.cookie.hostOnly,
+          this.cookie.hostOnly
         );
       case ExtraInfos.Session:
         return this.formatBoolForDisplayShort('Session', this.cookie.session);
@@ -522,7 +522,7 @@ export class Cookie {
       case ExtraInfos.Httponly:
         return this.formatBoolForDisplayShort(
           'Http Only',
-          this.cookie.httpOnly,
+          this.cookie.httpOnly
         );
       case ExtraInfos.Nothing:
       default:

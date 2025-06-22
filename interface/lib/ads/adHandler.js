@@ -29,14 +29,14 @@ export class AdHandler {
     if (
       selectedAd.supportedBrowsers != Browsers.Any &&
       !selectedAd.supportedBrowsers.includes(
-        this.browserDetector.getBrowserName(),
+        this.browserDetector.getBrowserName()
       )
     ) {
       return false;
     }
 
     const dismissedAd = await this.storageHandler.getLocal(
-      this.getAdDismissKey(selectedAd.id),
+      this.getAdDismissKey(selectedAd.id)
     );
     // No data means it was never dismissed
     if (dismissedAd === null) {
@@ -91,7 +91,7 @@ export class AdHandler {
     }
 
     const lastDismissedAd = await this.storageHandler.getLocal(
-      this.getLastDismissKey(),
+      this.getLastDismissKey()
     );
     // No data means it was never dismissed
     if (lastDismissedAd === null) {
@@ -141,11 +141,11 @@ export class AdHandler {
   async markAdAsDismissed(adObject) {
     await this.storageHandler.setLocal(
       this.getAdDismissKey(adObject.id),
-      this.createDismissObjV1(),
+      this.createDismissObjV1()
     );
     await this.storageHandler.setLocal(
       this.getLastDismissKey(),
-      this.createDismissObjV1(),
+      this.createDismissObjV1()
     );
   }
 

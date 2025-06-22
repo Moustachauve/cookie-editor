@@ -77,7 +77,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
             { active: true, currentWindow: true },
             function (tabInfo) {
               sendResponse(tabInfo);
-            },
+            }
           );
         return true;
       }
@@ -103,18 +103,18 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
             .getApi()
             .cookies.set(request.params.cookie)
             .then(
-              (cookie) => {
+              cookie => {
                 sendResponse(null, cookie);
               },
-              (error) => {
+              error => {
                 console.error('Failed to create cookie', error);
                 sendResponse(error.message, null);
-              },
+              }
             );
         } else {
           browserDetector
             .getApi()
-            .cookies.set(request.params.cookie, (cookie) => {
+            .cookies.set(request.params.cookie, cookie => {
               if (cookie) {
                 sendResponse(null, cookie);
               } else {
@@ -169,7 +169,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
       switch (request.type) {
         case 'init_cookieHandler':
           console.log(
-            'Devtool cookieHandler connected on tab ' + request.tabId,
+            'Devtool cookieHandler connected on tab ' + request.tabId
           );
           connections[request.tabId] = port;
           return;
@@ -260,7 +260,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
     browserDetector
       .getApi()
       .runtime.getPlatformInfo()
-      .then((info) => {
+      .then(info => {
         callback(info.os === 'android');
       });
   }
@@ -278,7 +278,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
     browserDetector
       .getApi()
       .runtime.getPlatformInfo()
-      .then((info) => {
+      .then(info => {
         console.log('check for safari on ios: ', info.os);
         callback(info.os === 'ios');
       });

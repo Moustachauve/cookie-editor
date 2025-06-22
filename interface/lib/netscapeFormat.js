@@ -67,7 +67,7 @@ export class NetscapeFormat {
         // discarded when imported back. This is a compromise due to the
         // Netscape format. It is short enough but not too short.
         expiration = Math.trunc(
-          new Date(Date.now() + 86400 * 1000).getTime() / 1000,
+          new Date(Date.now() + 86400 * 1000).getTime() / 1000
         );
       } else if (!cookie.session && !!cookie.expirationDate) {
         expiration = Math.trunc(cookie.expirationDate);
