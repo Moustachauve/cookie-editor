@@ -20,7 +20,9 @@
     "grunt-json-replace": "^0.1.2",
     "grunt-remove-logging": "^0.2.0",
     "grunt-replace": "^2.0.2",
-    "prettier": "^3.0.2"
+    "prettier": "^3.5.3",
+    "prettier-eslint": "^16.4.2",
+    "prettier-plugin-organize-imports": "^4.1.0"
   },
   "scripts": {
     "prettier-format": "prettier --config .prettierrc **/*.js --write"
