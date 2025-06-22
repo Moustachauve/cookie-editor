@@ -51,8 +51,8 @@ module.exports = function (grunt) {
         ],
       },
     },
-    eslint: {
-      target: ['**.js', 'interface/**/*.js', '!Gruntfile.js'],
+    exec: {
+      lint: 'npm run lint',
     },
     clean: {
       firefox: ['build/firefox'],
@@ -334,7 +334,7 @@ module.exports = function (grunt) {
   });
 
   grunt.loadNpmTasks('grunt-json-replace');
-  grunt.loadNpmTasks('grunt-eslint');
+  grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-replace');
@@ -344,7 +344,7 @@ module.exports = function (grunt) {
   // Default task(s).
   grunt.registerTask('default', [
     'json-replace',
-    'eslint',
+    'exec:lint',
     'clean',
     'copy',
     'replace',

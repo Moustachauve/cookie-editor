@@ -44,10 +44,19 @@ export default [
     },
   },
 
-  // Override for ESLint/Node.js configuration files
+  // Override for Node.js configuration files
   {
-    files: ['eslint.config.js'],
+    files: ['eslint.config.mjs'],
     languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+  {
+    files: ['Gruntfile.js'],
+    languageOptions: {
+      sourceType: 'commonjs',
       globals: {
         ...globals.node,
       },
