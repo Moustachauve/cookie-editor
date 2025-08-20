@@ -351,4 +351,14 @@ module.exports = function (grunt) {
     'removelogging',
     'compress',
   ]);
+
+  grunt.registerTask('build-safari', [
+    'json-replace:safari',
+    'clean:safari',
+    'copy:safari',
+    'replace:safari',
+    // Keep logs in Safari for now, otherwise can't easily debug.
+    // Ideally there would be a different build config for dev/prod.
+    // 'removelogging',
+  ]);
 };

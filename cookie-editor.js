@@ -1,5 +1,5 @@
 import { BrowserDetector } from './interface/lib/browserDetector.js';
-import { Browsers } from './interface/lib/Browsers.js';
+import { Browsers } from './interface/lib/browsers.js';
 import { PermissionHandler } from './interface/lib/permissionHandler.js';
 
 (function () {
