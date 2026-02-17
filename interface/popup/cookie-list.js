@@ -46,7 +46,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     notificationElement = document.getElementById('notification');
     pageTitleContainer = document.getElementById('pageTitle');
 
-    // 初始化i18n
+    // Initialize i18n
     initI18n();
 
     await initWindow();
