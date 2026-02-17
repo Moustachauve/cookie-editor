@@ -5,6 +5,7 @@ import { BrowserDetector } from '../lib/browserDetector.js';
 import { Cookie } from '../lib/cookie.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
 import { HeaderstringFormat } from '../lib/headerstringFormat.js';
+import { initI18n } from '../lib/i18n/init.js';
 import { JsonFormat } from '../lib/jsonFormat.js';
 import { NetscapeFormat } from '../lib/netscapeFormat.js';
 import { ExportFormats } from '../lib/options/exportFormats.js';
@@ -44,6 +45,9 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     containerCookie = document.getElementById('cookie-container');
     notificationElement = document.getElementById('notification');
     pageTitleContainer = document.getElementById('pageTitle');
+
+    // 初始化i18n
+    initI18n();
 
     await initWindow();
 
