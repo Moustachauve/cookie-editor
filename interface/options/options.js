@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async event => {
   const buttonBarTopInput = document.getElementById('button-bar-top');
   const adsEnabledInput = document.getElementById('ads-enabled');
 
-  // 初始化i18n
+  // Initialize i18n
   initI18n();
 
   await optionHandler.loadOptions();
