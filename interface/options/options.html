@@ -12,7 +12,8 @@
 </head>
 
 <body>
-  <div class="container">
+  <a href="#main-content" class="visually-hidden">Skip to main content</a>
+  <div class="container" id="main-content">
     <fieldset>
       <legend>Options</legend>
       <div class="input-container">
@@ -138,8 +139,8 @@
 
     <fieldset>
       <legend>All Cookies</legend>
-      <div class="notice danger">
-        <svg class="icon">
+      <div class="notice danger" role="alert">
+        <svg class="icon" aria-hidden="true">
           <use href="../sprites/solid.svg#exclamation-triangle"></use>
         </svg>
         <strong>Be careful!</strong> Operations in this section will apply to ALL sites.
@@ -149,20 +150,20 @@
         to every account you are currently logged in.
       </div>
       <div class="input-container">
-        Export All Cookies
-        <div class="button-group">
-          <button id="export-all-json">As JSON</button>
-          <button id="export-all-netscape">As Netscape</button>
+        <span id="export-all-label" class="label-text">Export All Cookies</span>
+        <div class="button-group" role="group" aria-labelledby="export-all-label">
+          <button id="export-all-json" aria-label="Export all cookies as JSON">As JSON</button>
+          <button id="export-all-netscape" aria-label="Export all cookies in Netscape format">As Netscape</button>
         </div>
-        <div class="hint">
+        <div class="hint" id="export-all-hint">
           Header string is not available for browser-wide export since it does
           not contain information about which site it comes from.
         </div>
       </div>
       <div class="input-container">
-        Delete All Cookies
-        <button class="danger" id="delete-all">Delete All</button>
-        <div class="hint danger">
+        <span id="delete-all-label" class="label-text">Delete All Cookies</span>
+        <button class="danger" id="delete-all" aria-describedby="delete-all-hint">Delete All</button>
+        <div class="hint danger" id="delete-all-hint">
           This will delete all the cookies on all the site on this browser.
           This action is irreversible. Be very careful.
         </div>

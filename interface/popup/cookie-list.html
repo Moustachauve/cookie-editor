@@ -15,18 +15,14 @@
       </h1>
       <div id="version"></div>
       <div id="main-menu">
-        <button id="main-menu-button">
-          <svg class="icon">
+        <button id="main-menu-button" aria-label="Open menu">
+          <svg class="icon" aria-hidden="true">
             <use href="../sprites/solid.svg#ellipsis-v"></use>
           </svg>
         </button>
         <div id="main-menu-content">
-          <label
-            class="menu-item switch"
-            for="advanced-toggle-all"
-            id="advanced-toggle-all-label"
-          >
-            Show Advanced
+          <div class="menu-item switch" role="group" aria-labelledby="advanced-toggle-all-label">
+            <span id="advanced-toggle-all-label">Show Advanced</span>
             <label class="switch">
               <input
                 type="checkbox"
@@ -35,10 +31,10 @@
               />
               <span class="slider"></span>
             </label>
-          </label>
-          <button class="menu-item" id="menu-all-options">
+          </div>
+          <button class="menu-item" id="menu-all-options" aria-label="See all options">
             See All Options
-            <svg class="icon">
+            <svg class="icon" aria-hidden="true">
               <use href="../sprites/solid.svg#external-link-alt"></use>
             </svg>
           </button>
@@ -56,9 +52,10 @@
           class="panel-section-footer-button"
           id="create-cookie"
           type="button"
+          aria-label="Create new cookie"
         >
           <div>
-            <svg class="icon"><use href="../sprites/solid.svg#plus"></use></svg>
+            <svg class="icon" aria-hidden="true"><use href="../sprites/solid.svg#plus"></use></svg>
             <div class="tooltip" role="tooltip">Add</div>
           </div>
         </button>
@@ -68,9 +65,10 @@
           class="panel-section-footer-button danger"
           id="delete-all-cookies"
           type="button"
+          aria-label="Delete all cookies"
         >
           <div>
-            <svg class="icon">
+            <svg class="icon" aria-hidden="true">
               <use href="../sprites/solid.svg#trash"></use>
             </svg>
             <div class="tooltip" role="tooltip">Delete All</div>
@@ -82,9 +80,10 @@
           class="panel-section-footer-button"
           id="import-cookies"
           type="button"
+          aria-label="Import cookies"
         >
           <div>
-            <svg class="icon">
+            <svg class="icon" aria-hidden="true">
               <use href="../sprites/solid.svg#file-import"></use>
             </svg>
             <div class="tooltip" role="tooltip">Import</div>
@@ -96,9 +95,10 @@
           class="panel-section-footer-button"
           id="export-cookies"
           type="button"
+          aria-label="Export cookies"
         >
           <div>
-            <svg class="icon">
+            <svg class="icon" aria-hidden="true">
               <use href="../sprites/solid.svg#file-export"></use>
             </svg>
             <div class="tooltip" role="tooltip">Export</div>
@@ -113,9 +113,10 @@
           class="panel-section-footer-button"
           id="return-list-add"
           type="button"
+          aria-label="Cancel and return to list"
         >
           <div>
-            <svg class="icon">
+            <svg class="icon" aria-hidden="true">
               <use href="../sprites/solid.svg#arrow-left"></use>
             </svg>
             <div class="tooltip" role="tooltip">Cancel</div>
@@ -127,9 +128,10 @@
           class="panel-section-footer-button primary"
           id="save-create-cookie"
           type="button"
+          aria-label="Save new cookie"
         >
           <div>
-            <svg class="icon"><use href="../sprites/solid.svg#save"></use></svg>
+            <svg class="icon" aria-hidden="true"><use href="../sprites/solid.svg#save"></use></svg>
             <div class="tooltip" role="tooltip">Add</div>
           </div>
         </button>
@@ -142,9 +144,10 @@
           class="panel-section-footer-button"
           id="return-list-import"
           type="button"
+          aria-label="Cancel and return to list"
         >
           <div>
-            <svg class="icon">
+            <svg class="icon" aria-hidden="true">
               <use href="../sprites/solid.svg#arrow-left"></use>
             </svg>
             <div class="tooltip" role="tooltip">Cancel</div>
@@ -156,9 +159,10 @@
           class="panel-section-footer-button primary"
           id="save-import-cookie"
           type="button"
+          aria-label="Import cookies"
         >
           <div>
-            <svg class="icon">
+            <svg class="icon" aria-hidden="true">
               <use href="../sprites/solid.svg#file-import"></use>
             </svg>
             <div class="tooltip" role="tooltip">Import</div>
@@ -175,7 +179,7 @@
           aria-label="Dismiss Notification"
           type="button"
         >
-          <svg class="icon"><use href="../sprites/solid.svg#times"></use></svg>
+          <svg class="icon" aria-hidden="true"><use href="../sprites/solid.svg#times"></use></svg>
         </button>
       </div>
     </div>
@@ -191,7 +195,7 @@
           role="button"
           aria-expanded="false"
         >
-          <svg class="icon arrow">
+          <svg class="icon arrow" aria-hidden="true">
             <use href="../sprites/solid.svg#angle-down"></use>
           </svg>
           <span class="header-name"></span>
@@ -204,7 +208,7 @@
               tabindex="-1"
               type="button"
             >
-              <svg class="icon">
+              <svg class="icon" aria-hidden="true">
                 <use href="../sprites/solid.svg#trash"></use>
               </svg>
             </button>
@@ -219,7 +223,7 @@
                 aria-label="Delete"
                 type="button"
               >
-                <svg class="icon">
+                <svg class="icon" aria-hidden="true">
                   <use href="../sprites/solid.svg#trash"></use>
                 </svg>
               </button>
@@ -229,43 +233,44 @@
                 aria-label="Save"
                 type="submit"
               >
-                <svg class="icon">
+                <svg class="icon" aria-hidden="true">
                   <use href="../sprites/solid.svg#save"></use>
                 </svg>
               </button>
             </div>
             <form data-id="" class="form container">
               <div>
-                <label class="label-name">Name</label>
-                <input name="name" type="text" class="input-name" />
+                <label class="label-name" for="input-name">Name</label>
+                <input name="name" type="text" class="input-name" id="input-name" />
               </div>
               <div>
-                <label class="label-value">Value</label>
-                <textarea name="value" class="input-value"></textarea>
+                <label class="label-value" for="input-value">Value</label>
+                <textarea name="value" class="input-value" id="input-value"></textarea>
               </div>
-              <button class="advanced-toggle" type="button">
+              <button class="advanced-toggle" type="button" aria-expanded="false" aria-controls="advanced-form">
                 Show Advanced
               </button>
-              <div class="advanced-form">
+              <div class="advanced-form" id="advanced-form">
                 <div>
-                  <label class="label-domain">Domain</label>
-                  <input name="domain" type="text" class="input-domain" />
+                  <label class="label-domain" for="input-domain">Domain</label>
+                  <input name="domain" type="text" class="input-domain" id="input-domain" />
                 </div>
                 <div>
-                  <label class="label-path">Path</label>
-                  <input name="path" type="text" class="input-path" />
+                  <label class="label-path" for="input-path">Path</label>
+                  <input name="path" type="text" class="input-path" id="input-path" />
                 </div>
                 <div>
-                  <label class="label-expiration">Expiration</label>
+                  <label class="label-expiration" for="input-expiration">Expiration</label>
                   <input
                     name="expiration"
                     type="text"
                     class="input-expiration"
+                    id="input-expiration"
                   />
                 </div>
                 <div>
-                  <label class="label-sameSite">Same Site</label>
-                  <select name="sameSite" class="input-sameSite">
+                  <label class="label-sameSite" for="input-sameSite">Same Site</label>
+                  <select name="sameSite" class="input-sameSite" id="input-sameSite">
                     <option value="no_restriction">None</option>
                     <option value="lax">Lax</option>
                     <option value="strict">Strict</option>
@@ -367,13 +372,13 @@
           <div class="button-container">
             <button
               id="request-permission"
-              title="Request permission to read cookies for this site."
+              aria-label="Request permission to read cookies for this site"
             >
               This site
             </button>
             <button
               id="request-permission-all"
-              title="Request permission to read cookies for all sites."
+              aria-label="Request permission to read cookies for all sites"
             >
               All sites
             </button>
@@ -391,32 +396,32 @@
     <template id="tmp-search-bar">
       <li>
         <div id="searchContainer">
-          <svg class="icon search">
+          <svg class="icon search" aria-hidden="true">
             <use href="../sprites/solid.svg#search"></use>
           </svg>
-          <input id="searchField" type="text" placeholder="Search" />
+          <input id="searchField" type="text" placeholder="Search" aria-label="Search cookies" />
         </div>
       </li>
     </template>
 
     <template id="tmp-export-options">
-      <div id="export-menu">
-        <h3>Export As:</h3>
-        <button id="export-json" type="button">JSON</button>
-        <button id="export-headerstring" type="button">Header String</button>
-        <button id="export-netscape" type="button">Netscape</button>
+      <div id="export-menu" role="menu" aria-label="Export options">
+        <h3 id="export-menu-heading">Export As:</h3>
+        <button id="export-json" type="button" role="menuitem">JSON</button>
+        <button id="export-headerstring" type="button" role="menuitem">Header String</button>
+        <button id="export-netscape" type="button" role="menuitem">Netscape</button>
       </div>
     </template>
 
     <template id="tmp-ad-item">
       <div>
-        <span class="ad-tag">Ad</span>
+        <span class="ad-tag" aria-label="Advertisement">Ad</span>
         <div class="ad-link">
           <a href="" target="_blank" rel="noopener noreferrer">Ad Text!</a>
         </div>
         <div class="ad-actions">
-          <button class="dont-show">Not interested</button>
-          <button class="later">Later</button>
+          <button class="dont-show" aria-label="Not interested in this ad">Not interested</button>
+          <button class="later" aria-label="Show this ad later">Later</button>
         </div>
       </div>
     </template>
