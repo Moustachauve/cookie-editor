@@ -5,6 +5,16 @@ import prettier from 'eslint-plugin-prettier';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 
+// Override Google's rules that are removed in ESLint 9
+const googleWithOverrides = {
+  ...google,
+  rules: {
+    ...google.rules,
+    'valid-jsdoc': 'off',
+    'require-jsdoc': 'off',
+  },
+};
+
 export default [
   // Global ignores
   {
@@ -20,8 +30,8 @@ export default [
   // Base configuration for JS/MJS files
   js.configs.recommended,
 
-  // Google's style guide
-  google,
+  // Google's style guide (with ESLint 9 compatible overrides)
+  googleWithOverrides,
 
   // Main custom configuration
   {

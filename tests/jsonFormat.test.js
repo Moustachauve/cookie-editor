@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+
 import { JsonFormat } from '../interface/lib/jsonFormat.js';
 
 describe('JsonFormat', () => {
@@ -11,7 +12,8 @@ describe('JsonFormat', () => {
     });
 
     it('should parse multiple cookies', () => {
-      const input = '[{"name": "cookie1", "value": "value1"}, {"name": "cookie2", "value": "value2"}]';
+      const input =
+        '[{"name": "cookie1", "value": "value1"}, {"name": "cookie2", "value": "value2"}]';
       const result = JsonFormat.parse(input);
       expect(result).toHaveLength(2);
       expect(result[0].name).toBe('cookie1');
@@ -25,16 +27,18 @@ describe('JsonFormat', () => {
     });
 
     it('should handle full cookie object properties', () => {
-      const input = JSON.stringify([{
-        name: 'test',
-        value: 'testvalue',
-        domain: '.example.com',
-        path: '/',
-        secure: true,
-        httpOnly: false,
-        sameSite: 'no_restriction',
-        expirationDate: 1893456000,
-      }]);
+      const input = JSON.stringify([
+        {
+          name: 'test',
+          value: 'testvalue',
+          domain: '.example.com',
+          path: '/',
+          secure: true,
+          httpOnly: false,
+          sameSite: 'no_restriction',
+          expirationDate: 1893456000,
+        },
+      ]);
       const result = JsonFormat.parse(input);
       expect(result).toHaveLength(1);
       expect(result[0].name).toBe('test');
@@ -58,8 +62,8 @@ describe('JsonFormat', () => {
             httpOnly: false,
             session: false,
             hostOnly: false,
-          }
-        }
+          },
+        },
       };
       const result = JsonFormat.format(cookies);
       const parsed = JSON.parse(result);
@@ -70,8 +74,30 @@ describe('JsonFormat', () => {
 
     it('should format multiple cookies', () => {
       const cookies = {
-        0: { cookie: { name: 'cookie1', value: 'value1', domain: '.ex.com', path: '/', secure: false, httpOnly: false, session: false, hostOnly: false } },
-        1: { cookie: { name: 'cookie2', value: 'value2', domain: '.ex2.com', path: '/', secure: true, httpOnly: false, session: false, hostOnly: false } }
+        0: {
+          cookie: {
+            name: 'cookie1',
+            value: 'value1',
+            domain: '.ex.com',
+            path: '/',
+            secure: false,
+            httpOnly: false,
+            session: false,
+            hostOnly: false,
+          },
+        },
+        1: {
+          cookie: {
+            name: 'cookie2',
+            value: 'value2',
+            domain: '.ex2.com',
+            path: '/',
+            secure: true,
+            httpOnly: false,
+            session: false,
+            hostOnly: false,
+          },
+        },
       };
       const result = JsonFormat.format(cookies);
       const parsed = JSON.parse(result);
@@ -80,7 +106,18 @@ describe('JsonFormat', () => {
 
     it('should set storeId to null', () => {
       const cookies = {
-        0: { cookie: { name: 'test', value: 'val', domain: '.ex.com', path: '/', secure: false, httpOnly: false, session: false, hostOnly: false } }
+        0: {
+          cookie: {
+            name: 'test',
+            value: 'val',
+            domain: '.ex.com',
+            path: '/',
+            secure: false,
+            httpOnly: false,
+            session: false,
+            hostOnly: false,
+          },
+        },
       };
       const result = JsonFormat.format(cookies);
       const parsed = JSON.parse(result);
@@ -89,7 +126,19 @@ describe('JsonFormat', () => {
 
     it('should handle sameSite: unspecified by converting to null', () => {
       const cookies = {
-        0: { cookie: { name: 'test', value: 'val', domain: '.ex.com', path: '/', secure: false, httpOnly: false, session: false, hostOnly: false, sameSite: 'unspecified' } }
+        0: {
+          cookie: {
+            name: 'test',
+            value: 'val',
+            domain: '.ex.com',
+            path: '/',
+            secure: false,
+            httpOnly: false,
+            session: false,
+            hostOnly: false,
+            sameSite: 'unspecified',
+          },
+        },
       };
       const result = JsonFormat.format(cookies);
       const parsed = JSON.parse(result);
@@ -98,7 +147,19 @@ describe('JsonFormat', () => {
 
     it('should preserve other sameSite values', () => {
       const cookies = {
-        0: { cookie: { name: 'test', value: 'val', domain: '.ex.com', path: '/', secure: false, httpOnly: false, session: false, hostOnly: false, sameSite: 'Strict' } }
+        0: {
+          cookie: {
+            name: 'test',
+            value: 'val',
+            domain: '.ex.com',
+            path: '/',
+            secure: false,
+            httpOnly: false,
+            session: false,
+            hostOnly: false,
+            sameSite: 'Strict',
+          },
+        },
       };
       const result = JsonFormat.format(cookies);
       const parsed = JSON.parse(result);
@@ -113,7 +174,18 @@ describe('JsonFormat', () => {
 
     it('should format with proper indentation', () => {
       const cookies = {
-        0: { cookie: { name: 'test', value: 'val', domain: '.ex.com', path: '/', secure: false, httpOnly: false, session: false, hostOnly: false } }
+        0: {
+          cookie: {
+            name: 'test',
+            value: 'val',
+            domain: '.ex.com',
+            path: '/',
+            secure: false,
+            httpOnly: false,
+            session: false,
+            hostOnly: false,
+          },
+        },
       };
       const result = JsonFormat.format(cookies);
       // Check that output is indented (4 spaces)

@@ -1,4 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
 import { NetscapeFormat } from '../interface/lib/netscapeFormat.js';
 
 describe('NetscapeFormat', () => {
@@ -20,7 +21,8 @@ describe('NetscapeFormat', () => {
     });
 
     it('should parse HttpOnly cookie', () => {
-      const input = '#HttpOnly_.example.com\tTRUE\t/\tFALSE\t1893456000\tcookie1\tvalue1';
+      const input =
+        '#HttpOnly_.example.com\tTRUE\t/\tFALSE\t1893456000\tcookie1\tvalue1';
       const result = NetscapeFormat.parse(input);
       expect(result).toHaveLength(1);
       expect(result[0].httpOnly).toBe(true);
@@ -28,19 +30,22 @@ describe('NetscapeFormat', () => {
     });
 
     it('should skip comment lines', () => {
-      const input = '# Netscape HTTP Cookie File\n# http://curl.haxx.se/rfc/cookie_spec.html\n.example.com\tTRUE\t/\tFALSE\t1893456000\tcookie1\tvalue1';
+      const input =
+        '# Netscape HTTP Cookie File\n# http://curl.haxx.se/rfc/cookie_spec.html\n.example.com\tTRUE\t/\tFALSE\t1893456000\tcookie1\tvalue1';
       const result = NetscapeFormat.parse(input);
       expect(result).toHaveLength(1);
     });
 
     it('should skip empty lines', () => {
-      const input = '.example.com\tTRUE\t/\tFALSE\t1893456000\tcookie1\tvalue1\n\n\n.example2.com\tTRUE\t/\tFALSE\t1893456000\tcookie2\tvalue2';
+      const input =
+        '.example.com\tTRUE\t/\tFALSE\t1893456000\tcookie1\tvalue1\n\n\n.example2.com\tTRUE\t/\tFALSE\t1893456000\tcookie2\tvalue2';
       const result = NetscapeFormat.parse(input);
       expect(result).toHaveLength(2);
     });
 
     it('should parse multiple cookies', () => {
-      const input = '.example.com\tTRUE\t/\tFALSE\t1893456000\tcookie1\tvalue1\n.example2.com\tFALSE\t/path\tTRUE\t1893456001\tcookie2\tvalue2';
+      const input =
+        '.example.com\tTRUE\t/\tFALSE\t1893456000\tcookie1\tvalue1\n.example2.com\tFALSE\t/path\tTRUE\t1893456001\tcookie2\tvalue2';
       const result = NetscapeFormat.parse(input);
       expect(result).toHaveLength(2);
       expect(result[0].name).toBe('cookie1');
@@ -51,11 +56,13 @@ describe('NetscapeFormat', () => {
       // In Netscape format, the second field means "includes subdomain"
       // TRUE = includes subdomain = NOT host-only (false)
       // FALSE = doesn't include subdomain = IS host-only (true)
-      const input = '.example.com\tFALSE\t/\tFALSE\t1893456000\tcookie1\tvalue1';
+      const input =
+        '.example.com\tFALSE\t/\tFALSE\t1893456000\tcookie1\tvalue1';
       const result = NetscapeFormat.parse(input);
       expect(result[0].hostOnly).toBe(true);
 
-      const input2 = '.example.com\tTRUE\t/\tFALSE\t1893456000\tcookie1\tvalue1';
+      const input2 =
+        '.example.com\tTRUE\t/\tFALSE\t1893456000\tcookie1\tvalue1';
       const result2 = NetscapeFormat.parse(input2);
       expect(result2[0].hostOnly).toBe(false);
     });
@@ -72,7 +79,9 @@ describe('NetscapeFormat', () => {
 
     it('should throw error for invalid format (not 7 fields)', () => {
       const input = '.example.com\tTRUE\t/\tFALSE\t1893456000\tcookie1';
-      expect(() => NetscapeFormat.parse(input)).toThrow('Invalid netscape format');
+      expect(() => NetscapeFormat.parse(input)).toThrow(
+        'Invalid netscape format'
+      );
     });
 
     it('should handle empty string', () => {
@@ -101,11 +110,12 @@ describe('NetscapeFormat', () => {
             value: 'value1',
             httpOnly: false,
             session: false,
-          }
-        }
+          },
+        },
       };
       const result = NetscapeFormat.format(cookies);
-      const expectedCookieLine = '.example.com\tTRUE\t/\tTRUE\t1893456000\tcookie1\tvalue1';
+      const expectedCookieLine =
+        '.example.com\tTRUE\t/\tTRUE\t1893456000\tcookie1\tvalue1';
       expect(result).toContain('# Netscape HTTP Cookie File');
       expect(result).toContain(expectedCookieLine);
     });
@@ -126,8 +136,8 @@ describe('NetscapeFormat', () => {
             value: 'test_value',
             httpOnly: false,
             session: true,
-          }
-        }
+          },
+        },
       };
       const result = NetscapeFormat.format(cookies);
       // Session cookies get a 1-day TTL. Check for the correct expiration.
@@ -151,8 +161,8 @@ describe('NetscapeFormat', () => {
             value: 'value1',
             httpOnly: true,
             session: false,
-          }
-        }
+          },
+        },
       };
       const result = NetscapeFormat.format(cookies);
       expect(result).toContain('#HttpOnly_');
@@ -171,12 +181,13 @@ describe('NetscapeFormat', () => {
             value: 'value1',
             httpOnly: false,
             session: false,
-          }
-        }
+          },
+        },
       };
       const result = NetscapeFormat.format(cookies);
       // hostOnly: true should result in FALSE for the includesSubdomain flag.
-      const expectedLine = '.example.com\tFALSE\t/\tFALSE\t1893456000\tcookie1\tvalue1';
+      const expectedLine =
+        '.example.com\tFALSE\t/\tFALSE\t1893456000\tcookie1\tvalue1';
       expect(result).toContain(expectedLine);
     });
 

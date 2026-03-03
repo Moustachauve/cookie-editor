@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+
 import { HeaderstringFormat } from '../interface/lib/headerstringFormat.js';
 
 describe('HeaderstringFormat', () => {
@@ -23,14 +24,18 @@ describe('HeaderstringFormat', () => {
     });
 
     it('should handle cookies with special characters in values', () => {
-      const result = HeaderstringFormat.parse('cookie1=abc%20def; cookie2=hello world');
+      const result = HeaderstringFormat.parse(
+        'cookie1=abc%20def; cookie2=hello world'
+      );
       expect(result).toHaveLength(2);
       expect(result[0]).toEqual({ name: 'cookie1', value: 'abc%20def' });
       expect(result[1]).toEqual({ name: 'cookie2', value: 'hello world' });
     });
 
     it('should trim whitespace from cookie parts', () => {
-      const result = HeaderstringFormat.parse('  cookie1  =  value1  ;  cookie2=value2');
+      const result = HeaderstringFormat.parse(
+        '  cookie1  =  value1  ;  cookie2=value2'
+      );
       // Note: Current implementation preserves whitespace in name/value
       // The first cookie has whitespace after name, before value
       expect(result[0].name).toBe('cookie1  ');
@@ -44,7 +49,9 @@ describe('HeaderstringFormat', () => {
     });
 
     it('should throw error for string with only spaces', () => {
-      expect(() => HeaderstringFormat.parse('   ')).toThrow('No cookies found.');
+      expect(() => HeaderstringFormat.parse('   ')).toThrow(
+        'No cookies found.'
+      );
     });
 
     it('should skip invalid cookies (no equals sign)', () => {
@@ -54,7 +61,9 @@ describe('HeaderstringFormat', () => {
     });
 
     it('should handle cookies with equals sign in value', () => {
-      const result = HeaderstringFormat.parse('cookie1=foo=bar; cookie2=value2');
+      const result = HeaderstringFormat.parse(
+        'cookie1=foo=bar; cookie2=value2'
+      );
       expect(result).toHaveLength(2);
       expect(result[0]).toEqual({ name: 'cookie1', value: 'foo=bar' });
     });
@@ -63,7 +72,7 @@ describe('HeaderstringFormat', () => {
   describe('format', () => {
     it('should format a single cookie', () => {
       const cookies = {
-        0: { cookie: { name: 'cookie1', value: 'value1' } }
+        0: { cookie: { name: 'cookie1', value: 'value1' } },
       };
       const result = HeaderstringFormat.format(cookies);
       expect(result).toBe('cookie1=value1');
@@ -72,7 +81,7 @@ describe('HeaderstringFormat', () => {
     it('should format multiple cookies', () => {
       const cookies = {
         0: { cookie: { name: 'cookie1', value: 'value1' } },
-        1: { cookie: { name: 'cookie2', value: 'value2' } }
+        1: { cookie: { name: 'cookie2', value: 'value2' } },
       };
       const result = HeaderstringFormat.format(cookies);
       expect(result).toBe('cookie1=value1;cookie2=value2');
@@ -86,7 +95,7 @@ describe('HeaderstringFormat', () => {
 
     it('should handle special characters in cookie values', () => {
       const cookies = {
-        0: { cookie: { name: 'cookie1', value: 'a;b=c' } }
+        0: { cookie: { name: 'cookie1', value: 'a;b=c' } },
       };
       const result = HeaderstringFormat.format(cookies);
       expect(result).toBe('cookie1=a;b=c');

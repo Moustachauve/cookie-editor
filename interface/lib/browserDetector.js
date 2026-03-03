@@ -18,14 +18,14 @@ export class BrowserDetector {
       this.supportPromises =
         this.namespace.runtime.getPlatformInfo() instanceof Promise;
       console.info('Promises support: ', this.supportPromises);
-    } catch (e) {
+    } catch {
       /* empty */
     }
 
     try {
       this.supportSidePanel = typeof this.getApi().sidePanel !== 'undefined';
       console.info('SidePanel support: ', this.supportSidePanel);
-    } catch (e) {
+    } catch {
       /* empty */
     }
 
