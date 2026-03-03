@@ -15,18 +15,19 @@
       </h1>
       <div id="version"></div>
       <div id="main-menu">
-        <button id="main-menu-button">
-          <svg class="icon">
+        <button id="main-menu-button" aria-label="Open menu">
+          <svg class="icon" aria-hidden="true">
             <use href="../sprites/solid.svg#ellipsis-v"></use>
           </svg>
         </button>
         <div id="main-menu-content">
-          <label
-            class="menu-item switch"
-            for="advanced-toggle-all"
-            id="advanced-toggle-all-label"
-          >
-            Show Advanced
+          <div class="menu-item switch">
+            <label
+              for="advanced-toggle-all"
+              id="advanced-toggle-all-label"
+            >
+              Show Advanced
+            </label>
             <label class="switch">
               <input
                 type="checkbox"
@@ -35,10 +36,10 @@
               />
               <span class="slider"></span>
             </label>
-          </label>
+          </div>
           <button class="menu-item" id="menu-all-options">
             See All Options
-            <svg class="icon">
+            <svg class="icon" aria-hidden="true">
               <use href="../sprites/solid.svg#external-link-alt"></use>
             </svg>
           </button>
@@ -56,9 +57,10 @@
           class="panel-section-footer-button"
           id="create-cookie"
           type="button"
+          aria-label="Create new cookie"
         >
           <div>
-            <svg class="icon"><use href="../sprites/solid.svg#plus"></use></svg>
+            <svg class="icon" aria-hidden="true"><use href="../sprites/solid.svg#plus"></use></svg>
             <div class="tooltip" role="tooltip">Add</div>
           </div>
         </button>
@@ -68,9 +70,10 @@
           class="panel-section-footer-button danger"
           id="delete-all-cookies"
           type="button"
+          aria-label="Delete all cookies"
         >
           <div>
-            <svg class="icon">
+            <svg class="icon" aria-hidden="true">
               <use href="../sprites/solid.svg#trash"></use>
             </svg>
             <div class="tooltip" role="tooltip">Delete All</div>
@@ -82,9 +85,10 @@
           class="panel-section-footer-button"
           id="import-cookies"
           type="button"
+          aria-label="Import cookies"
         >
           <div>
-            <svg class="icon">
+            <svg class="icon" aria-hidden="true">
               <use href="../sprites/solid.svg#file-import"></use>
             </svg>
             <div class="tooltip" role="tooltip">Import</div>
@@ -96,9 +100,10 @@
           class="panel-section-footer-button"
           id="export-cookies"
           type="button"
+          aria-label="Export cookies"
         >
           <div>
-            <svg class="icon">
+            <svg class="icon" aria-hidden="true">
               <use href="../sprites/solid.svg#file-export"></use>
             </svg>
             <div class="tooltip" role="tooltip">Export</div>
@@ -113,9 +118,10 @@
           class="panel-section-footer-button"
           id="return-list-add"
           type="button"
+          aria-label="Cancel and return to list"
         >
           <div>
-            <svg class="icon">
+            <svg class="icon" aria-hidden="true">
               <use href="../sprites/solid.svg#arrow-left"></use>
             </svg>
             <div class="tooltip" role="tooltip">Cancel</div>
@@ -127,9 +133,10 @@
           class="panel-section-footer-button primary"
           id="save-create-cookie"
           type="button"
+          aria-label="Save new cookie"
         >
           <div>
-            <svg class="icon"><use href="../sprites/solid.svg#save"></use></svg>
+            <svg class="icon" aria-hidden="true"><use href="../sprites/solid.svg#save"></use></svg>
             <div class="tooltip" role="tooltip">Add</div>
           </div>
         </button>
@@ -142,9 +149,10 @@
           class="panel-section-footer-button"
           id="return-list-import"
           type="button"
+          aria-label="Cancel and return to list"
         >
           <div>
-            <svg class="icon">
+            <svg class="icon" aria-hidden="true">
               <use href="../sprites/solid.svg#arrow-left"></use>
             </svg>
             <div class="tooltip" role="tooltip">Cancel</div>
@@ -156,9 +164,10 @@
           class="panel-section-footer-button primary"
           id="save-import-cookie"
           type="button"
+          aria-label="Import cookies"
         >
           <div>
-            <svg class="icon">
+            <svg class="icon" aria-hidden="true">
               <use href="../sprites/solid.svg#file-import"></use>
             </svg>
             <div class="tooltip" role="tooltip">Import</div>
@@ -175,7 +184,7 @@
           aria-label="Dismiss Notification"
           type="button"
         >
-          <svg class="icon"><use href="../sprites/solid.svg#times"></use></svg>
+          <svg class="icon" aria-hidden="true"><use href="../sprites/solid.svg#times"></use></svg>
         </button>
       </div>
     </div>
@@ -191,7 +200,7 @@
           role="button"
           aria-expanded="false"
         >
-          <svg class="icon arrow">
+          <svg class="icon arrow" aria-hidden="true">
             <use href="../sprites/solid.svg#angle-down"></use>
           </svg>
           <span class="header-name"></span>
@@ -204,7 +213,7 @@
               tabindex="-1"
               type="button"
             >
-              <svg class="icon">
+              <svg class="icon" aria-hidden="true">
                 <use href="../sprites/solid.svg#trash"></use>
               </svg>
             </button>
@@ -219,7 +228,7 @@
                 aria-label="Delete"
                 type="button"
               >
-                <svg class="icon">
+                <svg class="icon" aria-hidden="true">
                   <use href="../sprites/solid.svg#trash"></use>
                 </svg>
               </button>
@@ -229,24 +238,24 @@
                 aria-label="Save"
                 type="submit"
               >
-                <svg class="icon">
+                <svg class="icon" aria-hidden="true">
                   <use href="../sprites/solid.svg#save"></use>
                 </svg>
               </button>
             </div>
             <form data-id="" class="form container">
               <div>
-                <label class="label-name">Name</label>
-                <input name="name" type="text" class="input-name" />
+                <label class="label-name" for="cookie-name">Name</label>
+                <input id="cookie-name" name="name" type="text" class="input-name" />
               </div>
               <div>
-                <label class="label-value">Value</label>
-                <textarea name="value" class="input-value"></textarea>
+                <label class="label-value" for="cookie-value">Value</label>
+                <textarea id="cookie-value" name="value" class="input-value"></textarea>
               </div>
-              <button class="advanced-toggle" type="button">
+              <button class="advanced-toggle" type="button" aria-expanded="false" aria-controls="advanced-form">
                 Show Advanced
               </button>
-              <div class="advanced-form">
+              <div class="advanced-form" id="advanced-form">
                 <div>
                   <label class="label-domain">Domain</label>
                   <input name="domain" type="text" class="input-domain" />
