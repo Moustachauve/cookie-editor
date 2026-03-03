@@ -22,8 +22,8 @@ export class HeaderstringFormat {
         continue;
       }
       cookies.push({
-        name: rawCookie.substring(0, eqPos),
-        value: rawCookie.substring(eqPos + 1),
+        name: rawCookie.substring(0, eqPos).trim(),
+        value: rawCookie.substring(eqPos + 1).trim(),
       });
     }
 

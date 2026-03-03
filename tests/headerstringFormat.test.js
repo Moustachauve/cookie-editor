@@ -29,11 +29,13 @@ describe('HeaderstringFormat', () => {
       expect(result[1]).toEqual({ name: 'cookie2', value: 'hello world' });
     });
 
-    it('should preserve whitespace in cookie parts', () => {
-      const result = HeaderstringFormat.parse('  cookie1  =  value1  ;  cookie2=value2');
-      // The parser preserves whitespace in names and values
-      expect(result[0].name).toBe('cookie1  ');
-      expect(result[0].value).toBe('  value1');
+    it('should trim whitespace from cookie name and value', () => {
+      const result = HeaderstringFormat.parse(
+        '  cookie1  =  value1  ;  cookie2=value2'
+      );
+      // RFC 6265 requires trimming leading/trailing whitespace from name and value
+      expect(result[0].name).toBe('cookie1');
+      expect(result[0].value).toBe('value1');
       expect(result[1].name).toBe('cookie2');
       expect(result[1].value).toBe('value2');
     });
