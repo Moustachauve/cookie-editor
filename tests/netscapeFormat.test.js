@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { NetscapeFormat } from '../interface/lib/netscapeFormat.js';
 
 describe('NetscapeFormat', () => {
@@ -105,13 +105,16 @@ describe('NetscapeFormat', () => {
         }
       };
       const result = NetscapeFormat.format(cookies);
-      expect(result).toContain('.example.com');
-      expect(result).toContain('cookie1');
-      expect(result).toContain('value1');
+      const expectedCookieLine = '.example.com\tTRUE\t/\tTRUE\t1893456000\tcookie1\tvalue1';
       expect(result).toContain('# Netscape HTTP Cookie File');
+      expect(result).toContain(expectedCookieLine);
     });
 
     it('should handle session cookie (no expirationDate)', () => {
+      vi.useFakeTimers();
+      const now = new Date();
+      vi.setSystemTime(now);
+
       const cookies = {
         0: {
           cookie: {
@@ -127,8 +130,12 @@ describe('NetscapeFormat', () => {
         }
       };
       const result = NetscapeFormat.format(cookies);
-      // Session cookies get a 1-day TTL
-      expect(result).toContain('session_cookie');
+      // Session cookies get a 1-day TTL. Check for the correct expiration.
+      const expectedExpiration = Math.trunc(now.getTime() / 1000) + 86400;
+      const expectedLine = `.example.com\tTRUE\t/\tFALSE\t${expectedExpiration}\tsession_cookie\ttest_value`;
+      expect(result).toContain(expectedLine);
+
+      vi.useRealTimers();
     });
 
     it('should handle httpOnly cookies', () => {
@@ -168,8 +175,9 @@ describe('NetscapeFormat', () => {
         }
       };
       const result = NetscapeFormat.format(cookies);
-      // hostOnly true should output FALSE for includesSubdomain
-      expect(result).toContain('FALSE');
+      // hostOnly: true should result in FALSE for the includesSubdomain flag.
+      const expectedLine = '.example.com\tFALSE\t/\tFALSE\t1893456000\tcookie1\tvalue1';
+      expect(result).toContain(expectedLine);
     });
 
     it('should handle empty cookie object', () => {

@@ -31,6 +31,7 @@ describe('HeaderstringFormat', () => {
 
     it('should trim whitespace from cookie parts', () => {
       const result = HeaderstringFormat.parse('  cookie1  =  value1  ;  cookie2=value2');
+      // Note: Current implementation preserves whitespace in name/value
       // The first cookie has whitespace after name, before value
       expect(result[0].name).toBe('cookie1  ');
       expect(result[0].value).toBe('  value1');
