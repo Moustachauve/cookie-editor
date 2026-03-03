@@ -29,9 +29,9 @@ describe('HeaderstringFormat', () => {
       expect(result[1]).toEqual({ name: 'cookie2', value: 'hello world' });
     });
 
-    it('should trim whitespace from cookie parts', () => {
+    it('should preserve whitespace in cookie parts', () => {
       const result = HeaderstringFormat.parse('  cookie1  =  value1  ;  cookie2=value2');
-      // The first cookie has whitespace after name, before value
+      // The parser preserves whitespace in names and values
       expect(result[0].name).toBe('cookie1  ');
       expect(result[0].value).toBe('  value1');
       expect(result[1].name).toBe('cookie2');
