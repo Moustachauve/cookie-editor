@@ -21,6 +21,28 @@ export class GenericCookieHandler extends EventEmitter {
    */
   getAllCookies(callback) {
     if (this.browserDetector.supportsPromises()) {
+      if (this.browserDetector.isSafari()) {
+        this.browserDetector
+          .getApi()
+          .cookies.getAllCookieStores()
+          .then(stores => {
+            const promises = stores.map(store => {
+              return this.browserDetector.getApi().cookies.getAll({
+                url: this.currentTab.url,
+                storeId: store.id,
+              });
+            });
+            return Promise.all(promises);
+          })
+          .then(cookies => {
+            callback(cookies.flat());
+          })
+          .catch(e => {
+            console.error('Failed to retrieve cookies', e);
+            callback([]);
+          });
+        return;
+      }
       this.browserDetector
         .getApi()
         .cookies.getAll({
