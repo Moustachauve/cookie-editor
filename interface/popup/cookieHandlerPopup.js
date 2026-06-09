@@ -61,22 +61,12 @@ export class CookieHandlerPopup extends GenericCookieHandler {
           'Temporary cookie added to ensure Cookie Editor works correctly in Safari, please ignore it',
         path: '/',
       };
-
-      if (this.browserDetector.supportsPromises()) {
-        this.browserDetector
-          .getApi()
-          .cookies.set(tempCookie)
-          .catch(error => {
-            console.warn('Failed to set temporary Safari cookie:', error);
-          });
-      } else {
-        this.browserDetector.getApi().cookies.set(tempCookie, () => {
-          const error = this.browserDetector.getApi().runtime.lastError;
-          if (error) {
-            console.warn('Failed to set temporary Safari cookie:', error);
-          }
+      this.browserDetector
+        .getApi()
+        .cookies.set(tempCookie)
+        .catch(error => {
+          console.warn('Failed to set temporary Safari cookie:', error);
         });
-      }
     } catch (error) {
       console.warn('Error adding temporary Safari cookie:', error);
     }
