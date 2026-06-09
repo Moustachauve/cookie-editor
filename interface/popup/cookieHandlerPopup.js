@@ -39,10 +39,47 @@ export class CookieHandlerPopup extends GenericCookieHandler {
     api.tabs.onActivated.addListener(this.onTabActivated);
     if (!this.browserDetector.isSafari()) {
       api.cookies.onChanged.addListener(this.onCookiesChanged);
+    } else {
+      // Safari requires a temporary cookie to be added before retrieving all cookies
+      this.addTemporarySafariCookie();
     }
 
     this.emit('ready');
     this.isReady = true;
+  };
+
+  /**
+   * Adds a temporary session-level cookie for Safari to ensure proper cookie retrieval.
+   * The cookie is named with a 'z' prefix to sort it to the end of the list.
+   */
+  addTemporarySafariCookie = () => {
+    try {
+      const tempCookie = {
+        url: this.currentTab.url,
+        name: 'zcookie-editor',
+        value:
+          'Temporary cookie added to ensure Cookie Editor works correctly in Safari, please ignore it',
+        path: '/',
+      };
+
+      if (this.browserDetector.supportsPromises()) {
+        this.browserDetector
+          .getApi()
+          .cookies.set(tempCookie)
+          .catch(error => {
+            console.warn('Failed to set temporary Safari cookie:', error);
+          });
+      } else {
+        this.browserDetector.getApi().cookies.set(tempCookie, () => {
+          const error = this.browserDetector.getApi().runtime.lastError;
+          if (error) {
+            console.warn('Failed to set temporary Safari cookie:', error);
+          }
+        });
+      }
+    } catch (error) {
+      console.warn('Error adding temporary Safari cookie:', error);
+    }
   };
 
   /**
