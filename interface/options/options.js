@@ -1,6 +1,7 @@
 import { BrowserDetector } from '../lib/browserDetector.js';
 import { Cookie } from '../lib/cookie.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
+import { initI18n } from '../lib/i18n/init.js';
 import { JsonFormat } from '../lib/jsonFormat.js';
 import { NetscapeFormat } from '../lib/netscapeFormat.js';
 import { OptionsHandler } from '../lib/optionsHandler.js';
@@ -23,6 +24,9 @@ document.addEventListener('DOMContentLoaded', async event => {
   const themeInput = document.getElementById('theme');
   const buttonBarTopInput = document.getElementById('button-bar-top');
   const adsEnabledInput = document.getElementById('ads-enabled');
+
+  // Initialize i18n
+  initI18n();
 
   await optionHandler.loadOptions();
   themeHandler.updateTheme();
