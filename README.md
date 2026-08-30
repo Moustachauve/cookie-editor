@@ -180,4 +180,4 @@ It is not supported by Google, and Google specifically disclaims all warranties 
 
 ## 📄 License
 
-Please refer to the repository's license file for licensing information.
+This project is licensed under the GNU General Public License v3.0 (GPL-3.0). See the [LICENSE](LICENSE) file for more information.
