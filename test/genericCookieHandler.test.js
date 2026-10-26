@@ -149,3 +149,46 @@ test('GenericCookieHandler - removeCookie on Safari queries all cookies and remo
     storeId: '0',
   });
 });
+
+test('GenericCookieHandler - getAllCookies and getAllCookiesInBrowser query chrome.cookies.getAll', async () => {
+  const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
+  const handler = new GenericCookieHandler(detector);
+  handler.currentTab = {
+    url: 'https://example.com/app',
+    cookieStoreId: '0',
+  };
+
+  const tabCookies = [{ name: 'c1', value: 'v1' }];
+  stubs.cookies.getAll.resolves(tabCookies);
+
+  const resTab = await handler.getAllCookies();
+  assert.deepEqual(resTab, tabCookies);
+  assert.deepEqual(stubs.cookies.getAll.firstCall.args[0], {
+    url: 'https://example.com/app',
+    storeId: '0',
+  });
+
+  const resAll = await handler.getAllCookiesInBrowser();
+  assert.deepEqual(resAll, tabCookies);
+  assert.deepEqual(stubs.cookies.getAll.secondCall.args[0], {});
+});
+
+test('GenericCookieHandler - prepareCookie clears domain when hostOnly is true', () => {
+  const { detector } = createSinonBrowserMock({ browserName: 'chrome' });
+  const handler = new GenericCookieHandler(detector);
+  handler.currentTab = {
+    url: 'https://example.com/app',
+    cookieStoreId: '0',
+  };
+
+  const hostOnlyPrepared = handler.prepareCookie(
+    {
+      name: 'host_cookie',
+      value: '1',
+      domain: 'example.com',
+      hostOnly: true,
+    },
+    'https://example.com/app'
+  );
+  assert.equal(hostOnlyPrepared.domain, null);
+});

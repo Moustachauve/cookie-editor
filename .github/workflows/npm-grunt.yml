@@ -44,7 +44,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
       - name: Test
         run: |
           npm test
+          npm run test:e2e
           grunt exec:lint

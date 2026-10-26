@@ -97,3 +97,53 @@ test('NetscapeFormat - format and parse Netscape cookies', () => {
   assert.equal(parsed[0].secure, true);
   assert.equal(parsed[0].expiration, '1900000000');
 });
+
+test('JsonFormat - normalizes unspecified sameSite and clears storeId', () => {
+  const jsonOut = JsonFormat.format({
+    c1: {
+      cookie: {
+        name: 'a',
+        value: 'b',
+        sameSite: 'unspecified',
+        storeId: '0',
+      },
+    },
+  });
+  const parsedJson = JsonFormat.parse(jsonOut);
+  assert.equal(parsedJson[0].sameSite, null);
+  assert.equal(parsedJson[0].storeId, null);
+});
+
+test('HeaderstringFormat - throws when no valid key=value pairs exist', () => {
+  assert.throws(() => HeaderstringFormat.parse('invalid_without_equals; ;'), {
+    message: 'No cookies found.',
+  });
+});
+
+test('NetscapeFormat - handles #HttpOnly_ prefix, session TTL, and malformed column count', () => {
+  const netscapeStr = NetscapeFormat.format({
+    c1: {
+      cookie: {
+        name: 'http_only_sid',
+        value: 'secret',
+        domain: 'example.com',
+        path: '/',
+        secure: false,
+        session: true,
+        hostOnly: true,
+        httpOnly: true,
+      },
+    },
+  });
+  assert.ok(netscapeStr.includes('#HttpOnly_example.com\tFALSE\t/\tFALSE\t'));
+
+  const parsedNetscape = NetscapeFormat.parse(netscapeStr);
+  assert.equal(parsedNetscape.length, 1);
+  assert.equal(parsedNetscape[0].httpOnly, true);
+  assert.equal(parsedNetscape[0].hostOnly, true);
+  assert.equal(parsedNetscape[0].secure, false);
+
+  assert.throws(() => NetscapeFormat.parse('example.com\tTRUE\t/\tONLY_FOUR'), {
+    message: 'Invalid netscape format',
+  });
+});

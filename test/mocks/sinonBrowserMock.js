@@ -53,6 +53,12 @@ export function createSinonBrowserMock(options = {}) {
       getManifest: sinon.stub().returns({ version: '1.13.0' }),
       getURL: sinon.stub().callsFake(path => `chrome-extension://mock/${path}`),
     },
+    action: {
+      setPopup: sinon.stub().resolves(),
+    },
+    sidePanel: {
+      setPanelBehavior: sinon.stub().resolves(),
+    },
     devtools: {
       inspectedWindow: { tabId: 1 },
     },
@@ -65,6 +71,8 @@ export function createSinonBrowserMock(options = {}) {
     isChrome: () => browserName === 'chrome',
     isEdge: () => browserName === 'edge',
     getBrowserName: () => browserName,
+    supportsSidePanel: () => Boolean(options.supportsSidePanel),
+    overrideBrowserName: sinon.spy(),
   };
 
   return { detector, stubs };

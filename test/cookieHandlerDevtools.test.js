@@ -86,3 +86,70 @@ test('CookieHandlerDevtools - getAllCookies sends storeId to background script',
     },
   });
 });
+
+test('CookieHandlerDevtools - removeCookie sends request and throws on background error response', async () => {
+  const { detector, stubs } = createSinonBrowserMock();
+  const handler = await createInitializedDevtoolsHandler(detector, {
+    id: 1,
+    url: 'https://example.com/home',
+    cookieStoreId: '0',
+  });
+
+  stubs.runtime.sendMessage.resetHistory();
+  stubs.runtime.sendMessage.resolves({ name: 'old_cookie' });
+
+  const removed = await handler.removeCookie(
+    'old_cookie',
+    'https://example.com/home'
+  );
+  assert.deepEqual(removed, { name: 'old_cookie' });
+  assert.deepEqual(stubs.runtime.sendMessage.firstCall.args[0], {
+    type: 'removeCookie',
+    params: {
+      name: 'old_cookie',
+      url: 'https://example.com/home',
+      storeId: '0',
+    },
+  });
+
+  stubs.runtime.sendMessage.resolves({
+    success: false,
+    error: 'Cannot remove cookie',
+  });
+  await assert.rejects(
+    () => handler.removeCookie('old_cookie', 'https://example.com/home'),
+    { message: 'Cannot remove cookie' }
+  );
+});
+
+test('CookieHandlerDevtools - onMessage handles cookiesChanged and tabsChanged port events', async () => {
+  const { detector, stubs } = createSinonBrowserMock();
+  const handler = await createInitializedDevtoolsHandler(detector, {
+    id: 1,
+    url: 'https://example.com/home',
+    cookieStoreId: '0',
+  });
+
+  let emittedChange = null;
+  handler.on('cookiesChanged', data => {
+    emittedChange = data;
+  });
+
+  handler.onMessage({
+    type: 'cookiesChanged',
+    data: { cookie: { domain: '.example.com', name: 'sid' } },
+  });
+  assert.deepEqual(emittedChange, {
+    cookie: { domain: '.example.com', name: 'sid' },
+  });
+
+  stubs.runtime.sendMessage.resolves([
+    { id: 1, url: 'https://example.com/updated' },
+  ]);
+  handler.onMessage({
+    type: 'tabsChanged',
+    data: { status: 'complete' },
+  });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(handler.currentTab.url, 'https://example.com/updated');
+});

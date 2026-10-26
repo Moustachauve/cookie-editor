@@ -76,3 +76,55 @@ test('OptionsHandler - validation methods', () => {
   assert.equal(optionsHandler.isThemeValid(Themes.Dark), true);
   assert.equal(optionsHandler.isThemeValid('non_existent_theme'), false);
 });
+
+test('OptionsHandler - falls back to safe defaults when stored values are invalid', async () => {
+  const { detector, stubs } = createSinonBrowserMock();
+  stubs.storage.local.get.resolves({
+    all_options: {
+      advancedCookies: false,
+      devtoolsEnabled: true,
+      animationsEnabled: true,
+      exportFormat: 'corrupted_format',
+      extraInfo: 'corrupted_info',
+      theme: 'corrupted_theme',
+      buttonBarTop: false,
+      adsEnabled: true,
+    },
+  });
+
+  const storageHandler = new GenericStorageHandler(detector);
+  const optionsHandler = new OptionsHandler(detector, storageHandler);
+  await optionsHandler.loadOptions();
+
+  assert.equal(optionsHandler.getExportFormat(), ExportFormats.Ask);
+  assert.equal(optionsHandler.getExtraInfo(), ExtraInfos.Nothing);
+  assert.equal(optionsHandler.getTheme(), Themes.Auto);
+});
+
+test('OptionsHandler - onMessage reloads and emits optionsChanged only for external senders', async () => {
+  const { detector, stubs } = createSinonBrowserMock();
+  stubs.storage.local.get.resolves({});
+
+  const storageHandler = new GenericStorageHandler(detector);
+  const optionsHandler = new OptionsHandler(detector, storageHandler);
+  await optionsHandler.loadOptions();
+
+  let emittedOldOptions = null;
+  optionsHandler.on('optionsChanged', oldOpts => {
+    emittedOldOptions = oldOpts;
+  });
+
+  // Ignore optionsChanged sent by self
+  await optionsHandler.onMessage({
+    type: 'optionsChanged',
+    data: { from: optionsHandler.guid },
+  });
+  assert.equal(emittedOldOptions, null);
+
+  // Reload and emit optionsChanged when sent by another context
+  await optionsHandler.onMessage({
+    type: 'optionsChanged',
+    data: { from: 'other-guid' },
+  });
+  assert.ok(emittedOldOptions !== null);
+});

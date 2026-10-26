@@ -14,6 +14,8 @@ export default [
       'node_modules/**',
       '.vscode/extensions.js',
       'safari/**',
+      'test-results/**',
+      'playwright-report/**',
     ],
   },
 
@@ -45,9 +47,9 @@ export default [
     },
   },
 
-  // Override for Node.js configuration files
+  // Override for Node.js configuration and test files
   {
-    files: ['eslint.config.mjs'],
+    files: ['eslint.config.mjs', 'playwright.config.js', 'test/**/*.js'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -55,7 +57,7 @@ export default [
     },
   },
   {
-    files: ['Gruntfile.js'],
+    files: ['Gruntfile.js', 'Gruntfile.cjs'],
     languageOptions: {
       sourceType: 'commonjs',
       globals: {

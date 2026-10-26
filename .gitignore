@@ -3,6 +3,8 @@ manifest.json
 build/*
 dist/*
 node_modules
+test-results/
+playwright-report/
 
 ## User settings
 xcuserdata/

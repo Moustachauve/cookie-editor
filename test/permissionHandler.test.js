@@ -124,3 +124,27 @@ test('Devtools PermissionHandler - sends messages through runtime.sendMessage', 
     params: 'https://example.com',
   });
 });
+
+test('Devtools PermissionHandler - canHavePermissions and requestPermission', async () => {
+  const { detector, stubs } = createSinonBrowserMock();
+  const devtoolsHandler = new DevtoolsPermissionHandler(detector);
+
+  assert.equal(devtoolsHandler.canHavePermissions('https://example.com'), true);
+  assert.equal(devtoolsHandler.canHavePermissions('about:debugging'), false);
+  assert.equal(devtoolsHandler.canHavePermissions('edge://flags'), false);
+
+  stubs.runtime.sendMessage.resolves(true);
+  const reqRes = await devtoolsHandler.requestPermission('https://example.com');
+  assert.equal(reqRes, true);
+  assert.deepEqual(stubs.runtime.sendMessage.firstCall.args[0], {
+    type: 'permissionsRequest',
+    params: 'https://example.com',
+  });
+});
+
+test('PermissionHandler - checkPermissions defaults to true when permissions API is unavailable', async () => {
+  const { detector, stubs } = createSinonBrowserMock();
+  delete stubs.permissions;
+  const stdHandler = new PermissionHandler(detector);
+  assert.equal(await stdHandler.checkPermissions('https://example.com'), true);
+});

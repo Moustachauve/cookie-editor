@@ -352,6 +352,13 @@ module.exports = function (grunt) {
     'compress',
   ]);
 
+  grunt.registerTask('build-chrome', [
+    'json-replace:chrome',
+    'clean:chrome',
+    'copy:chrome',
+    'replace:chrome',
+  ]);
+
   grunt.registerTask('build-safari', [
     'json-replace:safari',
     'clean:safari',
