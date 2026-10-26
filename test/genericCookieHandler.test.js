@@ -73,6 +73,26 @@ test('GenericCookieHandler - prepareCookie Safari domain fallback quirks', () =>
   assert.equal(prepared.url, 'http://.example.com');
 });
 
+test('GenericCookieHandler - prepareCookie clears domain when hostOnly is true', () => {
+  const { detector } = createSinonBrowserMock({ browserName: 'chrome' });
+  const handler = new GenericCookieHandler(detector);
+  handler.currentTab = {
+    url: 'https://example.com/app',
+    cookieStoreId: '0',
+  };
+
+  const hostOnlyPrepared = handler.prepareCookie(
+    {
+      name: 'host_cookie',
+      value: '1',
+      domain: 'example.com',
+      hostOnly: true,
+    },
+    'https://example.com/app'
+  );
+  assert.equal(hostOnlyPrepared.domain, null);
+});
+
 test('GenericCookieHandler - saveCookie calls chrome.cookies.set with prepared data', async () => {
   const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
   const savedResult = { name: 'my_cookie', value: '123' };
@@ -148,4 +168,35 @@ test('GenericCookieHandler - removeCookie on Safari queries all cookies and remo
     url: 'http://.example.com',
     storeId: '0',
   });
+});
+
+test('GenericCookieHandler - getAllCookies queries cookies for currentTab url and storeId', async () => {
+  const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
+  const handler = new GenericCookieHandler(detector);
+  handler.currentTab = {
+    url: 'https://example.com/app',
+    cookieStoreId: '0',
+  };
+
+  const tabCookies = [{ name: 'c1', value: 'v1' }];
+  stubs.cookies.getAll.resolves(tabCookies);
+
+  const resTab = await handler.getAllCookies();
+  assert.deepEqual(resTab, tabCookies);
+  assert.deepEqual(stubs.cookies.getAll.firstCall.args[0], {
+    url: 'https://example.com/app',
+    storeId: '0',
+  });
+});
+
+test('GenericCookieHandler - getAllCookiesInBrowser queries all cookies with empty filter', async () => {
+  const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
+  const handler = new GenericCookieHandler(detector);
+
+  const allCookies = [{ name: 'c1', value: 'v1' }];
+  stubs.cookies.getAll.resolves(allCookies);
+
+  const resAll = await handler.getAllCookiesInBrowser();
+  assert.deepEqual(resAll, allCookies);
+  assert.deepEqual(stubs.cookies.getAll.firstCall.args[0], {});
 });

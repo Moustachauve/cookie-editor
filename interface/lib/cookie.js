@@ -358,7 +358,7 @@ export class Cookie {
     const valueInput = this.baseHtml.querySelector('#session-' + this.guid);
     const header = this.baseHtml.querySelector('.header');
     valueInput.checked = !this.cookie.expirationDate;
-    this.afterSessionChanged();
+    this.afterSessionChanged(!this.cookie.expirationDate);
 
     this.animateChangeOnNode(header);
     this.animateChangeOnNode(valueInput);

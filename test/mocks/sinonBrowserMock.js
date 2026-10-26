@@ -1,4 +1,8 @@
+import { JSDOM } from 'jsdom';
 import sinon from 'sinon';
+
+import { Browsers } from '../../interface/lib/browsers.js';
+import { Env } from '../../interface/lib/env.js';
 
 /**
  * Creates a mock BrowserDetector equipped with Sinon stubs for extension APIs.
@@ -53,6 +57,12 @@ export function createSinonBrowserMock(options = {}) {
       getManifest: sinon.stub().returns({ version: '1.13.0' }),
       getURL: sinon.stub().callsFake(path => `chrome-extension://mock/${path}`),
     },
+    action: {
+      setPopup: sinon.stub().resolves(),
+    },
+    sidePanel: {
+      setPanelBehavior: sinon.stub().resolves(),
+    },
     devtools: {
       inspectedWindow: { tabId: 1 },
     },
@@ -68,4 +78,72 @@ export function createSinonBrowserMock(options = {}) {
   };
 
   return { detector, stubs };
+}
+
+/**
+ * Waits for a microtask turn so pending promises settle.
+ * @return {Promise<void>}
+ */
+export function flushMicrotasks() {
+  return new Promise(resolve => setImmediate(resolve));
+}
+
+/**
+ * Installs `globalThis.chrome` and `Env.browserName` for tests that use the
+ * real `BrowserDetector`, returning a restore callback for teardown.
+ * @param {object} stubs Sinon browser API stubs.
+ * @param {string} [browserName=Browsers.Chrome] Browser name to set in Env.
+ * @return {function(): void} Restore function.
+ */
+export function installChromeGlobal(stubs, browserName = Browsers.Chrome) {
+  const hadChrome = 'chrome' in globalThis;
+  const prevChrome = globalThis.chrome;
+  const hadBrowser = 'browser' in globalThis;
+  const prevBrowser = globalThis.browser;
+  const prevBrowserName = Env.browserName;
+
+  globalThis.chrome = stubs;
+  delete globalThis.browser;
+  Env.browserName = browserName;
+
+  return () => {
+    if (hadChrome) {
+      globalThis.chrome = prevChrome;
+    } else {
+      delete globalThis.chrome;
+    }
+    if (hadBrowser) {
+      globalThis.browser = prevBrowser;
+    } else {
+      delete globalThis.browser;
+    }
+    Env.browserName = prevBrowserName;
+  };
+}
+
+/**
+ * Initializes a JSDOM environment and binds `window`, `document`, and `Element`
+ * on `globalThis`, returning a teardown function that closes the window and
+ * restores previous globals.
+ * @param {string} html HTML markup to load.
+ * @return {{ dom: JSDOM, teardown: function(): void }}
+ */
+export function setupDom(html = '<!doctype html><html><body></body></html>') {
+  const prevWindow = globalThis.window;
+  const prevDocument = globalThis.document;
+  const prevElement = globalThis.Element;
+
+  const dom = new JSDOM(html);
+  globalThis.window = dom.window;
+  globalThis.document = dom.window.document;
+  globalThis.Element = dom.window.Element;
+
+  const teardown = () => {
+    dom.window.close();
+    globalThis.window = prevWindow;
+    globalThis.document = prevDocument;
+    globalThis.Element = prevElement;
+  };
+
+  return { dom, teardown };
 }

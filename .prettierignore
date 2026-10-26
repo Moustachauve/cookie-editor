@@ -4,6 +4,8 @@
 /tmp
 /out-tsc
 /bazel-out
+/test-results
+/playwright-report
 
 # Node
 /node_modules

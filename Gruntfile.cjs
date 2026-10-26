@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-undef
 module.exports = function (grunt) {
   // Project configuration.
   grunt.initConfig({
@@ -350,6 +349,13 @@ module.exports = function (grunt) {
     'replace',
     'removelogging',
     'compress',
+  ]);
+
+  grunt.registerTask('build-chrome', [
+    'json-replace:chrome',
+    'clean:chrome',
+    'copy:chrome',
+    'replace:chrome',
   ]);
 
   grunt.registerTask('build-safari', [

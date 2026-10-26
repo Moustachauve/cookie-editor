@@ -8,6 +8,7 @@
   },
   "license": "GPL-3.0-only",
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "eslint": "^8.47.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^9.0.0",
@@ -21,6 +22,7 @@
     "grunt-json-replace": "^0.1.2",
     "grunt-remove-logging": "^0.2.0",
     "grunt-replace": "^2.0.2",
+    "jsdom": "^29.1.1",
     "prettier": "^3.5.3",
     "prettier-eslint": "^16.4.2",
     "prettier-plugin-organize-imports": "^4.1.0",
@@ -28,6 +30,7 @@
   },
   "scripts": {
     "test": "node --test test/*.test.js",
+    "test:e2e": "grunt build-chrome && playwright test",
     "lint": "eslint . --config eslint.config.mjs",
     "lint:fix": "eslint . --fix --config eslint.config.mjs"
   }
