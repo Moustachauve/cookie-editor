@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
-import test from 'node:test';
+import test, { afterEach } from 'node:test';
+
+import sinon from 'sinon';
 
 import { Ad } from '../interface/lib/ads/ad.js';
 import { AdHandler } from '../interface/lib/ads/adHandler.js';
@@ -8,169 +10,165 @@ import { GenericStorageHandler } from '../interface/lib/genericStorageHandler.js
 import { OptionsHandler } from '../interface/lib/optionsHandler.js';
 import { createSinonBrowserMock } from './mocks/sinonBrowserMock.js';
 
-test('AdHandler - isAdValid checks browser compatibility and dismissal state', async () => {
-  const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
-  const storageHandler = new GenericStorageHandler(detector);
-  const optionsHandler = new OptionsHandler(detector, storageHandler);
-  const adHandler = new AdHandler(detector, storageHandler, optionsHandler);
+const DAY_MS = 24 * 60 * 60 * 1000;
 
-  const firefoxOnlyAd = new Ad({
-    id: 'ff_ad',
-    text: 'Firefox Ad',
-    tooltip: 'Tip',
-    url: 'https://example.com',
-    supportedBrowsers: [Browsers.Firefox],
-    refreshDays: 30,
-  });
-
-  assert.equal(await adHandler.isAdValid(firefoxOnlyAd), false);
-
-  const chromeAd = new Ad({
-    id: 'chrome_ad',
-    text: 'Chrome Ad',
-    tooltip: 'Tip',
-    url: 'https://example.com',
-    supportedBrowsers: [Browsers.Chrome],
-    refreshDays: 10,
-  });
-
-  // Never dismissed -> valid
-  stubs.storage.local.get.resolves({});
-  assert.equal(await adHandler.isAdValid(chromeAd), true);
-
-  // Dismissed recently -> invalid
-  stubs.storage.local.get.resolves({
-    'adDismiss.chrome_ad': { version: 1, date: Date.now() },
-  });
-  assert.equal(await adHandler.isAdValid(chromeAd), false);
+afterEach(() => {
+  sinon.restore();
 });
 
-test('AdHandler - isAdTimeframeValid checks startDate and endDate boundaries', () => {
-  const { detector } = createSinonBrowserMock();
-  const storageHandler = new GenericStorageHandler(detector);
-  const optionsHandler = new OptionsHandler(detector, storageHandler);
-  const adHandler = new AdHandler(detector, storageHandler, optionsHandler);
-
-  const timelessAd = new Ad({
-    id: 'timeless',
-    text: 'Always',
-    tooltip: '',
-    url: 'https://example.com',
-    startDate: null,
-    endDate: null,
-  });
-  assert.equal(adHandler.isAdTimeframeValid(timelessAd), true);
-
-  const futureAd = new Ad({
-    id: 'future',
-    text: 'Future',
-    tooltip: '',
-    url: 'https://example.com',
-    startDate: new Date(Date.now() + 86400000),
-    endDate: null,
-  });
-  assert.equal(adHandler.isAdTimeframeValid(futureAd), false);
-
-  const expiredAd = new Ad({
-    id: 'expired',
-    text: 'Expired',
-    tooltip: '',
-    url: 'https://example.com',
-    startDate: null,
-    endDate: new Date(Date.now() - 86400000),
-  });
-  assert.equal(adHandler.isAdTimeframeValid(expiredAd), false);
-
-  const activeWindowAd = new Ad({
-    id: 'active',
-    text: 'Active',
-    tooltip: '',
-    url: 'https://example.com',
-    startDate: new Date(Date.now() - 86400000),
-    endDate: new Date(Date.now() + 86400000),
-  });
-  assert.equal(adHandler.isAdTimeframeValid(activeWindowAd), true);
-});
-
-test('AdHandler - canShowAnyAd checks options and 24-hour dismissal cooldown', async () => {
-  const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
+/**
+ * Creates an AdHandler and its dependencies backed by Sinon stubs.
+ * @param {object} [options={}]
+ * @return {Promise<{ adHandler: AdHandler, optionsHandler: OptionsHandler, stubs: object }>}
+ */
+async function createAdHandler(options = {}) {
+  const { detector, stubs } = createSinonBrowserMock(options);
   stubs.storage.local.get.resolves({});
   const storageHandler = new GenericStorageHandler(detector);
   const optionsHandler = new OptionsHandler(detector, storageHandler);
   await optionsHandler.loadOptions();
   const adHandler = new AdHandler(detector, storageHandler, optionsHandler);
+  return { adHandler, optionsHandler, stubs };
+}
 
-  // Ads enabled and never dismissed -> true
-  assert.equal(await adHandler.canShowAnyAd(), true);
-
-  // Dismissed 1 hour ago -> false
-  stubs.storage.local.get.resolves({
-    adDismissLast: { version: 1, date: Date.now() - 3600 * 1000 },
+/**
+ * Builds an Ad instance with sensible defaults.
+ * @param {object} [overrides={}]
+ * @return {Ad}
+ */
+function makeAd(overrides = {}) {
+  return new Ad({
+    id: 'test_ad',
+    text: 'Test Ad',
+    tooltip: 'Tip',
+    url: 'https://example.com',
+    supportedBrowsers: Browsers.Any,
+    refreshDays: 10,
+    startDate: null,
+    endDate: null,
+    ...overrides,
   });
-  assert.equal(await adHandler.canShowAnyAd(), false);
+}
 
-  // Dismissed 2 days ago -> true
-  stubs.storage.local.get.resolves({
-    adDismissLast: { version: 1, date: Date.now() - 2 * 86400 * 1000 },
+test('AdHandler - isAdValid checks browser compatibility', async () => {
+  const { adHandler } = await createAdHandler({ browserName: 'chrome' });
+
+  const firefoxOnlyAd = makeAd({
+    id: 'ff_ad',
+    supportedBrowsers: [Browsers.Firefox],
   });
-  assert.equal(await adHandler.canShowAnyAd(), true);
+  const chromeAd = makeAd({
+    id: 'chrome_ad',
+    supportedBrowsers: [Browsers.Chrome],
+  });
 
-  // Ads disabled in options -> false
+  assert.equal(await adHandler.isAdValid(firefoxOnlyAd), false);
+  assert.equal(await adHandler.isAdValid(chromeAd), true);
+});
+
+for (const [label, storedValue, expected] of [
+  ['never dismissed', {}, true],
+  [
+    'dismissed within refreshDays window',
+    { 'adDismiss.test_ad': { version: 1, date: Date.now() - 2 * DAY_MS } },
+    false,
+  ],
+  [
+    'dismissed longer ago than refreshDays',
+    { 'adDismiss.test_ad': { version: 1, date: Date.now() - 15 * DAY_MS } },
+    true,
+  ],
+]) {
+  test(`AdHandler - isAdValid dismissal window: ${label}`, async () => {
+    const { adHandler, stubs } = await createAdHandler();
+    stubs.storage.local.get.resolves(storedValue);
+    assert.equal(
+      await adHandler.isAdValid(makeAd({ refreshDays: 10 })),
+      expected
+    );
+  });
+}
+
+for (const [label, startDate, endDate, expected] of [
+  ['no start or end date', null, null, true],
+  ['future start date', new Date(Date.now() + DAY_MS), null, false],
+  ['past end date', null, new Date(Date.now() - DAY_MS), false],
+  [
+    'within active start and end window',
+    new Date(Date.now() - DAY_MS),
+    new Date(Date.now() + DAY_MS),
+    true,
+  ],
+]) {
+  test(`AdHandler - isAdTimeframeValid: ${label}`, async () => {
+    const { adHandler } = await createAdHandler();
+    assert.equal(
+      adHandler.isAdTimeframeValid(makeAd({ startDate, endDate })),
+      expected
+    );
+  });
+}
+
+for (const [label, storedValue, expected] of [
+  ['never dismissed', {}, true],
+  [
+    'dismissed 1 hour ago',
+    { adDismissLast: { version: 1, date: Date.now() - 3600 * 1000 } },
+    false,
+  ],
+  [
+    'dismissed 2 days ago',
+    { adDismissLast: { version: 1, date: Date.now() - 2 * DAY_MS } },
+    true,
+  ],
+]) {
+  test(`AdHandler - canShowAnyAd cooldown: ${label}`, async () => {
+    const { adHandler, stubs } = await createAdHandler();
+    stubs.storage.local.get.resolves(storedValue);
+    assert.equal(await adHandler.canShowAnyAd(), expected);
+  });
+}
+
+test('AdHandler - canShowAnyAd returns false when ads are disabled in options', async () => {
+  const { adHandler, optionsHandler } = await createAdHandler();
   optionsHandler.setAdsEnabled(false);
   assert.equal(await adHandler.canShowAnyAd(), false);
 });
 
-test('AdHandler - getRandomValidAd filters out unsupported ads and returns false when none match', async () => {
-  const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
-  stubs.storage.local.get.resolves({});
-  const storageHandler = new GenericStorageHandler(detector);
-  const optionsHandler = new OptionsHandler(detector, storageHandler);
-  const adHandler = new AdHandler(detector, storageHandler, optionsHandler);
-
-  const invalidAd = new Ad({
+test('AdHandler - getRandomValidAd selects a supported ad', async () => {
+  const { adHandler } = await createAdHandler({ browserName: 'chrome' });
+  const invalidAd = makeAd({
     id: 'safari_only',
-    text: 'Safari',
-    tooltip: '',
-    url: 'https://example.com',
     supportedBrowsers: [Browsers.Safari],
-    startDate: null,
-    endDate: null,
   });
-  const validAd = new Ad({
-    id: 'universal',
-    text: 'Universal',
-    tooltip: '',
-    url: 'https://example.com',
-    supportedBrowsers: Browsers.Any,
-    startDate: null,
-    endDate: null,
-  });
+  const validAd = makeAd({ id: 'universal', supportedBrowsers: Browsers.Any });
 
   const chosen = await adHandler.getRandomValidAd([invalidAd, validAd]);
   assert.equal(chosen.id, 'universal');
+});
 
-  const noneLeft = await adHandler.getRandomValidAd([invalidAd]);
-  assert.equal(noneLeft, false);
+test('AdHandler - getRandomValidAd returns false when no ads are valid', async () => {
+  const { adHandler } = await createAdHandler({ browserName: 'chrome' });
+  const invalidAd = makeAd({
+    id: 'safari_only',
+    supportedBrowsers: [Browsers.Safari],
+  });
+
+  assert.equal(await adHandler.getRandomValidAd([invalidAd]), false);
 });
 
 test('AdHandler - markAdAsDismissed stores ad-specific and global dismissal timestamps', async () => {
-  const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
-  const storageHandler = new GenericStorageHandler(detector);
-  const optionsHandler = new OptionsHandler(detector, storageHandler);
-  const adHandler = new AdHandler(detector, storageHandler, optionsHandler);
+  const clock = sinon.useFakeTimers(1700000000000);
+  const { adHandler, stubs } = await createAdHandler();
+  stubs.storage.local.set.resetHistory();
 
-  const validAd = new Ad({
-    id: 'universal',
-    text: 'Universal',
-    tooltip: '',
-    url: 'https://example.com',
-    supportedBrowsers: Browsers.Any,
-    startDate: null,
-    endDate: null,
-  });
+  await adHandler.markAdAsDismissed(makeAd({ id: 'universal' }));
 
-  await adHandler.markAdAsDismissed(validAd);
   assert.equal(stubs.storage.local.set.calledTwice, true);
-  assert.ok('adDismiss.universal' in stubs.storage.local.set.firstCall.args[0]);
-  assert.ok('adDismissLast' in stubs.storage.local.set.secondCall.args[0]);
+  assert.deepEqual(stubs.storage.local.set.firstCall.args[0], {
+    'adDismiss.universal': { version: 1, date: clock.now },
+  });
+  assert.deepEqual(stubs.storage.local.set.secondCall.args[0], {
+    adDismissLast: { version: 1, date: clock.now },
+  });
 });

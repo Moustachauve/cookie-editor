@@ -110,7 +110,26 @@ test('PermissionHandler - requestPermission with <all_urls> passes match pattern
   });
 });
 
-test('Devtools PermissionHandler - sends messages through runtime.sendMessage', async () => {
+test('PermissionHandler - checkPermissions defaults to true when permissions API is unavailable', async () => {
+  const { detector, stubs } = createSinonBrowserMock();
+  delete stubs.permissions;
+  const stdHandler = new PermissionHandler(detector);
+  assert.equal(await stdHandler.checkPermissions('https://example.com'), true);
+});
+
+for (const [url, expected] of [
+  ['https://example.com', true],
+  ['about:debugging', false],
+  ['edge://flags', false],
+]) {
+  test(`Devtools PermissionHandler - canHavePermissions("${url}") returns ${expected}`, () => {
+    const { detector } = createSinonBrowserMock();
+    const devtoolsHandler = new DevtoolsPermissionHandler(detector);
+    assert.equal(devtoolsHandler.canHavePermissions(url), expected);
+  });
+}
+
+test('Devtools PermissionHandler - checkPermissions sends permissionsContains message', async () => {
   const { detector, stubs } = createSinonBrowserMock();
   stubs.runtime.sendMessage.resolves(true);
 
@@ -125,26 +144,16 @@ test('Devtools PermissionHandler - sends messages through runtime.sendMessage', 
   });
 });
 
-test('Devtools PermissionHandler - canHavePermissions and requestPermission', async () => {
+test('Devtools PermissionHandler - requestPermission sends permissionsRequest message', async () => {
   const { detector, stubs } = createSinonBrowserMock();
-  const devtoolsHandler = new DevtoolsPermissionHandler(detector);
-
-  assert.equal(devtoolsHandler.canHavePermissions('https://example.com'), true);
-  assert.equal(devtoolsHandler.canHavePermissions('about:debugging'), false);
-  assert.equal(devtoolsHandler.canHavePermissions('edge://flags'), false);
-
   stubs.runtime.sendMessage.resolves(true);
+
+  const devtoolsHandler = new DevtoolsPermissionHandler(detector);
   const reqRes = await devtoolsHandler.requestPermission('https://example.com');
+
   assert.equal(reqRes, true);
   assert.deepEqual(stubs.runtime.sendMessage.firstCall.args[0], {
     type: 'permissionsRequest',
     params: 'https://example.com',
   });
-});
-
-test('PermissionHandler - checkPermissions defaults to true when permissions API is unavailable', async () => {
-  const { detector, stubs } = createSinonBrowserMock();
-  delete stubs.permissions;
-  const stdHandler = new PermissionHandler(detector);
-  assert.equal(await stdHandler.checkPermissions('https://example.com'), true);
 });

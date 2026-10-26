@@ -1,8 +1,13 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
+import sinon from 'sinon';
+
 import { CookieHandlerDevtools } from '../interface/devtools/cookieHandlerDevtools.js';
-import { createSinonBrowserMock } from './mocks/sinonBrowserMock.js';
+import {
+  createSinonBrowserMock,
+  flushMicrotasks,
+} from './mocks/sinonBrowserMock.js';
 
 /**
  * Creates and fully awaits initialization of a CookieHandlerDevtools instance.
@@ -87,7 +92,7 @@ test('CookieHandlerDevtools - getAllCookies sends storeId to background script',
   });
 });
 
-test('CookieHandlerDevtools - removeCookie sends request and throws on background error response', async () => {
+test('CookieHandlerDevtools - removeCookie sends removeCookie message to background script', async () => {
   const { detector, stubs } = createSinonBrowserMock();
   const handler = await createInitializedDevtoolsHandler(detector, {
     id: 1,
@@ -111,6 +116,15 @@ test('CookieHandlerDevtools - removeCookie sends request and throws on backgroun
       storeId: '0',
     },
   });
+});
+
+test('CookieHandlerDevtools - removeCookie throws Error on background error response', async () => {
+  const { detector, stubs } = createSinonBrowserMock();
+  const handler = await createInitializedDevtoolsHandler(detector, {
+    id: 1,
+    url: 'https://example.com/home',
+    cookieStoreId: '0',
+  });
 
   stubs.runtime.sendMessage.resolves({
     success: false,
@@ -122,25 +136,38 @@ test('CookieHandlerDevtools - removeCookie sends request and throws on backgroun
   );
 });
 
-test('CookieHandlerDevtools - onMessage handles cookiesChanged and tabsChanged port events', async () => {
+for (const [label, domain, shouldEmit] of [
+  ['matching domain emits cookiesChanged', '.example.com', true],
+  ['non-matching domain does not emit', '.other.com', false],
+]) {
+  test(`CookieHandlerDevtools - onMessage cookiesChanged: ${label}`, async () => {
+    const { detector } = createSinonBrowserMock();
+    const handler = await createInitializedDevtoolsHandler(detector, {
+      id: 1,
+      url: 'https://example.com/home',
+      cookieStoreId: '0',
+    });
+
+    const changedSpy = sinon.spy();
+    handler.on('cookiesChanged', changedSpy);
+
+    const payload = { cookie: { domain, name: 'sid' } };
+    handler.onMessage({ type: 'cookiesChanged', data: payload });
+
+    if (shouldEmit) {
+      assert.equal(changedSpy.calledOnceWithExactly(payload), true);
+    } else {
+      assert.equal(changedSpy.called, false);
+    }
+  });
+}
+
+test('CookieHandlerDevtools - onMessage tabsChanged refreshes currentTab', async () => {
   const { detector, stubs } = createSinonBrowserMock();
   const handler = await createInitializedDevtoolsHandler(detector, {
     id: 1,
     url: 'https://example.com/home',
     cookieStoreId: '0',
-  });
-
-  let emittedChange = null;
-  handler.on('cookiesChanged', data => {
-    emittedChange = data;
-  });
-
-  handler.onMessage({
-    type: 'cookiesChanged',
-    data: { cookie: { domain: '.example.com', name: 'sid' } },
-  });
-  assert.deepEqual(emittedChange, {
-    cookie: { domain: '.example.com', name: 'sid' },
   });
 
   stubs.runtime.sendMessage.resolves([
@@ -150,6 +177,7 @@ test('CookieHandlerDevtools - onMessage handles cookiesChanged and tabsChanged p
     type: 'tabsChanged',
     data: { status: 'complete' },
   });
-  await new Promise(resolve => setImmediate(resolve));
+  await flushMicrotasks();
+
   assert.equal(handler.currentTab.url, 'https://example.com/updated');
 });

@@ -1,25 +1,41 @@
 import assert from 'node:assert/strict';
-import test from 'node:test';
+import test, { afterEach } from 'node:test';
 
-import { JSDOM } from 'jsdom';
 import sinon from 'sinon';
 
 import { BrowserDetector } from '../interface/lib/browserDetector.js';
 import { Browsers } from '../interface/lib/browsers.js';
-import { Env } from '../interface/lib/env.js';
 import { EventEmitter } from '../interface/lib/eventEmitter.js';
 import { GenericStorageHandler } from '../interface/lib/genericStorageHandler.js';
 import { GUID } from '../interface/lib/guid.js';
 import { Themes } from '../interface/lib/options/themes.js';
 import { ThemeHandler } from '../interface/lib/themeHandler.js';
-import { createSinonBrowserMock } from './mocks/sinonBrowserMock.js';
+import {
+  createSinonBrowserMock,
+  installChromeGlobal,
+  setupDom,
+} from './mocks/sinonBrowserMock.js';
+
+let restoreGlobals = null;
+let teardownDom = null;
+
+afterEach(() => {
+  if (restoreGlobals) {
+    restoreGlobals();
+    restoreGlobals = null;
+  }
+  if (teardownDom) {
+    teardownDom();
+    teardownDom = null;
+  }
+  sinon.restore();
+});
 
 test('EventEmitter - registers listeners and emits payloads', () => {
   const emitter = new EventEmitter();
   const spy1 = sinon.spy();
   const spy2 = sinon.spy();
 
-  // Emitting an event with no listeners is a no-op
   emitter.emit('unregistered', 123);
 
   emitter.on('update', spy1);
@@ -30,17 +46,23 @@ test('EventEmitter - registers listeners and emits payloads', () => {
   assert.equal(spy2.calledOnceWithExactly('arg1', 42), true);
 });
 
-test('GenericStorageHandler - getLocal returns value or null and setLocal stores key', async () => {
+for (const [label, resolvedData, key, expected] of [
+  ['existing key', { myKey: { hello: 'world' } }, 'myKey', { hello: 'world' }],
+  ['missing key returns null', {}, 'missingKey', null],
+]) {
+  test(`GenericStorageHandler - getLocal: ${label}`, async () => {
+    const { detector, stubs } = createSinonBrowserMock();
+    const storage = new GenericStorageHandler(detector);
+    stubs.storage.local.get.resolves(resolvedData);
+
+    const val = await storage.getLocal(key);
+    assert.deepEqual(val, expected);
+  });
+}
+
+test('GenericStorageHandler - setLocal writes key-value pair to storage.local', async () => {
   const { detector, stubs } = createSinonBrowserMock();
   const storage = new GenericStorageHandler(detector);
-
-  stubs.storage.local.get.resolves({ myKey: { hello: 'world' } });
-  const val = await storage.getLocal('myKey');
-  assert.deepEqual(val, { hello: 'world' });
-
-  stubs.storage.local.get.resolves({});
-  const missing = await storage.getLocal('missingKey');
-  assert.equal(missing, null);
 
   await storage.setLocal('myKey', 'newValue');
   assert.equal(
@@ -60,11 +82,9 @@ test('GUID.get - generates valid v4 UUID strings', () => {
   assert.notEqual(id1, id2);
 });
 
-test('BrowserDetector - detects API namespace, browser flags, and sidePanel support', () => {
+test('BrowserDetector - detects API namespace, fallback browser name, and sidePanel support', () => {
   const { stubs } = createSinonBrowserMock();
-  globalThis.chrome = stubs;
-  delete globalThis.browser;
-  Env.browserName = '@@browser_name';
+  restoreGlobals = installChromeGlobal(stubs, '@@browser_name');
 
   const detector = new BrowserDetector();
   assert.equal(detector.getApi(), stubs);
@@ -73,19 +93,33 @@ test('BrowserDetector - detects API namespace, browser flags, and sidePanel supp
   assert.equal(detector.isSafari(), false);
   assert.equal(detector.isEdge(), false);
   assert.equal(detector.supportsSidePanel(), true);
-
-  detector.overrideBrowserName(Browsers.Firefox);
-  assert.equal(detector.getBrowserName(), Browsers.Firefox);
-  assert.equal(detector.isFirefox(), true);
 });
 
-test('ThemeHandler - applies light, dark, and auto themes and reacts to optionsChanged', () => {
-  const dom = new JSDOM('<!doctype html><html><body></body></html>');
-  globalThis.window = dom.window;
-  globalThis.document = dom.window.document;
+test('BrowserDetector - overrideBrowserName updates browser detection flags', () => {
+  const { stubs } = createSinonBrowserMock();
+  restoreGlobals = installChromeGlobal(stubs, Browsers.Chrome);
 
-  let prefersDark = true;
+  const detector = new BrowserDetector();
+  detector.overrideBrowserName(Browsers.Firefox);
+
+  assert.equal(detector.getBrowserName(), Browsers.Firefox);
+  assert.equal(detector.isFirefox(), true);
+  assert.equal(detector.isChrome(), false);
+});
+
+/**
+ * Sets up a JSDOM environment and stubbed matchMedia/optionHandler for ThemeHandler tests.
+ * @param {object} [options={}]
+ * @return {{ themeHandler: ThemeHandler, optionEvents: EventEmitter, setState: function }}
+ */
+function setupThemeTest(options = {}) {
+  const { teardown } = setupDom();
+  teardownDom = teardown;
+
+  let prefersDark = options.prefersDark ?? true;
+  let currentTheme = options.theme ?? Themes.Auto;
   let mediaChangeListener = null;
+
   globalThis.window.matchMedia = sinon.stub().callsFake(() => ({
     get matches() {
       return prefersDark;
@@ -96,7 +130,6 @@ test('ThemeHandler - applies light, dark, and auto themes and reacts to optionsC
   }));
 
   const optionEvents = new EventEmitter();
-  let currentTheme = Themes.Auto;
   const fakeOptionHandler = {
     on: (ev, cb) => optionEvents.on(ev, cb),
     getTheme: () => currentTheme,
@@ -104,22 +137,58 @@ test('ThemeHandler - applies light, dark, and auto themes and reacts to optionsC
 
   const themeHandler = new ThemeHandler(fakeOptionHandler);
 
-  // Auto with prefersDark = true -> dark
+  return {
+    themeHandler,
+    optionEvents,
+    triggerMediaChange: isDark => {
+      prefersDark = isDark;
+      mediaChangeListener();
+    },
+    setCurrentTheme: theme => {
+      currentTheme = theme;
+    },
+  };
+}
+
+for (const [label, theme, prefersDark, expectedDatasetTheme] of [
+  ['Auto with dark OS preference', Themes.Auto, true, 'dark'],
+  ['Auto with light OS preference', Themes.Auto, false, 'light'],
+  ['Explicit Dark theme', Themes.Dark, false, 'dark'],
+  ['Explicit Light theme', Themes.Light, true, 'light'],
+]) {
+  test(`ThemeHandler - updateTheme: ${label}`, () => {
+    const { themeHandler } = setupThemeTest({ theme, prefersDark });
+    themeHandler.updateTheme();
+    assert.equal(document.body.dataset.theme, expectedDatasetTheme);
+  });
+}
+
+test('ThemeHandler - updates theme when OS color scheme changes in Auto mode', () => {
+  const { themeHandler, triggerMediaChange } = setupThemeTest({
+    theme: Themes.Auto,
+    prefersDark: true,
+  });
   themeHandler.updateTheme();
   assert.equal(document.body.dataset.theme, 'dark');
 
-  // OS color scheme changes to light while in Auto
-  prefersDark = false;
-  mediaChangeListener();
+  triggerMediaChange(false);
   assert.equal(document.body.dataset.theme, 'light');
+});
 
-  // Options changed to explicit Dark theme
-  currentTheme = Themes.Dark;
-  optionEvents.emit('optionsChanged', { theme: Themes.Auto });
+test('ThemeHandler - updates theme on optionsChanged only when theme option changed', () => {
+  const { themeHandler, optionEvents, setCurrentTheme } = setupThemeTest({
+    theme: Themes.Light,
+    prefersDark: false,
+  });
+  const updateSpy = sinon.spy(themeHandler, 'updateTheme');
+
+  // Unchanged theme -> should not call updateTheme
+  optionEvents.emit('optionsChanged', { theme: Themes.Light });
+  assert.equal(updateSpy.called, false);
+
+  // Changed theme -> updates dataset.theme
+  setCurrentTheme(Themes.Dark);
+  optionEvents.emit('optionsChanged', { theme: Themes.Light });
+  assert.equal(updateSpy.calledOnce, true);
   assert.equal(document.body.dataset.theme, 'dark');
-
-  // Options changed to explicit Light theme
-  currentTheme = Themes.Light;
-  optionEvents.emit('optionsChanged', { theme: Themes.Dark });
-  assert.equal(document.body.dataset.theme, 'light');
 });

@@ -1,26 +1,32 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import { expect, test } from './fixtures.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, '../../package.json'), 'utf8')
+);
+
 /**
- * Disables popup animations in chrome.storage.local and reloads the popup
- * so page transitions complete synchronously during tests.
+ * Disables popup animations in chrome.storage.local while preserving existing
+ * option defaults and reloads the popup so transitions complete synchronously.
  * @param {object} popup Playwright page for the popup.
  * @return {Promise<void>}
  */
 async function disablePopupAnimations(popup) {
-  await popup.evaluate(() =>
-    chrome.storage.local.set({
+  await popup.evaluate(async () => {
+    const stored = await chrome.storage.local.get('all_options');
+    await chrome.storage.local.set({
+      // eslint-disable-next-line camelcase
       all_options: {
-        advancedCookies: false,
-        devtoolsEnabled: true,
+        ...(stored.all_options || {}),
         animationsEnabled: false,
-        exportFormat: 'ask',
-        extraInfo: 'nothing',
-        theme: 'auto',
-        buttonBarTop: false,
         adsEnabled: false,
       },
-    })
-  );
+    });
+  });
   await popup.reload();
 }
 
@@ -30,7 +36,7 @@ test('MV3 service worker starts and popup displays extension version and empty s
 }) => {
   const popup = await openPopup(`${testServerUrl}/`);
 
-  await expect(popup.locator('#version')).toHaveText('v1.13.0');
+  await expect(popup.locator('#version')).toHaveText(`v${pkg.version}`);
   await expect(popup.locator('#pageTitle h1')).toContainText('Cookie-Editor');
   await expect(popup.locator('#no-cookies')).toContainText(
     'This page does not have any cookies.'
@@ -135,6 +141,7 @@ test('Popup imports cookies (JSON & Header string), exports cookies, and deletes
   openPopup,
 }) => {
   const popup = await openPopup(`${testServerUrl}/`);
+  await expect(popup.locator('#no-cookies')).toBeVisible();
   await disablePopupAnimations(popup);
 
   // 1. Import cookies using Header String format
@@ -237,10 +244,19 @@ test('Options page persists settings and updates popup theme, button bar, and ex
   await optionsPage.locator('#advanced-cookie + .slider').click();
   await optionsPage.locator('#button-bar-top + .slider').click();
 
-  await expect(optionsPage.locator('body')).toHaveAttribute(
-    'data-theme',
-    'dark'
-  );
+  await expect
+    .poll(() =>
+      optionsPage.evaluate(async () => {
+        const stored = await chrome.storage.local.get('all_options');
+        return stored.all_options;
+      })
+    )
+    .toMatchObject({
+      theme: 'dark',
+      extraInfo: 'value',
+      advancedCookies: true,
+      buttonBarTop: true,
+    });
 
   // Open popup and verify options are reflected
   const popup = await openPopup(`${testServerUrl}/`);

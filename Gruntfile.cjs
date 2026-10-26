@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-undef
 module.exports = function (grunt) {
   // Project configuration.
   grunt.initConfig({
