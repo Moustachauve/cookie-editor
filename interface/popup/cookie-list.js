@@ -71,8 +71,13 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       e.preventDefault();
       console.log('removing cookie...');
       const listElement = e.target.closest('li');
+      const cookieObj = loadedCookies[listElement.id]?.cookie;
       try {
-        await removeCookie(listElement.dataset.name);
+        await removeCookie(
+          listElement.dataset.name,
+          getUrlFromCookie(cookieObj),
+          cookieObj?.partitionKey
+        );
       } catch (error) {
         console.error(error);
         sendNotification(error.message || String(error));
@@ -165,10 +170,18 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       let cookie = cookieContainer ? cookieContainer.cookie : null;
       let oldName;
       let oldHostOnly;
+      let oldDomain;
+      let oldPath;
+      let oldUrl;
+      let oldPartitionKey;
 
       if (cookie) {
         oldName = cookie.name;
         oldHostOnly = cookie.hostOnly;
+        oldDomain = cookie.domain;
+        oldPath = cookie.path;
+        oldUrl = getUrlFromCookie(cookie);
+        oldPartitionKey = cookie.partitionKey;
       } else {
         cookie = {};
         oldName = name;
@@ -213,8 +226,14 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
 
       // Should probably put in a function to prevent duplication
       try {
-        if (oldName !== name || oldHostOnly !== hostOnly) {
-          await removeCookie(oldName, getCurrentTabUrl());
+        if (
+          cookieContainer &&
+          (oldName !== name ||
+            oldHostOnly !== hostOnly ||
+            oldDomain !== cookie.domain ||
+            oldPath !== cookie.path)
+        ) {
+          await removeCookie(oldName, oldUrl, oldPartitionKey);
         }
 
         await cookieHandler.saveCookie(cookie, getCurrentTabUrl());
@@ -305,8 +324,13 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
           let hasErrors = false;
           for (const cookieId in loadedCookies) {
             if (Object.prototype.hasOwnProperty.call(loadedCookies, cookieId)) {
+              const cookie = loadedCookies[cookieId].cookie;
               try {
-                await removeCookie(loadedCookies[cookieId].cookie.name);
+                await removeCookie(
+                  cookie.name,
+                  getUrlFromCookie(cookie),
+                  cookie.partitionKey
+                );
               } catch (error) {
                 console.error(error);
                 hasErrors = true;
@@ -973,9 +997,14 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * Removes a cookie from the current tab.
    * @param {string} name Name of the cookie to remove.
    * @param {string} url Url of the tab that contains the cookie.
+   * @param {object} [partitionKey=null] Optional storage partition key.
    */
-  async function removeCookie(name, url) {
-    await cookieHandler.removeCookie(name, url || getCurrentTabUrl());
+  async function removeCookie(name, url, partitionKey = null) {
+    await cookieHandler.removeCookie(
+      name,
+      url || getCurrentTabUrl(),
+      partitionKey
+    );
     if (browserDetector.isSafari()) {
       onCookiesChanged();
     }
@@ -1073,6 +1102,24 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       return cookieHandler.currentTab.url;
     }
     return '';
+  }
+
+  /**
+   * Constructs a valid URL for targeting a specific cookie based on its domain,
+   * path, and secure flag.
+   * @param {object} cookie Cookie object.
+   * @return {string} Constructed URL or current tab URL as fallback.
+   */
+  function getUrlFromCookie(cookie) {
+    if (!cookie || !cookie.domain) {
+      return getCurrentTabUrl();
+    }
+    const currentUrl = getCurrentTabUrl();
+    const isHttpsTab = currentUrl.startsWith('https://');
+    const protocol = cookie.secure || isHttpsTab ? 'https://' : 'http://';
+    const domain = cookie.domain.replace(/^\./, '');
+    const path = cookie.path || '/';
+    return `${protocol}${domain}${path}`;
   }
 
   /**

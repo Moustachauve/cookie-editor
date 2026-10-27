@@ -94,16 +94,24 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
         if (request.params.storeId) {
           getAllCookiesParams.storeId = request.params.storeId;
         }
-        browserDetector
-          .getApi()
-          .cookies.getAll(getAllCookiesParams)
-          .then(sendResponse, error => {
-            console.error('Failed to get all cookies', error);
-            sendResponse({
-              success: false,
-              error: error?.message || String(error),
-            });
+        const queryCookies = !browserDetector.isSafari()
+          ? browserDetector
+              .getApi()
+              .cookies.getAll({
+                ...getAllCookiesParams,
+                partitionKey: request.params.partitionKey || {},
+              })
+              .catch(() =>
+                browserDetector.getApi().cookies.getAll(getAllCookiesParams)
+              )
+          : browserDetector.getApi().cookies.getAll(getAllCookiesParams);
+        queryCookies.then(sendResponse, error => {
+          console.error('Failed to get all cookies', error);
+          sendResponse({
+            success: false,
+            error: error?.message || String(error),
           });
+        });
         return true;
       }
       case 'saveCookie': {
@@ -129,6 +137,12 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
           name: request.params.name,
           url: request.params.url,
         };
+        if (request.params.storeId) {
+          removeParams.storeId = request.params.storeId;
+        }
+        if (request.params.partitionKey && !browserDetector.isSafari()) {
+          removeParams.partitionKey = request.params.partitionKey;
+        }
         browserDetector
           .getApi()
           .cookies.remove(removeParams)

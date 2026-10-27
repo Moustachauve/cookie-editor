@@ -267,3 +267,148 @@ test('Options page persists settings and updates popup theme, button bar, and ex
   );
   await expect(popup.locator('.advanced-form').first()).toHaveClass(/show/);
 });
+
+test('Popup handles partitioned (CHIPS) cookies and same-named cookies across paths without collision', async ({
+  context,
+  openPopup,
+}) => {
+  const targetUrl = 'https://example.com/app';
+  await context.route('https://example.com/**', route =>
+    route.fulfill({
+      status: 200,
+      contentType: 'text/html',
+      body: '<!doctype html><html><body><h1>HTTPS Test</h1></body></html>',
+    })
+  );
+
+  const popup = await openPopup(targetUrl);
+  await disablePopupAnimations(popup);
+
+  // Seed:
+  // 1) Unpartitioned cookie "rollout" at path "/"
+  // 2) Partitioned (CHIPS) cookie "rollout" at path "/"
+  // 3) Unpartitioned cookie "shared_path" at path "/"
+  // 4) Unpartitioned cookie "shared_path" at path "/app"
+  await popup.evaluate(async () => {
+    await chrome.cookies.set({
+      url: 'https://example.com/',
+      name: 'rollout',
+      value: 'rollout_unpartitioned',
+      path: '/',
+      secure: true,
+    });
+    await chrome.cookies.set({
+      url: 'https://example.com/',
+      name: 'rollout',
+      value: 'rollout_partitioned',
+      path: '/',
+      secure: true,
+      sameSite: 'no_restriction',
+      partitionKey: { topLevelSite: 'https://example.com' },
+    });
+    await chrome.cookies.set({
+      url: 'https://example.com/',
+      name: 'shared_path',
+      value: 'root_path_val',
+      path: '/',
+      secure: true,
+    });
+    await chrome.cookies.set({
+      url: 'https://example.com/app',
+      name: 'shared_path',
+      value: 'app_path_val',
+      path: '/app',
+      secure: true,
+    });
+  });
+
+  await popup.reload();
+
+  const cookieItems = popup.locator('#cookie-container li.cookie');
+  await expect(cookieItems).toHaveCount(4);
+
+  // Verify each row has a distinct DOM id (no hash collision across paths or partitions)
+  const ids = await cookieItems.evaluateAll(els => els.map(el => el.id));
+  expect(new Set(ids).size).toBe(4);
+
+  // Helper to locate a cookie row by its value
+  const findRowByValue = async expectedVal => {
+    const count = await cookieItems.count();
+    for (let i = 0; i < count; i++) {
+      const val = await cookieItems
+        .nth(i)
+        .locator('textarea[name="value"]')
+        .inputValue();
+      if (val === expectedVal) {
+        return cookieItems.nth(i);
+      }
+    }
+    return null;
+  };
+
+  // 1. Edit the partitioned "rollout" cookie and verify the unpartitioned "rollout" cookie is untouched
+  const partitionedRow = await findRowByValue('rollout_partitioned');
+  expect(partitionedRow).not.toBeNull();
+  await partitionedRow.locator('.header').click();
+  await partitionedRow
+    .locator('textarea[name="value"]')
+    .fill('rollout_partitioned_edited');
+  await partitionedRow.locator('button.save').click();
+
+  await expect
+    .poll(async () =>
+      popup.evaluate(async () => {
+        const all = await chrome.cookies.getAll({
+          url: 'https://example.com/app',
+          partitionKey: {},
+        });
+        return all
+          .filter(c => c.name === 'rollout')
+          .map(c => ({
+            value: c.value,
+            partitioned: Boolean(c.partitionKey),
+          }))
+          .sort((a, b) => Number(a.partitioned) - Number(b.partitioned));
+      })
+    )
+    .toEqual([
+      { value: 'rollout_unpartitioned', partitioned: false },
+      { value: 'rollout_partitioned_edited', partitioned: true },
+    ]);
+
+  // 2. Delete the root-path "shared_path" cookie while on /app and verify "/app" cookie remains
+  const rootPathRow = await findRowByValue('root_path_val');
+  expect(rootPathRow).not.toBeNull();
+  await rootPathRow.locator('.header button.delete').click();
+
+  await expect
+    .poll(async () =>
+      popup.evaluate(async () => {
+        const all = await chrome.cookies.getAll({
+          url: 'https://example.com/app',
+          partitionKey: {},
+        });
+        return all.filter(c => c.name === 'shared_path').map(c => c.value);
+      })
+    )
+    .toEqual(['app_path_val']);
+
+  // 3. Delete the partitioned cookie and verify it is removed from partitioned storage
+  const updatedPartitionedRow = await findRowByValue(
+    'rollout_partitioned_edited'
+  );
+  expect(updatedPartitionedRow).not.toBeNull();
+  await updatedPartitionedRow.locator('.header button.delete').click();
+
+  await expect
+    .poll(async () =>
+      popup.evaluate(async () => {
+        const partList = await chrome.cookies.getAll({
+          url: 'https://example.com/app',
+          partitionKey: { topLevelSite: 'https://example.com' },
+        });
+        return partList.length;
+      })
+    )
+    .toBe(0);
+});

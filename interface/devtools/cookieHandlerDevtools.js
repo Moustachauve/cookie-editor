@@ -42,10 +42,14 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * @return {Promise}
    */
   async getAllCookies() {
-    const response = await this.sendMessage('getAllCookies', {
+    const params = {
       url: this.currentTab.url,
       storeId: this.currentTab.cookieStoreId,
-    });
+    };
+    if (!this.browserDetector.isSafari()) {
+      params.partitionKey = {};
+    }
+    const response = await this.sendMessage('getAllCookies', params);
     if (response && response.success === false) {
       throw new Error(response.error || 'Failed to get cookies');
     }
@@ -73,14 +77,19 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * Removes a cookie from the browser.
    * @param {string} name The name of the cookie to remove.
    * @param {string} url The url that the cookie is attached to.
+   * @param {object} [partitionKey=null] Optional storage partition key.
    * @return {Promise}
    */
-  async removeCookie(name, url) {
-    const response = await this.sendMessage('removeCookie', {
+  async removeCookie(name, url, partitionKey = null) {
+    const params = {
       name: name,
       url: url,
       storeId: this.currentTab.cookieStoreId,
-    });
+    };
+    if (partitionKey && !this.browserDetector.isSafari()) {
+      params.partitionKey = partitionKey;
+    }
+    const response = await this.sendMessage('removeCookie', params);
     if (response && response.success === false) {
       throw new Error(response.error || 'Failed to remove cookie');
     }

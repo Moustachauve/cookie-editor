@@ -167,8 +167,14 @@ document.addEventListener('DOMContentLoaded', async event => {
         continue;
       }
       const exportedCookie = cookies[cookieId].cookie;
-      const url = 'https://' + exportedCookie.domain + exportedCookie.path;
-      await cookieHandler.removeCookie(exportedCookie.name, url);
+      const protocol = exportedCookie.secure ? 'https://' : 'http://';
+      const domain = exportedCookie.domain.replace(/^\./, '');
+      const url = protocol + domain + (exportedCookie.path || '/');
+      await cookieHandler.removeCookie(
+        exportedCookie.name,
+        url,
+        exportedCookie.partitionKey
+      );
     }
     alert('All your cookies were deleted');
   }
