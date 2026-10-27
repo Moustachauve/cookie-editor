@@ -170,28 +170,27 @@ test('GenericCookieHandler - removeCookie on Safari queries all cookies and remo
   });
 });
 
-test('GenericCookieHandler - prepareCookie with partitionKey preserves partitionKey and forces secure=true', () => {
-  const { detector } = createSinonBrowserMock({ browserName: 'chrome' });
+test('GenericCookieHandler - prepareCookie with partitionKey preserves partitionKey without forcing secure=true', () => {
+  const { detector } = createSinonBrowserMock({ browserName: 'firefox' });
   const handler = new GenericCookieHandler(detector);
-  handler.currentTab = { url: 'https://example.com/page' };
+  handler.currentTab = { url: 'http://example.com/page' };
 
   const partitionKey = {
-    topLevelSite: 'https://example.com',
-    hasCrossSiteAncestor: false,
+    topLevelSite: 'http://example.com',
   };
   const prepared = handler.prepareCookie(
     {
-      name: 'cf_clearance',
+      name: 'tcp_cookie',
       value: 'part_val',
       domain: '.example.com',
       path: '/',
       secure: false,
       partitionKey,
     },
-    'https://example.com/page'
+    'http://example.com/page'
   );
   assert.deepEqual(prepared.partitionKey, partitionKey);
-  assert.equal(prepared.secure, true);
+  assert.equal(prepared.secure, null);
 });
 
 test('GenericCookieHandler - removeCookie forwards partitionKey when provided', async () => {
@@ -244,8 +243,8 @@ test('GenericCookieHandler - getAllCookies queries cookies for currentTab url, s
   });
 });
 
-test('GenericCookieHandler - getAllCookies falls back without partitionKey if browser throws on partitionKey', async () => {
-  const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
+test('GenericCookieHandler - getAllCookies on Safari omits partitionKey filter', async () => {
+  const { detector, stubs } = createSinonBrowserMock({ browserName: 'safari' });
   const handler = new GenericCookieHandler(detector);
   handler.currentTab = {
     url: 'https://example.com/app',
@@ -253,15 +252,11 @@ test('GenericCookieHandler - getAllCookies falls back without partitionKey if br
   };
 
   const tabCookies = [{ name: 'c1', value: 'v1' }];
-  stubs.cookies.getAll
-    .onFirstCall()
-    .throws(new TypeError("Unexpected property: 'partitionKey'"));
-  stubs.cookies.getAll.onSecondCall().resolves(tabCookies);
+  stubs.cookies.getAll.resolves(tabCookies);
 
   const resTab = await handler.getAllCookies();
   assert.deepEqual(resTab, tabCookies);
-  assert.equal(stubs.cookies.getAll.callCount, 2);
-  assert.deepEqual(stubs.cookies.getAll.secondCall.args[0], {
+  assert.deepEqual(stubs.cookies.getAll.firstCall.args[0], {
     url: 'https://example.com/app',
     storeId: '0',
   });
