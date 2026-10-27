@@ -153,6 +153,27 @@ for (const { name, message, setupStub, expectedResponse, verifyCall } of [
       }),
   },
   {
+    name: 'getAllCookies retries without partitionKey when cookies.getAll throws synchronously',
+    message: {
+      type: 'getAllCookies',
+      params: { url: 'https://example.com', storeId: '0' },
+    },
+    setupStub: stubs => {
+      stubs.cookies.getAll
+        .onFirstCall()
+        .throws(new TypeError("Unexpected property: 'partitionKey'"));
+      stubs.cookies.getAll.onSecondCall().resolves([{ name: 'a' }]);
+    },
+    expectedResponse: [{ name: 'a' }],
+    verifyCall: stubs => {
+      assert.equal(stubs.cookies.getAll.callCount, 2);
+      assert.deepEqual(stubs.cookies.getAll.secondCall.args[0], {
+        url: 'https://example.com',
+        storeId: '0',
+      });
+    },
+  },
+  {
     name: 'removeCookie forwards name and url to cookies.remove',
     message: {
       type: 'removeCookie',

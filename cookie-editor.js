@@ -1,5 +1,6 @@
 import { BrowserDetector } from './interface/lib/browserDetector.js';
 import { Browsers } from './interface/lib/browsers.js';
+import { GenericCookieHandler } from './interface/lib/genericCookieHandler.js';
 import { PermissionHandler } from './interface/lib/permissionHandler.js';
 
 (async function () {
@@ -94,18 +95,10 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
         if (request.params.storeId) {
           getAllCookiesParams.storeId = request.params.storeId;
         }
-        const queryCookies = !browserDetector.isSafari()
-          ? browserDetector
-              .getApi()
-              .cookies.getAll({
-                ...getAllCookiesParams,
-                partitionKey: request.params.partitionKey || {},
-              })
-              .catch(() =>
-                browserDetector.getApi().cookies.getAll(getAllCookiesParams)
-              )
-          : browserDetector.getApi().cookies.getAll(getAllCookiesParams);
-        queryCookies.then(sendResponse, error => {
+        GenericCookieHandler.getAllWithPartitions(
+          browserDetector,
+          getAllCookiesParams
+        ).then(sendResponse, error => {
           console.error('Failed to get all cookies', error);
           sendResponse({
             success: false,

@@ -16,25 +16,40 @@ export class GenericCookieHandler extends EventEmitter {
   }
 
   /**
-   * Gets all cookie for the current tab.
-   * @return {Promise}
+   * Queries cookies matching `filter` across all storage partitions when
+   * supported, falling back to an unpartitioned query if `partitionKey` is
+   * rejected.
+   * @param {BrowserDetector} browserDetector
+   * @param {object} [filter={}]
+   * @return {Promise<Array>}
    */
-  async getAllCookies() {
-    const filter = {
-      url: this.currentTab.url,
-      storeId: this.currentTab.cookieStoreId,
-    };
-    if (!this.browserDetector.isSafari()) {
+  static async getAllWithPartitions(browserDetector, filter = {}) {
+    const cookiesApi = browserDetector.getApi().cookies;
+    if (!browserDetector.isSafari()) {
       try {
-        return await this.browserDetector.getApi().cookies.getAll({
+        return await cookiesApi.getAll({
           ...filter,
           partitionKey: {},
         });
       } catch (e) {
-        return this.browserDetector.getApi().cookies.getAll(filter);
+        console.warn(
+          'cookies.getAll with partitionKey failed, retrying without it',
+          e
+        );
       }
     }
-    return this.browserDetector.getApi().cookies.getAll(filter);
+    return cookiesApi.getAll(filter);
+  }
+
+  /**
+   * Gets all cookie for the current tab.
+   * @return {Promise}
+   */
+  async getAllCookies() {
+    return GenericCookieHandler.getAllWithPartitions(this.browserDetector, {
+      url: this.currentTab.url,
+      storeId: this.currentTab.cookieStoreId,
+    });
   }
 
   /**
@@ -137,15 +152,6 @@ export class GenericCookieHandler extends EventEmitter {
    * @return {Promise}
    */
   async getAllCookiesInBrowser() {
-    if (!this.browserDetector.isSafari()) {
-      try {
-        return await this.browserDetector.getApi().cookies.getAll({
-          partitionKey: {},
-        });
-      } catch (e) {
-        return this.browserDetector.getApi().cookies.getAll({});
-      }
-    }
-    return this.browserDetector.getApi().cookies.getAll({});
+    return GenericCookieHandler.getAllWithPartitions(this.browserDetector, {});
   }
 }

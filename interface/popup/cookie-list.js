@@ -74,8 +74,8 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       const cookieObj = loadedCookies[listElement.id]?.cookie;
       try {
         await removeCookie(
-          listElement.dataset.name,
-          getUrlFromCookie(cookieObj),
+          cookieObj?.name,
+          Cookie.getUrl(cookieObj, getCurrentTabUrl()),
           cookieObj?.partitionKey
         );
       } catch (error) {
@@ -180,7 +180,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         oldHostOnly = cookie.hostOnly;
         oldDomain = cookie.domain;
         oldPath = cookie.path;
-        oldUrl = getUrlFromCookie(cookie);
+        oldUrl = Cookie.getUrl(cookie, getCurrentTabUrl());
         oldPartitionKey = cookie.partitionKey;
       } else {
         cookie = {};
@@ -328,7 +328,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
               try {
                 await removeCookie(
                   cookie.name,
-                  getUrlFromCookie(cookie),
+                  Cookie.getUrl(cookie, getCurrentTabUrl()),
                   cookie.partitionKey
                 );
               } catch (error) {
@@ -1102,24 +1102,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       return cookieHandler.currentTab.url;
     }
     return '';
-  }
-
-  /**
-   * Constructs a valid URL for targeting a specific cookie based on its domain,
-   * path, and secure flag.
-   * @param {object} cookie Cookie object.
-   * @return {string} Constructed URL or current tab URL as fallback.
-   */
-  function getUrlFromCookie(cookie) {
-    if (!cookie || !cookie.domain) {
-      return getCurrentTabUrl();
-    }
-    const currentUrl = getCurrentTabUrl();
-    const isHttpsTab = currentUrl.startsWith('https://');
-    const protocol = cookie.secure || isHttpsTab ? 'https://' : 'http://';
-    const domain = cookie.domain.replace(/^\./, '');
-    const path = cookie.path || '/';
-    return `${protocol}${domain}${path}`;
   }
 
   /**

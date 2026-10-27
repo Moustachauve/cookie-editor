@@ -67,7 +67,7 @@ test('CookieHandlerDevtools - saveCookie throws Error on background error respon
   );
 });
 
-test('CookieHandlerDevtools - getAllCookies sends storeId and partitionKey to background script', async () => {
+test('CookieHandlerDevtools - getAllCookies sends url and storeId to background script', async () => {
   const { detector, stubs } = createSinonBrowserMock();
   const expectedCookies = [{ name: 'c1', value: 'v1' }];
   stubs.runtime.sendMessage.resolves(expectedCookies);
@@ -88,7 +88,6 @@ test('CookieHandlerDevtools - getAllCookies sends storeId and partitionKey to ba
     params: {
       url: 'https://example.com',
       storeId: 'firefox-container-2',
-      partitionKey: {},
     },
   });
 });

@@ -167,12 +167,9 @@ document.addEventListener('DOMContentLoaded', async event => {
         continue;
       }
       const exportedCookie = cookies[cookieId].cookie;
-      const protocol = exportedCookie.secure ? 'https://' : 'http://';
-      const domain = exportedCookie.domain.replace(/^\./, '');
-      const url = protocol + domain + (exportedCookie.path || '/');
       await cookieHandler.removeCookie(
         exportedCookie.name,
-        url,
+        Cookie.getUrl(exportedCookie),
         exportedCookie.partitionKey
       );
     }

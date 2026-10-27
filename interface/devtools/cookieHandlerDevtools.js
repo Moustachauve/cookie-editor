@@ -42,14 +42,10 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * @return {Promise}
    */
   async getAllCookies() {
-    const params = {
+    const response = await this.sendMessage('getAllCookies', {
       url: this.currentTab.url,
       storeId: this.currentTab.cookieStoreId,
-    };
-    if (!this.browserDetector.isSafari()) {
-      params.partitionKey = {};
-    }
-    const response = await this.sendMessage('getAllCookies', params);
+    });
     if (response && response.success === false) {
       throw new Error(response.error || 'Failed to get cookies');
     }
@@ -86,7 +82,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
       url: url,
       storeId: this.currentTab.cookieStoreId,
     };
-    if (partitionKey && !this.browserDetector.isSafari()) {
+    if (partitionKey) {
       params.partitionKey = partitionKey;
     }
     const response = await this.sendMessage('removeCookie', params);
