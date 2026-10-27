@@ -244,7 +244,7 @@ test('GenericCookieHandler - getAllCookies queries cookies for currentTab url, s
   });
 });
 
-test('GenericCookieHandler - getAllCookies falls back without partitionKey if browser rejects partitionKey', async () => {
+test('GenericCookieHandler - getAllCookies falls back without partitionKey if browser throws on partitionKey', async () => {
   const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
   const handler = new GenericCookieHandler(detector);
   handler.currentTab = {
@@ -255,7 +255,7 @@ test('GenericCookieHandler - getAllCookies falls back without partitionKey if br
   const tabCookies = [{ name: 'c1', value: 'v1' }];
   stubs.cookies.getAll
     .onFirstCall()
-    .rejects(new TypeError("Unexpected property: 'partitionKey'"));
+    .throws(new TypeError("Unexpected property: 'partitionKey'"));
   stubs.cookies.getAll.onSecondCall().resolves(tabCookies);
 
   const resTab = await handler.getAllCookies();
@@ -267,7 +267,7 @@ test('GenericCookieHandler - getAllCookies falls back without partitionKey if br
   });
 });
 
-test('GenericCookieHandler - getAllCookiesInBrowser queries all cookies with partitionKey filter and falls back if unsupported', async () => {
+test('GenericCookieHandler - getAllCookiesInBrowser queries all cookies with partitionKey filter', async () => {
   const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
   const handler = new GenericCookieHandler(detector);
 

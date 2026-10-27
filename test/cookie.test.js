@@ -64,48 +64,106 @@ const sampleCookie = Object.freeze({
   httpOnly: true,
 });
 
-test('Cookie.hashCode - generates deterministic 32-bit integer hash from key attributes without collision across paths or partitions', () => {
+test('Cookie.hashCode - returns deterministic 32-bit integer and 0 for empty cookie', () => {
   const hash1 = Cookie.hashCode({ name: 'session', domain: 'example.com' });
   const hash2 = Cookie.hashCode({ name: 'session', domain: 'example.com' });
-  const hash3 = Cookie.hashCode({ name: 'session', domain: 'other.com' });
-  const hashRootPath = Cookie.hashCode({
-    name: 'session',
-    domain: 'example.com',
-    path: '/',
-  });
-  const hashSubPath = Cookie.hashCode({
-    name: 'session',
-    domain: 'example.com',
-    path: '/app',
-  });
-  const hashPartitioned = Cookie.hashCode({
-    name: 'session',
-    domain: 'example.com',
-    path: '/',
-    partitionKey: {
-      topLevelSite: 'https://example.com',
-      hasCrossSiteAncestor: false,
-    },
-  });
-  const hashCrossPartitioned = Cookie.hashCode({
-    name: 'session',
-    domain: 'example.com',
-    path: '/',
-    partitionKey: {
-      topLevelSite: 'https://example.com',
-      hasCrossSiteAncestor: true,
-    },
-  });
-  const emptyHash = Cookie.hashCode({ name: '', domain: '' });
 
   assert.equal(typeof hash1, 'number');
   assert.equal(hash1, hash2);
-  assert.notEqual(hash1, hash3);
-  assert.notEqual(hashRootPath, hashSubPath);
-  assert.notEqual(hashRootPath, hashPartitioned);
-  assert.notEqual(hashPartitioned, hashCrossPartitioned);
-  assert.equal(emptyHash, 0);
+  assert.equal(Cookie.hashCode({ name: '', domain: '' }), 0);
 });
+
+for (const [label, cookieA, cookieB] of [
+  [
+    'different domains',
+    { name: 'session', domain: 'example.com' },
+    { name: 'session', domain: 'other.com' },
+  ],
+  [
+    'boundary character between name and domain',
+    { name: 'a.', domain: 'b.com' },
+    { name: 'a', domain: '.b.com' },
+  ],
+  [
+    'different paths',
+    { name: 'session', domain: 'example.com', path: '/' },
+    { name: 'session', domain: 'example.com', path: '/app' },
+  ],
+  [
+    'different storeIds',
+    { name: 'session', domain: 'example.com', path: '/', storeId: '0' },
+    { name: 'session', domain: 'example.com', path: '/', storeId: '1' },
+  ],
+  [
+    'unpartitioned vs partitioned',
+    { name: 'session', domain: 'example.com', path: '/' },
+    {
+      name: 'session',
+      domain: 'example.com',
+      path: '/',
+      partitionKey: {
+        topLevelSite: 'https://example.com',
+        hasCrossSiteAncestor: false,
+      },
+    },
+  ],
+  [
+    'same-site vs cross-site partition ancestor',
+    {
+      name: 'session',
+      domain: 'example.com',
+      path: '/',
+      partitionKey: {
+        topLevelSite: 'https://example.com',
+        hasCrossSiteAncestor: false,
+      },
+    },
+    {
+      name: 'session',
+      domain: 'example.com',
+      path: '/',
+      partitionKey: {
+        topLevelSite: 'https://example.com',
+        hasCrossSiteAncestor: true,
+      },
+    },
+  ],
+]) {
+  test(`Cookie.hashCode - produces distinct hashes for ${label}`, () => {
+    assert.notEqual(Cookie.hashCode(cookieA), Cookie.hashCode(cookieB));
+  });
+}
+
+for (const [label, cookie, fallbackUrl, expectedUrl] of [
+  [
+    'secure cookie with leading dot domain and path',
+    { domain: '.example.com', path: '/app', secure: true },
+    '',
+    'https://example.com/app',
+  ],
+  [
+    'non-secure cookie defaults to http and root path',
+    { domain: 'example.com', secure: false },
+    '',
+    'http://example.com/',
+  ],
+  [
+    'non-secure cookie on https fallback tab uses https',
+    { domain: 'example.com', path: '/sub', secure: false },
+    'https://example.com/sub',
+    'https://example.com/sub',
+  ],
+  [
+    'missing domain returns fallbackUrl',
+    { name: 'orphan' },
+    'https://example.com/current',
+    'https://example.com/current',
+  ],
+]) {
+  test(`Cookie.getUrl - ${label}`, () => {
+    assert.equal(Cookie.getUrl(cookie, fallbackUrl), expectedUrl);
+  });
+}
 
 for (const [mode, expectedValue, expectedTitle] of [
   [ExtraInfos.Nothing, '', ''],
