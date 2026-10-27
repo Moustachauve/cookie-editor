@@ -138,7 +138,7 @@ for (const { name, message, setupStub, expectedResponse, verifyCall } of [
       }),
   },
   {
-    name: 'getAllCookies forwards url and storeId to cookies.getAll',
+    name: 'getAllCookies forwards url, storeId, and partitionKey to cookies.getAll',
     message: {
       type: 'getAllCookies',
       params: { url: 'https://example.com', storeId: '0' },
@@ -149,6 +149,7 @@ for (const { name, message, setupStub, expectedResponse, verifyCall } of [
       assert.deepEqual(stubs.cookies.getAll.firstCall.args[0], {
         url: 'https://example.com',
         storeId: '0',
+        partitionKey: {},
       }),
   },
   {
@@ -163,6 +164,27 @@ for (const { name, message, setupStub, expectedResponse, verifyCall } of [
       assert.deepEqual(stubs.cookies.remove.firstCall.args[0], {
         name: 'sid',
         url: 'https://example.com',
+      }),
+  },
+  {
+    name: 'removeCookie forwards storeId and partitionKey when present',
+    message: {
+      type: 'removeCookie',
+      params: {
+        name: 'part_sid',
+        url: 'https://example.com',
+        storeId: '0',
+        partitionKey: { topLevelSite: 'https://example.com' },
+      },
+    },
+    setupStub: stubs => stubs.cookies.remove.resolves({ name: 'part_sid' }),
+    expectedResponse: { name: 'part_sid' },
+    verifyCall: stubs =>
+      assert.deepEqual(stubs.cookies.remove.firstCall.args[0], {
+        name: 'part_sid',
+        url: 'https://example.com',
+        storeId: '0',
+        partitionKey: { topLevelSite: 'https://example.com' },
       }),
   },
   {

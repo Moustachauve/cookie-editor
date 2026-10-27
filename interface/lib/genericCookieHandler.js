@@ -20,10 +20,21 @@ export class GenericCookieHandler extends EventEmitter {
    * @return {Promise}
    */
   async getAllCookies() {
-    return this.browserDetector.getApi().cookies.getAll({
+    const filter = {
       url: this.currentTab.url,
       storeId: this.currentTab.cookieStoreId,
-    });
+    };
+    if (!this.browserDetector.isSafari()) {
+      try {
+        return await this.browserDetector.getApi().cookies.getAll({
+          ...filter,
+          partitionKey: {},
+        });
+      } catch (e) {
+        return this.browserDetector.getApi().cookies.getAll(filter);
+      }
+    }
+    return this.browserDetector.getApi().cookies.getAll(filter);
   }
 
   /**
@@ -67,6 +78,11 @@ export class GenericCookieHandler extends EventEmitter {
       if (newCookie.sameSite == 'no_restriction') {
         newCookie.secure = true;
       }
+
+      if (cookie.partitionKey) {
+        newCookie.partitionKey = cookie.partitionKey;
+        newCookie.secure = true;
+      }
     }
 
     return newCookie;
@@ -88,10 +104,11 @@ export class GenericCookieHandler extends EventEmitter {
    * Removes a cookie from the browser.
    * @param {string} name The name of the cookie to remove.
    * @param {string} url The url that the cookie is attached to.
-   * @param {boolean} isRecursive
+   * @param {object} [partitionKey=null] Optional storage partition key.
+   * @param {boolean} [isRecursive=false]
    * @return {Promise}
    */
-  async removeCookie(name, url, isRecursive = false) {
+  async removeCookie(name, url, partitionKey = null, isRecursive = false) {
     // Bad hack on safari because cookies needs to have the very exact same domain
     // to be able to delete it.
     // TODO: Check if this hack is needed on devtools.
@@ -99,15 +116,19 @@ export class GenericCookieHandler extends EventEmitter {
       const cookies = await this.getAllCookies();
       for (const cookie of cookies) {
         if (cookie.name === name) {
-          await this.removeCookie(name, 'http://' + cookie.domain, true);
+          await this.removeCookie(name, 'http://' + cookie.domain, null, true);
         }
       }
     } else {
-      return this.browserDetector.getApi().cookies.remove({
+      const removeParams = {
         name: name,
         url: url,
         storeId: this.currentTab.cookieStoreId,
-      });
+      };
+      if (partitionKey && !this.browserDetector.isSafari()) {
+        removeParams.partitionKey = partitionKey;
+      }
+      return this.browserDetector.getApi().cookies.remove(removeParams);
     }
   }
 
@@ -116,6 +137,15 @@ export class GenericCookieHandler extends EventEmitter {
    * @return {Promise}
    */
   async getAllCookiesInBrowser() {
+    if (!this.browserDetector.isSafari()) {
+      try {
+        return await this.browserDetector.getApi().cookies.getAll({
+          partitionKey: {},
+        });
+      } catch (e) {
+        return this.browserDetector.getApi().cookies.getAll({});
+      }
+    }
     return this.browserDetector.getApi().cookies.getAll({});
   }
 }

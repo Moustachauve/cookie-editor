@@ -64,15 +64,46 @@ const sampleCookie = Object.freeze({
   httpOnly: true,
 });
 
-test('Cookie.hashCode - generates deterministic 32-bit integer hash from name and domain', () => {
+test('Cookie.hashCode - generates deterministic 32-bit integer hash from key attributes without collision across paths or partitions', () => {
   const hash1 = Cookie.hashCode({ name: 'session', domain: 'example.com' });
   const hash2 = Cookie.hashCode({ name: 'session', domain: 'example.com' });
   const hash3 = Cookie.hashCode({ name: 'session', domain: 'other.com' });
+  const hashRootPath = Cookie.hashCode({
+    name: 'session',
+    domain: 'example.com',
+    path: '/',
+  });
+  const hashSubPath = Cookie.hashCode({
+    name: 'session',
+    domain: 'example.com',
+    path: '/app',
+  });
+  const hashPartitioned = Cookie.hashCode({
+    name: 'session',
+    domain: 'example.com',
+    path: '/',
+    partitionKey: {
+      topLevelSite: 'https://example.com',
+      hasCrossSiteAncestor: false,
+    },
+  });
+  const hashCrossPartitioned = Cookie.hashCode({
+    name: 'session',
+    domain: 'example.com',
+    path: '/',
+    partitionKey: {
+      topLevelSite: 'https://example.com',
+      hasCrossSiteAncestor: true,
+    },
+  });
   const emptyHash = Cookie.hashCode({ name: '', domain: '' });
 
   assert.equal(typeof hash1, 'number');
   assert.equal(hash1, hash2);
   assert.notEqual(hash1, hash3);
+  assert.notEqual(hashRootPath, hashSubPath);
+  assert.notEqual(hashRootPath, hashPartitioned);
+  assert.notEqual(hashPartitioned, hashCrossPartitioned);
   assert.equal(emptyHash, 0);
 });
 

@@ -67,7 +67,7 @@ test('CookieHandlerDevtools - saveCookie throws Error on background error respon
   );
 });
 
-test('CookieHandlerDevtools - getAllCookies sends storeId to background script', async () => {
+test('CookieHandlerDevtools - getAllCookies sends storeId and partitionKey to background script', async () => {
   const { detector, stubs } = createSinonBrowserMock();
   const expectedCookies = [{ name: 'c1', value: 'v1' }];
   stubs.runtime.sendMessage.resolves(expectedCookies);
@@ -88,6 +88,7 @@ test('CookieHandlerDevtools - getAllCookies sends storeId to background script',
     params: {
       url: 'https://example.com',
       storeId: 'firefox-container-2',
+      partitionKey: {},
     },
   });
 });
@@ -114,6 +115,35 @@ test('CookieHandlerDevtools - removeCookie sends removeCookie message to backgro
       name: 'old_cookie',
       url: 'https://example.com/home',
       storeId: '0',
+    },
+  });
+});
+
+test('CookieHandlerDevtools - removeCookie forwards partitionKey when provided', async () => {
+  const { detector, stubs } = createSinonBrowserMock();
+  const handler = await createInitializedDevtoolsHandler(detector, {
+    id: 1,
+    url: 'https://example.com/home',
+    cookieStoreId: '0',
+  });
+
+  const partitionKey = { topLevelSite: 'https://example.com' };
+  stubs.runtime.sendMessage.resetHistory();
+  stubs.runtime.sendMessage.resolves({ name: 'part_cookie', partitionKey });
+
+  const removed = await handler.removeCookie(
+    'part_cookie',
+    'https://example.com/home',
+    partitionKey
+  );
+  assert.deepEqual(removed, { name: 'part_cookie', partitionKey });
+  assert.deepEqual(stubs.runtime.sendMessage.firstCall.args[0], {
+    type: 'removeCookie',
+    params: {
+      name: 'part_cookie',
+      url: 'https://example.com/home',
+      storeId: '0',
+      partitionKey,
     },
   });
 });

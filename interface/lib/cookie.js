@@ -563,12 +563,22 @@ export class Cookie {
   }
 
   /**
-   * Generates a hashcode to represent a cookie based on its name and domain.
+   * Generates a hashcode to represent a cookie based on its key attributes.
    * @param {object} cookie A cookie's data.
-   * @return {string} A hashcode.
+   * @return {number} A hashcode.
    */
   static hashCode(cookie) {
-    const cookieString = cookie.name + cookie.domain;
+    const partitionKey = cookie.partitionKey
+      ? `${cookie.partitionKey.topLevelSite || ''}${
+          cookie.partitionKey.hasCrossSiteAncestor ? ':cross' : ''
+        }`
+      : '';
+    const cookieString =
+      (cookie.name || '') +
+      (cookie.domain || '') +
+      (cookie.path || '') +
+      (cookie.storeId || '') +
+      partitionKey;
     let hash = 0;
     let i;
     let chr;

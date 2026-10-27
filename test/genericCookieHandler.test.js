@@ -170,7 +170,61 @@ test('GenericCookieHandler - removeCookie on Safari queries all cookies and remo
   });
 });
 
-test('GenericCookieHandler - getAllCookies queries cookies for currentTab url and storeId', async () => {
+test('GenericCookieHandler - prepareCookie with partitionKey preserves partitionKey and forces secure=true', () => {
+  const { detector } = createSinonBrowserMock({ browserName: 'chrome' });
+  const handler = new GenericCookieHandler(detector);
+  handler.currentTab = { url: 'https://example.com/page' };
+
+  const partitionKey = {
+    topLevelSite: 'https://example.com',
+    hasCrossSiteAncestor: false,
+  };
+  const prepared = handler.prepareCookie(
+    {
+      name: 'cf_clearance',
+      value: 'part_val',
+      domain: '.example.com',
+      path: '/',
+      secure: false,
+      partitionKey,
+    },
+    'https://example.com/page'
+  );
+  assert.deepEqual(prepared.partitionKey, partitionKey);
+  assert.equal(prepared.secure, true);
+});
+
+test('GenericCookieHandler - removeCookie forwards partitionKey when provided', async () => {
+  const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
+  const partitionKey = { topLevelSite: 'https://example.com' };
+  const removedResult = {
+    name: 'part_cookie',
+    url: 'https://example.com/page',
+    partitionKey,
+  };
+  stubs.cookies.remove.resolves(removedResult);
+
+  const handler = new GenericCookieHandler(detector);
+  handler.currentTab = {
+    url: 'https://example.com/page',
+    cookieStoreId: '0',
+  };
+
+  const res = await handler.removeCookie(
+    'part_cookie',
+    'https://example.com/page',
+    partitionKey
+  );
+  assert.equal(res, removedResult);
+  assert.deepEqual(stubs.cookies.remove.firstCall.args[0], {
+    name: 'part_cookie',
+    url: 'https://example.com/page',
+    storeId: '0',
+    partitionKey,
+  });
+});
+
+test('GenericCookieHandler - getAllCookies queries cookies for currentTab url, storeId, and partitionKey', async () => {
   const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
   const handler = new GenericCookieHandler(detector);
   handler.currentTab = {
@@ -186,10 +240,34 @@ test('GenericCookieHandler - getAllCookies queries cookies for currentTab url an
   assert.deepEqual(stubs.cookies.getAll.firstCall.args[0], {
     url: 'https://example.com/app',
     storeId: '0',
+    partitionKey: {},
   });
 });
 
-test('GenericCookieHandler - getAllCookiesInBrowser queries all cookies with empty filter', async () => {
+test('GenericCookieHandler - getAllCookies falls back without partitionKey if browser rejects partitionKey', async () => {
+  const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
+  const handler = new GenericCookieHandler(detector);
+  handler.currentTab = {
+    url: 'https://example.com/app',
+    cookieStoreId: '0',
+  };
+
+  const tabCookies = [{ name: 'c1', value: 'v1' }];
+  stubs.cookies.getAll
+    .onFirstCall()
+    .rejects(new TypeError("Unexpected property: 'partitionKey'"));
+  stubs.cookies.getAll.onSecondCall().resolves(tabCookies);
+
+  const resTab = await handler.getAllCookies();
+  assert.deepEqual(resTab, tabCookies);
+  assert.equal(stubs.cookies.getAll.callCount, 2);
+  assert.deepEqual(stubs.cookies.getAll.secondCall.args[0], {
+    url: 'https://example.com/app',
+    storeId: '0',
+  });
+});
+
+test('GenericCookieHandler - getAllCookiesInBrowser queries all cookies with partitionKey filter and falls back if unsupported', async () => {
   const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
   const handler = new GenericCookieHandler(detector);
 
@@ -198,5 +276,7 @@ test('GenericCookieHandler - getAllCookiesInBrowser queries all cookies with emp
 
   const resAll = await handler.getAllCookiesInBrowser();
   assert.deepEqual(resAll, allCookies);
-  assert.deepEqual(stubs.cookies.getAll.firstCall.args[0], {});
+  assert.deepEqual(stubs.cookies.getAll.firstCall.args[0], {
+    partitionKey: {},
+  });
 });
