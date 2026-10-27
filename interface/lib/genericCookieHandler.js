@@ -17,8 +17,7 @@ export class GenericCookieHandler extends EventEmitter {
 
   /**
    * Queries cookies matching `filter` across all storage partitions when
-   * supported, falling back to an unpartitioned query if `partitionKey` is
-   * rejected.
+   * supported.
    * @param {BrowserDetector} browserDetector
    * @param {object} [filter={}]
    * @return {Promise<Array>}
@@ -26,17 +25,10 @@ export class GenericCookieHandler extends EventEmitter {
   static async getAllWithPartitions(browserDetector, filter = {}) {
     const cookiesApi = browserDetector.getApi().cookies;
     if (!browserDetector.isSafari()) {
-      try {
-        return await cookiesApi.getAll({
-          ...filter,
-          partitionKey: {},
-        });
-      } catch (e) {
-        console.warn(
-          'cookies.getAll with partitionKey failed, retrying without it',
-          e
-        );
-      }
+      return cookiesApi.getAll({
+        ...filter,
+        partitionKey: {},
+      });
     }
     return cookiesApi.getAll(filter);
   }
@@ -96,7 +88,6 @@ export class GenericCookieHandler extends EventEmitter {
 
       if (cookie.partitionKey) {
         newCookie.partitionKey = cookie.partitionKey;
-        newCookie.secure = true;
       }
     }
 
