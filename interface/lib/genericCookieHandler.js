@@ -36,6 +36,29 @@ export class GenericCookieHandler extends EventEmitter {
   }
 
   /**
+   * Returns a copy of `cookie` with `storeId` resolved via
+   * `getSafariTabStoreId` when running on Safari and `cookie.storeId` is not
+   * set.
+   * @param {BrowserDetector} browserDetector
+   * @param {object} cookie
+   * @param {number} [tabId]
+   * @return {Promise<object>}
+   */
+  static async withSafariStoreId(browserDetector, cookie, tabId) {
+    const resolvedCookie = { ...cookie };
+    if (browserDetector.isSafari() && !resolvedCookie.storeId) {
+      const storeId = await GenericCookieHandler.getSafariTabStoreId(
+        browserDetector,
+        tabId
+      );
+      if (storeId) {
+        resolvedCookie.storeId = storeId;
+      }
+    }
+    return resolvedCookie;
+  }
+
+  /**
    * Queries cookies matching `filter` across all storage partitions when
    * supported. On Safari, resolves real cookie store IDs via
    * `cookies.getAllCookieStores()` when `storeId` is not provided so
@@ -66,20 +89,19 @@ export class GenericCookieHandler extends EventEmitter {
             storeId,
           });
         }
-        return cookiesApi.getAll(filter);
-      }
-
-      const stores = await cookiesApi.getAllCookieStores();
-      if (stores.length > 0) {
-        const results = await Promise.all(
-          stores.map(store =>
-            cookiesApi.getAll({
-              ...filter,
-              storeId: store.id,
-            })
-          )
-        );
-        return results.flat();
+      } else {
+        const stores = await cookiesApi.getAllCookieStores();
+        if (stores.length > 0) {
+          const results = await Promise.all(
+            stores.map(store =>
+              cookiesApi.getAll({
+                ...filter,
+                storeId: store.id,
+              })
+            )
+          );
+          return results.flat();
+        }
       }
     }
 
@@ -165,16 +187,11 @@ export class GenericCookieHandler extends EventEmitter {
    * @return {Promise}
    */
   async saveCookie(cookie, url) {
-    cookie = this.prepareCookie(cookie, url);
-    if (this.browserDetector.isSafari() && !cookie.storeId) {
-      const storeId = await GenericCookieHandler.getSafariTabStoreId(
-        this.browserDetector,
-        this.currentTab.id
-      );
-      if (storeId) {
-        cookie.storeId = storeId;
-      }
-    }
+    cookie = await GenericCookieHandler.withSafariStoreId(
+      this.browserDetector,
+      this.prepareCookie(cookie, url),
+      this.currentTab.id
+    );
     return this.browserDetector.getApi().cookies.set(cookie);
   }
 

@@ -109,30 +109,24 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
         return true;
       }
       case 'saveCookie': {
-        (async () => {
-          const cookie = { ...request.params.cookie };
-          if (browserDetector.isSafari() && !cookie.storeId) {
-            const storeId = await GenericCookieHandler.getSafariTabStoreId(
-              browserDetector,
-              request.params.tabId
-            );
-            if (storeId) {
-              cookie.storeId = storeId;
+        GenericCookieHandler.withSafariStoreId(
+          browserDetector,
+          request.params.cookie,
+          request.params.tabId
+        )
+          .then(cookie => browserDetector.getApi().cookies.set(cookie))
+          .then(
+            cookie => {
+              sendResponse({ success: true, cookie });
+            },
+            error => {
+              console.error('Failed to create cookie', error);
+              sendResponse({
+                success: false,
+                error: error?.message || String(error),
+              });
             }
-          }
-          return browserDetector.getApi().cookies.set(cookie);
-        })().then(
-          cookie => {
-            sendResponse({ success: true, cookie });
-          },
-          error => {
-            console.error('Failed to create cookie', error);
-            sendResponse({
-              success: false,
-              error: error?.message || String(error),
-            });
-          }
-        );
+          );
         return true;
       }
       case 'removeCookie': {
