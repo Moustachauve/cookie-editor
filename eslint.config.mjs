@@ -5,6 +5,10 @@ import prettier from 'eslint-plugin-prettier';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 
+const googleRules = { ...google.rules };
+delete googleRules['valid-jsdoc'];
+delete googleRules['require-jsdoc'];
+
 export default [
   // Global ignores
   {
@@ -22,8 +26,10 @@ export default [
   // Base configuration for JS/MJS files
   js.configs.recommended,
 
-  // Google's style guide
-  google,
+  // Google's style guide (excluding JSDoc rules removed in ESLint v9)
+  {
+    rules: googleRules,
+  },
 
   // Main custom configuration
   {
