@@ -97,7 +97,8 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
         }
         GenericCookieHandler.getAllWithPartitions(
           browserDetector,
-          getAllCookiesParams
+          getAllCookiesParams,
+          request.params.tabId
         ).then(sendResponse, error => {
           console.error('Failed to get all cookies', error);
           sendResponse({
@@ -108,9 +109,12 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
         return true;
       }
       case 'saveCookie': {
-        browserDetector
-          .getApi()
-          .cookies.set(request.params.cookie)
+        GenericCookieHandler.withSafariStoreId(
+          browserDetector,
+          request.params.cookie,
+          request.params.tabId
+        )
+          .then(cookie => browserDetector.getApi().cookies.set(cookie))
           .then(
             cookie => {
               sendResponse({ success: true, cookie });

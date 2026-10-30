@@ -170,6 +170,69 @@ test('GenericCookieHandler - removeCookie on Safari queries all cookies and remo
   });
 });
 
+test('GenericCookieHandler - removeCookie on Safari forwards resolved cookie.storeId when cookieStoreId is undefined', async () => {
+  const { detector, stubs } = createSinonBrowserMock({
+    browserName: 'safari',
+  });
+  stubs.cookies.getAllCookieStores.resolves([
+    { id: 'safari-default', tabIds: [1] },
+    { id: 'safari-private', tabIds: [42] },
+  ]);
+  stubs.cookies.getAll.resolves([
+    { name: 'session_token', domain: 'example.com', storeId: 'safari-private' },
+  ]);
+  stubs.cookies.remove.resolves({ name: 'session_token' });
+
+  const handler = new GenericCookieHandler(detector);
+  handler.currentTab = {
+    id: 42,
+    url: 'https://example.com/page',
+    cookieStoreId: undefined,
+  };
+
+  await handler.removeCookie('session_token', 'https://example.com/page');
+
+  assert.equal(stubs.cookies.getAll.calledOnce, true);
+  assert.equal(stubs.cookies.remove.calledOnce, true);
+  assert.deepEqual(stubs.cookies.remove.firstCall.args[0], {
+    name: 'session_token',
+    url: 'http://example.com',
+    storeId: 'safari-private',
+  });
+});
+
+test('GenericCookieHandler - saveCookie on Safari resolves tab storeId via getAllCookieStores when storeId is omitted', async () => {
+  const { detector, stubs } = createSinonBrowserMock({
+    browserName: 'safari',
+  });
+  stubs.cookies.getAllCookieStores.resolves([
+    { id: 'safari-default', tabIds: [1] },
+    { id: 'safari-private', tabIds: [42] },
+  ]);
+  const savedResult = {
+    name: 'new_cookie',
+    value: '123',
+    storeId: 'safari-private',
+  };
+  stubs.cookies.set.resolves(savedResult);
+
+  const handler = new GenericCookieHandler(detector);
+  handler.currentTab = {
+    id: 42,
+    url: 'https://example.com/page',
+    cookieStoreId: undefined,
+  };
+
+  const res = await handler.saveCookie(
+    { name: 'new_cookie', value: '123', domain: 'example.com' },
+    'https://example.com/page'
+  );
+
+  assert.equal(res, savedResult);
+  assert.equal(stubs.cookies.set.calledOnce, true);
+  assert.equal(stubs.cookies.set.firstCall.args[0].storeId, 'safari-private');
+});
+
 test('GenericCookieHandler - prepareCookie with partitionKey preserves partitionKey without forcing secure=true', () => {
   const { detector } = createSinonBrowserMock({ browserName: 'firefox' });
   const handler = new GenericCookieHandler(detector);
@@ -243,10 +306,11 @@ test('GenericCookieHandler - getAllCookies queries cookies for currentTab url, s
   });
 });
 
-test('GenericCookieHandler - getAllCookies on Safari omits partitionKey filter', async () => {
+test('GenericCookieHandler - getAllCookies on Safari with explicit storeId omits partitionKey filter and skips getAllCookieStores', async () => {
   const { detector, stubs } = createSinonBrowserMock({ browserName: 'safari' });
   const handler = new GenericCookieHandler(detector);
   handler.currentTab = {
+    id: 1,
     url: 'https://example.com/app',
     cookieStoreId: '0',
   };
@@ -256,9 +320,108 @@ test('GenericCookieHandler - getAllCookies on Safari omits partitionKey filter',
 
   const resTab = await handler.getAllCookies();
   assert.deepEqual(resTab, tabCookies);
+  assert.equal(stubs.cookies.getAllCookieStores.called, false);
   assert.deepEqual(stubs.cookies.getAll.firstCall.args[0], {
     url: 'https://example.com/app',
     storeId: '0',
+  });
+});
+
+for (const [label, tabId, expectedStoreId] of [
+  [
+    'resolves matching store when tabId is in store.tabIds',
+    42,
+    'safari-private',
+  ],
+  [
+    'falls back to default store when tabId does not match any store.tabIds',
+    99,
+    'safari-default',
+  ],
+]) {
+  test(`GenericCookieHandler - getAllCookies on Safari with undefined cookieStoreId: ${label}`, async () => {
+    const { detector, stubs } = createSinonBrowserMock({
+      browserName: 'safari',
+    });
+    const handler = new GenericCookieHandler(detector);
+    handler.currentTab = {
+      id: tabId,
+      url: 'https://example.com/app',
+      cookieStoreId: undefined,
+    };
+
+    stubs.cookies.getAllCookieStores.resolves([
+      { id: 'safari-default', tabIds: [1, 2] },
+      { id: 'safari-private', tabIds: [42] },
+    ]);
+    const expectedCookies = [{ name: 'c1', value: 'v1' }];
+    stubs.cookies.getAll.resolves(expectedCookies);
+
+    const resTab = await handler.getAllCookies();
+    assert.deepEqual(resTab, expectedCookies);
+    assert.equal(stubs.cookies.getAllCookieStores.calledOnce, true);
+    assert.equal(stubs.cookies.getAll.calledOnce, true);
+    assert.deepEqual(stubs.cookies.getAll.firstCall.args[0], {
+      url: 'https://example.com/app',
+      storeId: expectedStoreId,
+    });
+  });
+}
+
+test('GenericCookieHandler - getAllCookiesInBrowser on Safari queries all stores from getAllCookieStores', async () => {
+  const { detector, stubs } = createSinonBrowserMock({ browserName: 'safari' });
+  const handler = new GenericCookieHandler(detector);
+
+  stubs.cookies.getAllCookieStores.resolves([
+    { id: 'store-1', tabIds: [1] },
+    { id: 'store-2', tabIds: [2] },
+  ]);
+  stubs.cookies.getAll
+    .withArgs({ storeId: 'store-1' })
+    .resolves([{ name: 's1', value: 'a' }]);
+  stubs.cookies.getAll
+    .withArgs({ storeId: 'store-2' })
+    .resolves([{ name: 's2', value: 'b' }]);
+
+  const resAll = await handler.getAllCookiesInBrowser();
+  assert.deepEqual(resAll, [
+    { name: 's1', value: 'a' },
+    { name: 's2', value: 'b' },
+  ]);
+  assert.equal(stubs.cookies.getAll.callCount, 2);
+});
+
+test('GenericCookieHandler - getAllCookies omits storeId when cookieStoreId is undefined on Chrome', async () => {
+  const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
+  const handler = new GenericCookieHandler(detector);
+  handler.currentTab = {
+    id: 1,
+    url: 'https://example.com/app',
+    cookieStoreId: undefined,
+  };
+
+  stubs.cookies.getAll.resolves([]);
+  await handler.getAllCookies();
+  assert.deepEqual(stubs.cookies.getAll.firstCall.args[0], {
+    url: 'https://example.com/app',
+    partitionKey: {},
+  });
+});
+
+test('GenericCookieHandler - removeCookie omits storeId when cookieStoreId is undefined on Chrome', async () => {
+  const { detector, stubs } = createSinonBrowserMock({ browserName: 'chrome' });
+  const handler = new GenericCookieHandler(detector);
+  handler.currentTab = {
+    id: 1,
+    url: 'https://example.com/app',
+    cookieStoreId: undefined,
+  };
+
+  stubs.cookies.remove.resolves({});
+  await handler.removeCookie('sid', 'https://example.com/app');
+  assert.deepEqual(stubs.cookies.remove.firstCall.args[0], {
+    name: 'sid',
+    url: 'https://example.com/app',
   });
 });
 
