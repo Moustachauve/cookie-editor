@@ -16,6 +16,7 @@ export function createSinonBrowserMock(options = {}) {
   const stubs = {
     cookies: {
       getAll: sinon.stub().resolves([]),
+      getAllCookieStores: sinon.stub().resolves([{ id: '0', tabIds: [1] }]),
       set: sinon.stub().resolves({}),
       remove: sinon.stub().resolves({}),
       onChanged: { addListener: sinon.spy(), removeListener: sinon.spy() },
