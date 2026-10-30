@@ -9,7 +9,7 @@ export class Animate {
    * @param {function} callback Called after the animation is done.
    */
   static toggleSlide(el, callback = null) {
-    let elMaxHeight = 0;
+    let elMaxHeight;
     const self = this;
 
     el.style.display = 'flex';

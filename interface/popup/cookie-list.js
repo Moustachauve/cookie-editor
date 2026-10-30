@@ -556,7 +556,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         if (mainVersion < 57) {
           containerCookie.style.height = '600px';
         }
-      } catch (e) {
+      } catch {
         /* empty */
       }
     }

@@ -43,7 +43,6 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
     browserDetector
       .getApi()
       .sidePanel.setPanelBehavior({ openPanelOnActionClick: false })
-      // eslint-disable-next-line prettier/prettier
       .catch(error => {
         console.error(error);
       });

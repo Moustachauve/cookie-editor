@@ -19,7 +19,6 @@ async function disablePopupAnimations(popup) {
   await popup.evaluate(async () => {
     const stored = await chrome.storage.local.get('all_options');
     await chrome.storage.local.set({
-      // eslint-disable-next-line camelcase
       all_options: {
         ...(stored.all_options || {}),
         animationsEnabled: false,
