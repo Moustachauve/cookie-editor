@@ -18,7 +18,7 @@ export class BrowserDetector {
     try {
       this.supportSidePanel = typeof this.getApi().sidePanel !== 'undefined';
       console.info('SidePanel support: ', this.supportSidePanel);
-    } catch (e) {
+    } catch {
       /* empty */
     }
 
