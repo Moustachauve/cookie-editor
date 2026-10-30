@@ -59,7 +59,8 @@ export class CookieHandlerPopup extends GenericCookieHandler {
     if (
       this.currentTab &&
       this.currentTab.url.indexOf(domain) !== -1 &&
-      changeInfo.cookie.storeId === (this.currentTab.cookieStoreId || '0')
+      (this.browserDetector.isSafari() ||
+        changeInfo.cookie.storeId === (this.currentTab.cookieStoreId || '0'))
     ) {
       this.emit('cookiesChanged', changeInfo);
     }
