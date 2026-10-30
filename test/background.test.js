@@ -250,6 +250,67 @@ test('background script - handleMessage saveCookie returns error payload on reje
   assert.deepEqual(saveErrRes, { success: false, error: 'Set failed' });
 });
 
+test('background script - handleMessage getAllCookies on Safari resolves storeId from getAllCookieStores when storeId is omitted', async () => {
+  const { stubs } = createSinonBrowserMock({ browserName: Browsers.Safari });
+  stubs.runtime.getPlatformInfo.resolves({ os: 'mac' });
+  stubs.cookies.getAllCookieStores.resolves([
+    { id: 'safari-store-1', tabIds: [10] },
+    { id: 'safari-store-2', tabIds: [20] },
+  ]);
+  stubs.cookies.getAll.resolves([{ name: 'safari_sid', value: 'abc' }]);
+
+  await loadBackgroundScript(stubs, Browsers.Safari);
+  const handleMessage = stubs.runtime.onMessage.addListener.firstCall.args[0];
+
+  const cookies = await sendBackgroundMessage(handleMessage, {
+    type: 'getAllCookies',
+    params: { url: 'https://example.com', tabId: 20 },
+  });
+
+  assert.deepEqual(cookies, [{ name: 'safari_sid', value: 'abc' }]);
+  assert.equal(stubs.cookies.getAllCookieStores.calledOnce, true);
+  assert.equal(stubs.cookies.getAll.calledOnce, true);
+  assert.deepEqual(stubs.cookies.getAll.firstCall.args[0], {
+    url: 'https://example.com',
+    storeId: 'safari-store-2',
+  });
+});
+
+test('background script - handleMessage saveCookie on Safari resolves storeId from getAllCookieStores when storeId is omitted', async () => {
+  const { stubs } = createSinonBrowserMock({ browserName: Browsers.Safari });
+  stubs.runtime.getPlatformInfo.resolves({ os: 'mac' });
+  stubs.cookies.getAllCookieStores.resolves([
+    { id: 'safari-store-1', tabIds: [10] },
+    { id: 'safari-store-2', tabIds: [20] },
+  ]);
+  const savedCookie = {
+    name: 'safari_sid',
+    value: 'abc',
+    storeId: 'safari-store-2',
+  };
+  stubs.cookies.set.resolves(savedCookie);
+
+  await loadBackgroundScript(stubs, Browsers.Safari);
+  const handleMessage = stubs.runtime.onMessage.addListener.firstCall.args[0];
+
+  const res = await sendBackgroundMessage(handleMessage, {
+    type: 'saveCookie',
+    params: {
+      cookie: { name: 'safari_sid', value: 'abc', url: 'http://example.com' },
+      tabId: 20,
+    },
+  });
+
+  assert.deepEqual(res, { success: true, cookie: savedCookie });
+  assert.equal(stubs.cookies.getAllCookieStores.calledOnce, true);
+  assert.deepEqual(stubs.cookies.set.firstCall.args[0], {
+    name: 'safari_sid',
+    value: 'abc',
+    url: 'http://example.com',
+    storeId: 'safari-store-2',
+  });
+});
+
 test('background script - routes tab-scoped port messages and cleans up on disconnect', async () => {
   const { stubs } = createSinonBrowserMock();
   await loadBackgroundScript(stubs, Browsers.Chrome);

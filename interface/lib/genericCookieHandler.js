@@ -16,13 +16,36 @@ export class GenericCookieHandler extends EventEmitter {
   }
 
   /**
+   * Resolves the cookie store ID for `tabId` on Safari via
+   * `cookies.getAllCookieStores()`, falling back to the default store
+   * (`stores[0]`) when no store explicitly lists `tabId`.
+   * @param {BrowserDetector} browserDetector
+   * @param {number} [tabId]
+   * @return {Promise<string|undefined>}
+   */
+  static async getSafariTabStoreId(browserDetector, tabId) {
+    const stores = await browserDetector.getApi().cookies.getAllCookieStores();
+    if (stores.length === 0) {
+      return undefined;
+    }
+    const matchingStore =
+      tabId !== undefined
+        ? stores.find(store => store.tabIds.includes(tabId))
+        : undefined;
+    return (matchingStore || stores[0]).id;
+  }
+
+  /**
    * Queries cookies matching `filter` across all storage partitions when
-   * supported.
+   * supported. On Safari, resolves real cookie store IDs via
+   * `cookies.getAllCookieStores()` when `storeId` is not provided so
+   * `cookies.getAll()` never receives an unresolved or undefined `storeId`.
    * @param {BrowserDetector} browserDetector
    * @param {object} [filter={}]
+   * @param {number} [tabId] Optional tab ID used to narrow Safari cookie stores.
    * @return {Promise<Array>}
    */
-  static async getAllWithPartitions(browserDetector, filter = {}) {
+  static async getAllWithPartitions(browserDetector, filter = {}, tabId) {
     const cookiesApi = browserDetector.getApi().cookies;
     if (!browserDetector.isSafari()) {
       return cookiesApi.getAll({
@@ -30,6 +53,36 @@ export class GenericCookieHandler extends EventEmitter {
         partitionKey: {},
       });
     }
+
+    if (!filter.storeId) {
+      if (tabId !== undefined) {
+        const storeId = await GenericCookieHandler.getSafariTabStoreId(
+          browserDetector,
+          tabId
+        );
+        if (storeId) {
+          return cookiesApi.getAll({
+            ...filter,
+            storeId,
+          });
+        }
+        return cookiesApi.getAll(filter);
+      }
+
+      const stores = await cookiesApi.getAllCookieStores();
+      if (stores.length > 0) {
+        const results = await Promise.all(
+          stores.map(store =>
+            cookiesApi.getAll({
+              ...filter,
+              storeId: store.id,
+            })
+          )
+        );
+        return results.flat();
+      }
+    }
+
     return cookiesApi.getAll(filter);
   }
 
@@ -38,10 +91,17 @@ export class GenericCookieHandler extends EventEmitter {
    * @return {Promise}
    */
   async getAllCookies() {
-    return GenericCookieHandler.getAllWithPartitions(this.browserDetector, {
+    const filter = {
       url: this.currentTab.url,
-      storeId: this.currentTab.cookieStoreId,
-    });
+    };
+    if (this.currentTab.cookieStoreId) {
+      filter.storeId = this.currentTab.cookieStoreId;
+    }
+    return GenericCookieHandler.getAllWithPartitions(
+      this.browserDetector,
+      filter,
+      this.currentTab.id
+    );
   }
 
   /**
@@ -59,9 +119,12 @@ export class GenericCookieHandler extends EventEmitter {
       secure: cookie.secure || null,
       httpOnly: cookie.httpOnly || null,
       expirationDate: cookie.expirationDate || null,
-      storeId: cookie.storeId || this.currentTab.cookieStoreId || null,
       url: url,
     };
+    const storeId = cookie.storeId || this.currentTab.cookieStoreId;
+    if (storeId) {
+      newCookie.storeId = storeId;
+    }
 
     // Bad hack on safari because cookies needs to have the very exact same domain
     // to be able to edit it.
@@ -103,6 +166,15 @@ export class GenericCookieHandler extends EventEmitter {
    */
   async saveCookie(cookie, url) {
     cookie = this.prepareCookie(cookie, url);
+    if (this.browserDetector.isSafari() && !cookie.storeId) {
+      const storeId = await GenericCookieHandler.getSafariTabStoreId(
+        this.browserDetector,
+        this.currentTab.id
+      );
+      if (storeId) {
+        cookie.storeId = storeId;
+      }
+    }
     return this.browserDetector.getApi().cookies.set(cookie);
   }
 
@@ -112,25 +184,40 @@ export class GenericCookieHandler extends EventEmitter {
    * @param {string} url The url that the cookie is attached to.
    * @param {object} [partitionKey=null] Optional storage partition key.
    * @param {boolean} [isRecursive=false]
+   * @param {string} [storeId] Optional cookie store ID.
    * @return {Promise}
    */
-  async removeCookie(name, url, partitionKey = null, isRecursive = false) {
+  async removeCookie(
+    name,
+    url,
+    partitionKey = null,
+    isRecursive = false,
+    storeId = undefined
+  ) {
     // Bad hack on safari because cookies needs to have the very exact same domain
     // to be able to delete it.
-    // TODO: Check if this hack is needed on devtools.
     if (this.browserDetector.isSafari() && !isRecursive) {
       const cookies = await this.getAllCookies();
       for (const cookie of cookies) {
         if (cookie.name === name) {
-          await this.removeCookie(name, 'http://' + cookie.domain, null, true);
+          await this.removeCookie(
+            name,
+            'http://' + cookie.domain,
+            null,
+            true,
+            cookie.storeId
+          );
         }
       }
     } else {
       const removeParams = {
         name: name,
         url: url,
-        storeId: this.currentTab.cookieStoreId,
       };
+      const resolvedStoreId = storeId || this.currentTab.cookieStoreId;
+      if (resolvedStoreId) {
+        removeParams.storeId = resolvedStoreId;
+      }
       if (partitionKey && !this.browserDetector.isSafari()) {
         removeParams.partitionKey = partitionKey;
       }

@@ -42,10 +42,14 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * @return {Promise}
    */
   async getAllCookies() {
-    const response = await this.sendMessage('getAllCookies', {
+    const params = {
       url: this.currentTab.url,
-      storeId: this.currentTab.cookieStoreId,
-    });
+      tabId: this.currentTab.id,
+    };
+    if (this.currentTab.cookieStoreId) {
+      params.storeId = this.currentTab.cookieStoreId;
+    }
+    const response = await this.sendMessage('getAllCookies', params);
     if (response && response.success === false) {
       throw new Error(response.error || 'Failed to get cookies');
     }
@@ -62,6 +66,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
   async saveCookie(cookie, url) {
     const response = await this.sendMessage('saveCookie', {
       cookie: this.prepareCookie(cookie, url),
+      tabId: this.currentTab.id,
     });
     if (response && response.success === false) {
       throw new Error(response.error || 'Failed to save cookie');
@@ -74,14 +79,29 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * @param {string} name The name of the cookie to remove.
    * @param {string} url The url that the cookie is attached to.
    * @param {object} [partitionKey=null] Optional storage partition key.
+   * @param {boolean} [isRecursive=false]
+   * @param {string} [storeId] Optional cookie store ID.
    * @return {Promise}
    */
-  async removeCookie(name, url, partitionKey = null) {
+  async removeCookie(
+    name,
+    url,
+    partitionKey = null,
+    isRecursive = false,
+    storeId = undefined
+  ) {
+    if (this.browserDetector.isSafari() && !isRecursive) {
+      return super.removeCookie(name, url, partitionKey, isRecursive, storeId);
+    }
+
     const params = {
       name: name,
       url: url,
-      storeId: this.currentTab.cookieStoreId,
     };
+    const resolvedStoreId = storeId || this.currentTab.cookieStoreId;
+    if (resolvedStoreId) {
+      params.storeId = resolvedStoreId;
+    }
     if (partitionKey) {
       params.partitionKey = partitionKey;
     }
