@@ -8,20 +8,20 @@
   <script src="options.js" type="module" defer></script>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="../theme/switch.css" />
-  <title>Cookie-Editor Options</title>
+  <title data-i18n="optionsTitle">Cookie-Editor Options</title>
 </head>
 
 <body>
   <div class="container">
     <fieldset>
-      <legend>Options</legend>
+      <legend data-i18n="options">Options</legend>
       <div class="input-container">
-        <label for="advanced-cookie">Show Advanced Cookie Options</label>
+        <label for="advanced-cookie" data-i18n="showAdvancedCookieOptions">Show Advanced Cookie Options</label>
         <label class="switch">
           <input type="checkbox" id="advanced-cookie" aria-describedby="advanced-cookie-hint" />
           <span class="slider"></span>
         </label>
-        <div class="hint" id="advanced-cookie-hint">
+        <div class="hint" id="advanced-cookie-hint" data-i18n="showAdvancedCookieOptionsHint">
           When Enabled, all the values of a cookie are visible in the
           interface.<br />
           When Disabled, only the name and the value of the cookie are visible
@@ -30,12 +30,12 @@
       </div>
 
       <div class="input-container">
-        <label for="devtool-show">Enable Devtool panel</label>
+        <label for="devtool-show" data-i18n="enableDevtoolPanel">Enable Devtool panel</label>
         <label class="switch">
           <input type="checkbox" id="devtool-show" aria-describedby="devtool-show-hint" />
           <span class="slider"></span>
         </label>
-        <div class="hint" id="devtool-show-hint">
+        <div class="hint" id="devtool-show-hint" data-i18n="enableDevtoolPanelHint">
           When Enabled, Cookie-Editor will be added to the DevTools tabs.
           Devtools needs to be restarted to take effect when turning this
           option off.
@@ -43,26 +43,26 @@
       </div>
 
       <div class="input-container">
-        <label for="animations-enabled">Enable Animations</label>
+        <label for="animations-enabled" data-i18n="enableAnimations">Enable Animations</label>
         <label class="switch">
           <input type="checkbox" id="animations-enabled" aria-describedby="animations-enabled-hint" />
           <span class="slider"></span>
         </label>
-        <div class="hint" id="animations-enabled-hint">
+        <div class="hint" id="animations-enabled-hint" data-i18n="enableAnimationsHint">
           When Enabled, Cookie-Editor will show transitions and other various
           animations in the interface. This is for appearance only.
         </div>
       </div>
 
       <div class="input-container">
-        <label for="export-format">Export Format</label>
+        <label for="export-format" data-i18n="exportFormat">Export Format</label>
         <select id="export-format" aria-describedby="export-format-hint">
-          <option value="json">JSON</option>
-          <option value="headerstring">Header String</option>
-          <option value="netscape">Netscape</option>
-          <option value="ask">Ask every time</option>
+          <option value="json" data-i18n="json">JSON</option>
+          <option value="headerstring" data-i18n="headerString">Header String</option>
+          <option value="netscape" data-i18n="netscape">Netscape</option>
+          <option value="ask" data-i18n="askEveryTime">Ask every time</option>
         </select>
-        <div class="hint" id="export-format-hint">
+        <div class="hint" id="export-format-hint" data-i18n="exportFormatHint">
           Selects the behavior of the export button. When "Ask every time" is
           selected, a menu asking you to chose the format will show up when
           you press the export button.
@@ -70,20 +70,20 @@
       </div>
 
       <div class="input-container">
-        <label for="extra-info">Show Extra Information</label>
+        <label for="extra-info" data-i18n="showExtraInformation">Show Extra Information</label>
         <select id="extra-info" aria-describedby="v-hint">
-          <option value="nothing">Nothing</option>
-          <option value="value">Value</option>
-          <option value="domain">Domain</option>
-          <option value="path">Path</option>
-          <option value="expiration">Expiration</option>
-          <option value="samesite">Same Site</option>
-          <option value="hostonly">Host Only</option>
-          <option value="session">Session</option>
-          <option value="secure">Secure</option>
-          <option value="httponly">Http Only</option>
+          <option value="nothing" data-i18n="nothing">Nothing</option>
+          <option value="value" data-i18n="value">Value</option>
+          <option value="domain" data-i18n="domain">Domain</option>
+          <option value="path" data-i18n="path">Path</option>
+          <option value="expiration" data-i18n="expiration">Expiration</option>
+          <option value="samesite" data-i18n="samesite">Same Site</option>
+          <option value="hostonly" data-i18n="hostonly">Host Only</option>
+          <option value="session" data-i18n="session">Session</option>
+          <option value="secure" data-i18n="secure">Secure</option>
+          <option value="httponly" data-i18n="httponly">Http Only</option>
         </select>
-        <div class="hint" id="extra-info-hint">
+        <div class="hint" id="extra-info-hint" data-i18n="showExtraInformationHint">
           Selects one extra element to display next to the cookie name in the
           interface. This can help you identify quickly which cookie you are
           looking for.
@@ -91,37 +91,37 @@
       </div>
 
       <div class="input-container">
-        <label for="theme">Theme</label>
+        <label for="theme" data-i18n="theme">Theme</label>
         <select id="theme" aria-describedby="theme-hint">
-          <option value="auto">Auto</option>
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
+          <option value="auto" data-i18n="auto">Auto</option>
+          <option value="light" data-i18n="light">Light</option>
+          <option value="dark" data-i18n="dark">Dark</option>
         </select>
-        <div class="hint" id="theme-hint">
+        <div class="hint" id="theme-hint" data-i18n="themeHint">
           When selecting "Auto", Cookie-Editor will match your browser's theme
           automatically.
         </div>
       </div>
 
       <div class="input-container">
-        <label for="button-bar-top">Place Button Bar on Top</label>
+        <label for="button-bar-top" data-i18n="placeButtonBarOnTop">Place Button Bar on Top</label>
         <label class="switch">
           <input type="checkbox" id="button-bar-top" aria-describedby="button-bar-top-hint" />
           <span class="slider"></span>
         </label>
-        <div class="hint" id="button-bar-top-hint">
+        <div class="hint" id="button-bar-top-hint" data-i18n="placeButtonBarOnTopHint">
           When enabled, the main button bar will be placed at the top of the
           interface instead of the bottom.
         </div>
       </div>
       
       <div class="input-container">
-        <label for="ads-enabled">Show Ads</label>
+        <label for="ads-enabled" data-i18n="showAds">Show Ads</label>
         <label class="switch">
           <input type="checkbox" id="ads-enabled" aria-describedby="ads-enabled-hint" />
           <span class="slider"></span>
         </label>
-        <div class="hint" id="ads-enabled-hint">
+        <div class="hint" id="ads-enabled-hint" data-i18n="showAdsHint">
           When Enabled, Cookie-Editor will display some small non-intrusive ads at the
           top of the main interface. These are used to cover the basic operating
           costs of Cookie-Editor. Feel free to disable them, but keep in mind
@@ -137,32 +137,30 @@
     </fieldset>
 
     <fieldset>
-      <legend>All Cookies</legend>
+      <legend data-i18n="allCookies">All Cookies</legend>
       <div class="notice danger">
         <svg class="icon">
           <use href="../sprites/solid.svg#exclamation-triangle"></use>
         </svg>
-        <strong>Be careful!</strong> Operations in this section will apply to ALL sites.
+        <strong data-i18n="beCareful">Be careful!</strong> <span data-i18n="operationsApplyToAllSites">Operations in this section will apply to ALL sites.</span>
          <br />
-        Do not share your cookies exported from here to anyone you do not
-        fully trust. Giving some your cookies this way will give them access
-        to every account you are currently logged in.
+        <span data-i18n="doNotShareCookies">Do not share your cookies exported from here to anyone you do not fully trust. Giving some your cookies this way will give them access to every account you are currently logged in.</span>
       </div>
       <div class="input-container">
-        Export All Cookies
+        <span data-i18n="exportAllCookies">Export All Cookies</span>
         <div class="button-group">
-          <button id="export-all-json">As JSON</button>
-          <button id="export-all-netscape">As Netscape</button>
+          <button id="export-all-json" data-i18n="asJson">As JSON</button>
+          <button id="export-all-netscape" data-i18n="asNetscape">As Netscape</button>
         </div>
-        <div class="hint">
+        <div class="hint" data-i18n="headerStringNotAvailable">
           Header string is not available for browser-wide export since it does
           not contain information about which site it comes from.
         </div>
       </div>
       <div class="input-container">
-        Delete All Cookies
-        <button class="danger" id="delete-all">Delete All</button>
-        <div class="hint danger">
+        <span data-i18n="deleteAllCookies">Delete All Cookies</span>
+        <button class="danger" id="delete-all" data-i18n="deleteAll">Delete All</button>
+        <div class="hint danger" data-i18n="deleteAllHint">
           This will delete all the cookies on all the site on this browser.
           This action is irreversible. Be very careful.
         </div>
@@ -170,25 +168,20 @@
     </fieldset>
 
     <fieldset>
-      <legend>About Cookie-Editor</legend>
-      <p>
+      <legend data-i18n="aboutCookieEditor">About Cookie-Editor</legend>
+      <p data-i18n="cookieEditorMadeBy">
         Cookie-Editor is made by Christophe Gagnier and is fully open source.
       </p>
       <p>
-        View the
-        <a href="https://github.com/Moustachauve/cookie-editor" target="_blank">Source code</a>. Read the
-        <a href="https://cookie-editor.com/privacy.html" target="_blank">Privacy Policy</a>. <br />
-        Cookie-Editor is published under
-        <a href="https://github.com/Moustachauve/cookie-editor/blob/master/LICENSE" target="_blank">the GPL-3.0
-          license</a>.
+        <span data-i18n="viewSourceCode">View the <a href="https://github.com/Moustachauve/cookie-editor" target="_blank">Source code</a>.</span> <span data-i18n="readPrivacyPolicy">Read the <a href="https://cookie-editor.com/privacy.html" target="_blank">Privacy Policy</a>.</span> <br />
+        <span data-i18n="publishedUnderLicense">Cookie-Editor is published under <a href="https://github.com/Moustachauve/cookie-editor/blob/master/LICENSE" target="_blank">the GPL-3.0 license</a>.</span>
       </p>
       <p class="github-sponsor hidden">
-        <em>Are you enjoying Cookie-Editor?</em><br />
-        I would be really greatful if you considered supporting my work by
-        sponsoring me on Github.
-        <a href="https://github.com/sponsors/Moustachauve/" target="_blank">Learn more</a>.
+        <em data-i18n="areYouEnjoying">Are you enjoying Cookie-Editor?</em><br />
+        <span data-i18n="considerSupporting">I would be really greatful if you considered supporting my work by sponsoring me on Github.</span>
+        <a href="https://github.com/sponsors/Moustachauve/" target="_blank" data-i18n="learnMore">Learn more</a>.
       </p>
-      <p class="disclaimer">
+      <p class="disclaimer" data-i18n="thisProjectIsNotOfficial">
         This project is not an official Google project. It is not supported by
         Google and Google specifically disclaims all warranties as to its
         quality, merchantability, or fitness for a particular purpose.
