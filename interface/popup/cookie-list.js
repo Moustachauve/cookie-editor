@@ -6,6 +6,7 @@ import { Cookie } from '../lib/cookie.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
 import { HeaderstringFormat } from '../lib/headerstringFormat.js';
 import { JsonFormat } from '../lib/jsonFormat.js';
+import { HarFormat } from '../lib/jsonFormat.js';
 import { NetscapeFormat } from '../lib/netscapeFormat.js';
 import { ExportFormats } from '../lib/options/exportFormats.js';
 import { OptionsHandler } from '../lib/optionsHandler.js';
@@ -421,7 +422,11 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         }
         let cookies;
         try {
-          cookies = JsonFormat.parse(json);
+          if (JSON.parse(json).log) {
+            cookies = HarFormat.parse(json);
+          } else {
+            cookies = JsonFormat.parse(json);
+          }
         } catch (error) {
           console.warn(error);
           try {
