@@ -61,25 +61,39 @@ test('CookieHandlerPopup - handles rejected tabs.query gracefully on init', asyn
   assert.equal(handler.currentTab, null);
 });
 
-for (const [label, cookie, shouldEmit] of [
+for (const [label, browserName, cookie, shouldEmit] of [
   [
     'matching domain and storeId',
+    'chrome',
     { domain: '.example.com', storeId: '0', name: 'sid' },
     true,
   ],
   [
     'non-matching domain',
+    'chrome',
     { domain: '.other.com', storeId: '0', name: 'sid' },
     false,
   ],
   [
     'non-matching storeId',
+    'chrome',
     { domain: '.example.com', storeId: '1', name: 'sid' },
     false,
   ],
+  [
+    'matching domain with Safari storeId when tab cookieStoreId is undefined',
+    'safari',
+    { domain: '.example.com', storeId: 'safari-private', name: 'sid' },
+    true,
+  ],
 ]) {
   test(`CookieHandlerPopup - onCookiesChanged filter: ${label}`, async () => {
-    const { detector } = createSinonBrowserMock();
+    const { detector, stubs } = createSinonBrowserMock({ browserName });
+    if (browserName === 'safari') {
+      stubs.tabs.query.resolves([
+        { id: 1, url: 'https://example.com/page', cookieStoreId: undefined },
+      ]);
+    }
     const handler = new CookieHandlerPopup(detector);
     await flushMicrotasks();
 
