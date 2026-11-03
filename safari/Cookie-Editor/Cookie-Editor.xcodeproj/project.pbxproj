@@ -114,7 +114,7 @@
 		C9D61F1B29BBF85A00399458 /* Cookie-Editor Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Cookie-Editor Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9D61F2029BBF85A00399458 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C9D61F2129BBF85A00399458 /* Cookie-Editor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Cookie-Editor.entitlements"; sourceTree = "<group>"; };
-		C9D61F4129BBF85A00399458 /* Gruntfile.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = Gruntfile.js; path = ../../../Gruntfile.js; sourceTree = "<group>"; };
+		C9D61F4129BBF85A00399458 /* Gruntfile.cjs */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = Gruntfile.cjs; path = ../../../Gruntfile.cjs; sourceTree = "<group>"; };
 		C9D61F4229BBF85A00399458 /* interface */ = {isa = PBXFileReference; lastKnownFileType = folder; name = interface; path = ../../../interface; sourceTree = "<group>"; };
 		C9D61F4329BBF85A00399458 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../../../LICENSE; sourceTree = "<group>"; };
 		C9D61F4429BBF85A00399458 /* cookie-editor.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "cookie-editor.js"; path = "../../../cookie-editor.js"; sourceTree = "<group>"; };
@@ -271,7 +271,7 @@
 		C9D61F4029BBF85A00399458 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C9D61F4129BBF85A00399458 /* Gruntfile.js */,
+				C9D61F4129BBF85A00399458 /* Gruntfile.cjs */,
 				C9D61F4229BBF85A00399458 /* interface */,
 				C9D61F4329BBF85A00399458 /* LICENSE */,
 				C9D61F4429BBF85A00399458 /* cookie-editor.js */,
@@ -484,7 +484,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Fix for machines using nvm\nif [[ -s \"$HOME/.nvm/nvm.sh\" ]]; then\n    . \"$HOME/.nvm/nvm.sh\"\nelif [[ -x \"$(command -v brew)\" && -s \"$(brew --prefix nvm)/nvm.sh\" ]]; then\n    . \"$(brew --prefix nvm)/nvm.sh\"\nfi\n\ngrunt build-safari\n";
+			shellScript = "export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\"\n\n# Fix for machines using nvm\nif [[ -s \"$HOME/.nvm/nvm.sh\" ]]; then\n    . \"$HOME/.nvm/nvm.sh\"\nelif [[ -x \"$(command -v brew)\" && -s \"$(brew --prefix nvm)/nvm.sh\" ]]; then\n    . \"$(brew --prefix nvm)/nvm.sh\"\nfi\n\nnpx grunt build-safari\n";
 		};
 		C9D2F77E2ABFCF40003C6560 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -501,7 +501,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Fix for machines using nvm\nif [[ -s \"$HOME/.nvm/nvm.sh\" ]]; then\n    . \"$HOME/.nvm/nvm.sh\"\nelif [[ -x \"$(command -v brew)\" && -s \"$(brew --prefix nvm)/nvm.sh\" ]]; then\n    . \"$(brew --prefix nvm)/nvm.sh\"\nfi\n\ngrunt build-safari\n";
+			shellScript = "export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\"\n\n# Fix for machines using nvm\nif [[ -s \"$HOME/.nvm/nvm.sh\" ]]; then\n    . \"$HOME/.nvm/nvm.sh\"\nelif [[ -x \"$(command -v brew)\" && -s \"$(brew --prefix nvm)/nvm.sh\" ]]; then\n    . \"$(brew --prefix nvm)/nvm.sh\"\nfi\n\nnpx grunt build-safari\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -629,7 +629,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -689,7 +689,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
