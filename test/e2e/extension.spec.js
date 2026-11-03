@@ -186,6 +186,34 @@ test('Popup imports cookies (JSON & Header string), exports cookies, and deletes
   await expect
     .poll(async () => (await context.cookies(testServerUrl)).length)
     .toBe(0);
+
+  // 5. Import Netscape cookies including a blank-value cookie
+  const hostname = new URL(testServerUrl).hostname;
+  const netscapeInput = [
+    '# Netscape HTTP Cookie File',
+    `${hostname}\tFALSE\t/\tFALSE\t1900000000\tblank_cookie\t`,
+    `${hostname}\tFALSE\t/\tFALSE\t1900000000\tnon_blank_cookie\tval`,
+  ].join('\n');
+
+  await popup.locator('#notification-dismiss').click();
+  await popup.locator('#import-cookies').click();
+  await popup.locator('#content-import').fill(netscapeInput);
+  await popup.locator('#save-import-cookie').click();
+
+  await expect(popup.locator('#notification span')).toHaveText(
+    'Cookies were imported'
+  );
+  await expect(popup.locator('#cookie-container li.cookie')).toHaveCount(2);
+
+  const netscapeCookies = await context.cookies(testServerUrl);
+  expect(
+    netscapeCookies
+      .map(c => ({ name: c.name, value: c.value }))
+      .sort((a, b) => a.name.localeCompare(b.name))
+  ).toEqual([
+    { name: 'blank_cookie', value: '' },
+    { name: 'non_blank_cookie', value: 'val' },
+  ]);
 });
 
 test('Popup handles permission prompts and internal browser URLs', async ({
