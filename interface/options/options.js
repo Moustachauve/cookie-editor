@@ -142,16 +142,13 @@ document.addEventListener('DOMContentLoaded', async event => {
    */
   async function getAllCookies() {
     await getAllPermissions();
-    return new Promise((resolve, reject) => {
-      cookieHandler.getAllCookiesInBrowser(function (cookies) {
-        const loadedCookies = [];
-        for (const cookie of cookies) {
-          const id = Cookie.hashCode(cookie);
-          loadedCookies[id] = new Cookie(id, cookie, optionHandler);
-        }
-        resolve(loadedCookies);
-      });
-    });
+    const cookies = await cookieHandler.getAllCookiesInBrowser();
+    const loadedCookies = {};
+    for (const [index, cookie] of cookies.entries()) {
+      const id = `${Cookie.hashCode(cookie)}_${index}`;
+      loadedCookies[id] = new Cookie(id, cookie, optionHandler);
+    }
+    return loadedCookies;
   }
 
   /**
@@ -170,8 +167,11 @@ document.addEventListener('DOMContentLoaded', async event => {
         continue;
       }
       const exportedCookie = cookies[cookieId].cookie;
-      const url = 'https://' + exportedCookie.domain + exportedCookie.path;
-      cookieHandler.removeCookie(exportedCookie.name, url);
+      await cookieHandler.removeCookie(
+        exportedCookie.name,
+        Cookie.getUrl(exportedCookie),
+        exportedCookie.partitionKey
+      );
     }
     alert('All your cookies were deleted');
   }

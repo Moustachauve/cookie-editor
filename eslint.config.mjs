@@ -5,6 +5,10 @@ import prettier from 'eslint-plugin-prettier';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 
+const googleRules = { ...google.rules };
+delete googleRules['valid-jsdoc'];
+delete googleRules['require-jsdoc'];
+
 export default [
   // Global ignores
   {
@@ -14,14 +18,18 @@ export default [
       'node_modules/**',
       '.vscode/extensions.js',
       'safari/**',
+      'test-results/**',
+      'playwright-report/**',
     ],
   },
 
   // Base configuration for JS/MJS files
   js.configs.recommended,
 
-  // Google's style guide
-  google,
+  // Google's style guide (excluding JSDoc rules removed in ESLint v9)
+  {
+    rules: googleRules,
+  },
 
   // Main custom configuration
   {
@@ -45,9 +53,9 @@ export default [
     },
   },
 
-  // Override for Node.js configuration files
+  // Override for Node.js configuration and test files
   {
-    files: ['eslint.config.mjs'],
+    files: ['eslint.config.mjs', 'playwright.config.js', 'test/**/*.js'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -55,7 +63,7 @@ export default [
     },
   },
   {
-    files: ['Gruntfile.js'],
+    files: ['Gruntfile.js', 'Gruntfile.cjs'],
     languageOptions: {
       sourceType: 'commonjs',
       globals: {

@@ -19,25 +19,8 @@ export class GenericStorageHandler extends EventEmitter {
    * @return {Promise}
    */
   async getLocal(key) {
-    const self = this;
-    let promise;
-    if (this.browserDetector.supportsPromises()) {
-      promise = this.browserDetector.getApi().storage.local.get([key]);
-    } else {
-      promise = new Promise((resolve, reject) => {
-        self.browserDetector.getApi().storage.local.get([key], data => {
-          const error = self.browserDetector.getApi().runtime.lastError;
-          if (error) {
-            reject(error);
-          }
-          resolve(data ?? null);
-        });
-      });
-    }
-
-    return promise.then(data => {
-      return data[key] ?? null;
-    });
+    const data = await this.browserDetector.getApi().storage.local.get([key]);
+    return data?.[key] ?? null;
   }
 
   /**
@@ -47,22 +30,6 @@ export class GenericStorageHandler extends EventEmitter {
    * @return {Promise}
    */
   async setLocal(key, data) {
-    const self = this;
-    const dataObj = {};
-    dataObj[key] = data;
-
-    if (this.browserDetector.supportsPromises()) {
-      return this.browserDetector.getApi().storage.local.set(dataObj);
-    } else {
-      return new Promise((resolve, reject) => {
-        this.browserDetector.getApi().storage.local.set(dataObj, () => {
-          const error = self.browserDetector.getApi().runtime.lastError;
-          if (error) {
-            reject(error);
-          }
-          resolve();
-        });
-      });
-    }
+    return this.browserDetector.getApi().storage.local.set({ [key]: data });
   }
 }

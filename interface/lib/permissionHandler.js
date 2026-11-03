@@ -40,6 +40,25 @@ export class PermissionHandler {
   }
 
   /**
+   * Expands an URL or match pattern into the list of permission origins.
+   * @param {string} url URL or match pattern to expand.
+   * @return {string[]} Array of origin match patterns.
+   */
+  getPermissionOrigins(url) {
+    if (url === '<all_urls>') {
+      return ['<all_urls>'];
+    }
+    try {
+      const { protocol, hostname } = new URL(url);
+      const rootDomain = this.getRootDomainName(hostname);
+      return [`${protocol}//${hostname}/*`, `${protocol}//*.${rootDomain}/*`];
+    } catch (err) {
+      console.error(err);
+      return [url];
+    }
+  }
+
+  /**
    * Checks if the extension has permissions to access the cookies for a
    * specific url.
    * @param {string} url Url to check.
@@ -47,18 +66,8 @@ export class PermissionHandler {
    */
   async checkPermissions(url) {
     const testPermission = {
-      origins: [url],
+      origins: this.getPermissionOrigins(url),
     };
-    try {
-      const { protocol, hostname } = new URL(url);
-      const rootDomain = this.getRootDomainName(hostname);
-      testPermission.origins = [
-        `${protocol}//${hostname}/*`,
-        `${protocol}//*.${rootDomain}/*`,
-      ];
-    } catch (err) {
-      console.error(err);
-    }
 
     // If we don't have access to the permission API, assume we have
     // access. Safari devtools can't access the API.
@@ -78,18 +87,8 @@ export class PermissionHandler {
    */
   async requestPermission(url) {
     const permission = {
-      origins: [url],
+      origins: this.getPermissionOrigins(url),
     };
-    try {
-      const { protocol, hostname } = new URL(url);
-      const rootDomain = this.getRootDomainName(hostname);
-      permission.origins = [
-        `${protocol}//${hostname}/*`,
-        `${protocol}//*.${rootDomain}/*`,
-      ];
-    } catch (err) {
-      console.error(err);
-    }
     return this.browserDetector.getApi().permissions.request(permission);
   }
 
