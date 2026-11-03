@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-undef
 module.exports = function (grunt) {
   // Project configuration.
   grunt.initConfig({
@@ -51,8 +50,8 @@ module.exports = function (grunt) {
         ],
       },
     },
-    eslint: {
-      target: ['**.js', 'interface/**/*.js', '!Gruntfile.js'],
+    exec: {
+      lint: 'npm run lint',
     },
     clean: {
       firefox: ['build/firefox'],
@@ -334,7 +333,7 @@ module.exports = function (grunt) {
   });
 
   grunt.loadNpmTasks('grunt-json-replace');
-  grunt.loadNpmTasks('grunt-eslint');
+  grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-replace');
@@ -344,11 +343,28 @@ module.exports = function (grunt) {
   // Default task(s).
   grunt.registerTask('default', [
     'json-replace',
-    'eslint',
+    'exec:lint',
     'clean',
     'copy',
     'replace',
     'removelogging',
     'compress',
+  ]);
+
+  grunt.registerTask('build-chrome', [
+    'json-replace:chrome',
+    'clean:chrome',
+    'copy:chrome',
+    'replace:chrome',
+  ]);
+
+  grunt.registerTask('build-safari', [
+    'json-replace:safari',
+    'clean:safari',
+    'copy:safari',
+    'replace:safari',
+    // Keep logs in Safari for now, otherwise can't easily debug.
+    // Ideally there would be a different build config for dev/prod.
+    // 'removelogging',
   ]);
 };

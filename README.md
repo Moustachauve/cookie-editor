@@ -1,4 +1,4 @@
-[![grunt ESLint](https://github.com/Moustachauve/cookie-editor/actions/workflows/npm-grunt.yml/badge.svg)](https://github.com/Moustachauve/cookie-editor/actions/workflows/npm-grunt.yml)
+[![CI](https://github.com/Moustachauve/cookie-editor/actions/workflows/npm-grunt.yml/badge.svg)](https://github.com/Moustachauve/cookie-editor/actions/workflows/npm-grunt.yml)
 # Cookie-Editor
 [Cookie-Editor](https://cookie-editor.com/) is a browser extension/add-on that lets you efficiently create, edit and delete cookies for the current tab. Perfect for developing, quickly testing or even manually managing your cookies for your privacy.
 
@@ -8,9 +8,19 @@ Cookie-Editor is designed to have a simple to use interface that let you do most
 You can easily create, edit and delete a cookie for the current page that you are visiting.
 There is also a handy button to mass delete all the cookies for the current page.
 
-Cookie-Editor is available for Google Chrome, Firefox, Safari, Edge and Opera. It should be possible to install it on any webkit browser, but keep in mind that only the previous four browsers are officially supported.
+Cookie-Editor is available for:
+- Google Chrome
+- Firefox
+- Safari
+- Edge
+- Opera.
 
-Cookie-Editor is available on Firefox for Android and Safari for iOS, with an interface optimised for touchscreens.
+It should be possible to install it on any webkit browser, but keep in mind that only the previous five browsers are officially supported.
+
+Cookie-Editor is available on mobile devices with an interface optimised for touchscreens:
+- Firefox for Android 
+- Safari for iOS
+- Edge for Android and iOS
 
 ## Installation
 ### Install on Google Chrome
@@ -46,6 +56,15 @@ To submit a feature suggestion or file a bug report, please [create a new issue 
 
 Safari needs to be built in Xcode. I have only tested building Cookie-Editor on Xcode 15.
 
+## Thanks
+
+Thanks to DigitalOcean for supporting open-source software.
+
+<p>
+  <a href="https://digitalocean.pxf.io/k0BxXd">
+    <img alt="Powered by DigitalOcean" src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" width="201px">
+  </a>
+</p>
 
 ## Disclaimer
 

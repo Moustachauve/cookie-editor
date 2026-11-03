@@ -8,7 +8,7 @@ import { PermissionHandler } from '../lib/permissionHandler.js';
 import { ThemeHandler } from '../lib/themeHandler.js';
 import { CookieHandlerPopup } from '../popup/cookieHandlerPopup.js';
 
-document.addEventListener('DOMContentLoaded', async (event) => {
+document.addEventListener('DOMContentLoaded', async event => {
   const browserDetector = new BrowserDetector();
   const storageHandler = new GenericStorageHandler(browserDetector);
   const optionHandler = new OptionsHandler(browserDetector, storageHandler);
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     if (!browserDetector.isSafari()) {
       document
         .querySelectorAll('.github-sponsor')
-        .forEach((el) => el.classList.remove('hidden'));
+        .forEach(el => el.classList.remove('hidden'));
     }
   }
 
@@ -56,51 +56,51 @@ document.addEventListener('DOMContentLoaded', async (event) => {
    * Sets the different input listeners to save the form changes.
    */
   function setInputEvents() {
-    advancedCookieInput.addEventListener('change', (event) => {
+    advancedCookieInput.addEventListener('change', event => {
       if (!event.isTrusted) {
         return;
       }
       optionHandler.setCookieAdvanced(advancedCookieInput.checked);
     });
-    showDevtoolsInput.addEventListener('change', (event) => {
+    showDevtoolsInput.addEventListener('change', event => {
       if (!event.isTrusted) {
         return;
       }
       optionHandler.setDevtoolsEnabled(showDevtoolsInput.checked);
     });
-    animationsEnabledInput.addEventListener('change', (event) => {
+    animationsEnabledInput.addEventListener('change', event => {
       if (!event.isTrusted) {
         return;
       }
       optionHandler.setAnimationsEnabled(animationsEnabledInput.checked);
       handleAnimationsEnabled();
     });
-    exportFormatInput.addEventListener('change', (event) => {
+    exportFormatInput.addEventListener('change', event => {
       if (!event.isTrusted) {
         return;
       }
       optionHandler.setExportFormat(exportFormatInput.value);
     });
-    extraInfoInput.addEventListener('change', (event) => {
+    extraInfoInput.addEventListener('change', event => {
       if (!event.isTrusted) {
         return;
       }
       optionHandler.setExtraInfo(extraInfoInput.value);
     });
-    themeInput.addEventListener('change', (event) => {
+    themeInput.addEventListener('change', event => {
       if (!event.isTrusted) {
         return;
       }
       optionHandler.setTheme(themeInput.value);
       themeHandler.updateTheme();
     });
-    buttonBarTopInput.addEventListener('change', (event) => {
+    buttonBarTopInput.addEventListener('change', event => {
       if (!event.isTrusted) {
         return;
       }
       optionHandler.setButtonBarTop(buttonBarTopInput.checked);
     });
-    adsEnabledInput.addEventListener('change', (event) => {
+    adsEnabledInput.addEventListener('change', event => {
       if (!event.isTrusted) {
         return;
       }
@@ -109,19 +109,19 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     document
       .getElementById('delete-all')
-      .addEventListener('click', async (event) => {
+      .addEventListener('click', async event => {
         await deleteAllCookies();
       });
 
     document
       .getElementById('export-all-json')
-      .addEventListener('click', async (event) => {
+      .addEventListener('click', async event => {
         await exportCookiesAsJson();
       });
 
     document
       .getElementById('export-all-netscape')
-      .addEventListener('click', async (event) => {
+      .addEventListener('click', async event => {
         await exportCookiesAsNetscape();
       });
   }
@@ -142,16 +142,13 @@ document.addEventListener('DOMContentLoaded', async (event) => {
    */
   async function getAllCookies() {
     await getAllPermissions();
-    return new Promise((resolve, reject) => {
-      cookieHandler.getAllCookiesInBrowser(function (cookies) {
-        const loadedCookies = [];
-        for (const cookie of cookies) {
-          const id = Cookie.hashCode(cookie);
-          loadedCookies[id] = new Cookie(id, cookie, optionHandler);
-        }
-        resolve(loadedCookies);
-      });
-    });
+    const cookies = await cookieHandler.getAllCookiesInBrowser();
+    const loadedCookies = {};
+    for (const [index, cookie] of cookies.entries()) {
+      const id = `${Cookie.hashCode(cookie)}_${index}`;
+      loadedCookies[id] = new Cookie(id, cookie, optionHandler);
+    }
+    return loadedCookies;
   }
 
   /**
@@ -159,7 +156,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
    */
   async function deleteAllCookies() {
     const deleteAll = confirm(
-      'Are you sure you want to delete ALL your cookies?',
+      'Are you sure you want to delete ALL your cookies?'
     );
     if (!deleteAll) {
       return;
@@ -170,8 +167,11 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         continue;
       }
       const exportedCookie = cookies[cookieId].cookie;
-      const url = 'https://' + exportedCookie.domain + exportedCookie.path;
-      cookieHandler.removeCookie(exportedCookie.name, url);
+      await cookieHandler.removeCookie(
+        exportedCookie.name,
+        Cookie.getUrl(exportedCookie),
+        exportedCookie.partitionKey
+      );
     }
     alert('All your cookies were deleted');
   }

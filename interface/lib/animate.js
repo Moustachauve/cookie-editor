@@ -9,33 +9,31 @@ export class Animate {
    * @param {function} callback Called after the animation is done.
    */
   static toggleSlide(el, callback = null) {
-    let elMaxHeight = 0;
+    let elMaxHeight;
     const self = this;
 
     el.style.display = 'flex';
 
-    el.addEventListener(
-      'transitionend',
-      function () {
-        if (callback) {
-          callback();
-        }
+    const onDone = function () {
+      if (callback) {
+        callback();
+      }
 
-        if (self.isHidden(el)) {
-          el.style.display = 'none';
-        }
+      if (self.isHidden(el)) {
+        el.style.display = 'none';
+      }
 
-        // Hack to force firefox to resize the popup window after the animation
-        // is done
-        document.body.style.height = '100%';
-        setTimeout(function () {
-          document.body.style.height = '';
-        }, 10);
-      },
-      {
-        once: true,
-      },
-    );
+      // Hack to force firefox to resize the popup window after the animation
+      // is done
+      document.body.style.height = '100%';
+      setTimeout(function () {
+        document.body.style.height = '';
+      }, 10);
+    };
+
+    el.addEventListener('transitionend', onDone, {
+      once: true,
+    });
 
     if (el.getAttribute('data-max-height')) {
       // we've already used this before, so everything is setup
@@ -69,6 +67,16 @@ export class Animate {
         el.style.maxHeight = nextMaxHeight;
       }, 10);
     }
+
+    // When transitions are disabled (for example with the `notransition`
+    // class used when animations are turned off), `transitionend` never
+    // fires, so finish right after the max-height change instead.
+    if (!this.hasTransition(el)) {
+      setTimeout(function () {
+        el.removeEventListener('transitionend', onDone);
+        onDone();
+      }, 20);
+    }
   }
 
   /**
@@ -85,7 +93,7 @@ export class Animate {
         },
         {
           once: true,
-        },
+        }
       );
     }
     const elMaxHeight = this.getHeight(el, true) + 'px';
@@ -118,7 +126,7 @@ export class Animate {
     newPage,
     direction = 'left',
     callback = null,
-    animationsEnabled = true,
+    animationsEnabled = true
   ) {
     if (!animationsEnabled) {
       if (oldPage) {
@@ -147,7 +155,7 @@ export class Animate {
       {
         passive: true,
         once: true,
-      },
+      }
     );
 
     container.style.overflowY = 'hidden';
@@ -248,6 +256,17 @@ export class Animate {
     el.style.maxHeight = elMaxHeight;
 
     return wantedHeight;
+  }
+
+  /**
+   * Determines whether an element currently has a CSS transition that will
+   * run, meaning a `transitionend` event can be expected.
+   * @param {Element} el The element to check.
+   * @return {boolean} True if at least one transition has a duration.
+   */
+  static hasTransition(el) {
+    const durations = window.getComputedStyle(el).transitionDuration || '';
+    return durations.split(',').some(duration => parseFloat(duration) > 0);
   }
 
   /**

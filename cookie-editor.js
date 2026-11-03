@@ -1,7 +1,9 @@
 import { BrowserDetector } from './interface/lib/browserDetector.js';
+import { Browsers } from './interface/lib/browsers.js';
+import { GenericCookieHandler } from './interface/lib/genericCookieHandler.js';
 import { PermissionHandler } from './interface/lib/permissionHandler.js';
 
-(function () {
+(async function () {
   console.log('starting background script');
   // TODO: Separate connections from CookieHandler and OptionsHandler.
   // It would also be cool to separate their whole behavior in separate class
@@ -10,6 +12,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
   const browserDetector = new BrowserDetector();
   const permissionHandler = new PermissionHandler(browserDetector);
 
+  // Setting up event listeners synchronously at startup for service worker lifecycle
   browserDetector.getApi().runtime.onConnect.addListener(onConnect);
   browserDetector.getApi().runtime.onMessage.addListener(handleMessage);
   browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
@@ -18,30 +21,29 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
     browserDetector.getApi().cookies.onChanged.addListener(onCookiesChanged);
   }
 
-  isFirefoxAndroid(function (response) {
-    if (response) {
-      const popupOptions = {
-        popup: '/interface/popup-mobile/cookie-list.html',
-      };
-      browserDetector.getApi().action.setPopup(popupOptions);
-    }
-  });
-  isSafariIos(function (response) {
-    if (response) {
-      console.log('Setting up iOS popup');
-      const popupOptions = {
-        popup: '/interface/popup-mobile/cookie-list.html',
-      };
-      browserDetector.getApi().action.setPopup(popupOptions);
-    }
-  });
+  if (await isFirefoxAndroid()) {
+    const popupOptions = {
+      popup: '/interface/popup-mobile/cookie-list.html',
+    };
+    browserDetector.getApi().action.setPopup(popupOptions);
+  }
+
+  if (await isSafariIos()) {
+    // If we detect the user is on iOS, mark the browser
+    // as Safari in case it was edge or something else.
+    browserDetector.overrideBrowserName(Browsers.Safari);
+    console.log('Setting up iOS popup');
+    const popupOptions = {
+      popup: '/interface/popup-mobile/cookie-list.html',
+    };
+    browserDetector.getApi().action.setPopup(popupOptions);
+  }
 
   if (browserDetector.supportsSidePanel()) {
     browserDetector
       .getApi()
       .sidePanel.setPanelBehavior({ openPanelOnActionClick: false })
-      // eslint-disable-next-line prettier/prettier
-      .catch((error) => {
+      .catch(error => {
         console.error(error);
       });
   }
@@ -60,65 +62,70 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
     console.log('message received: ' + (request.type || 'unknown'));
     switch (request.type) {
       case 'getTabs': {
-        browserDetector.getApi().tabs.query({}, function (tabs) {
-          sendResponse(tabs);
-        });
+        browserDetector
+          .getApi()
+          .tabs.query({})
+          .then(sendResponse, error => {
+            console.error('Failed to get tabs', error);
+            sendResponse({
+              success: false,
+              error: error?.message || String(error),
+            });
+          });
         return true;
       }
       case 'getCurrentTab': {
         browserDetector
           .getApi()
-          .tabs.query(
-            { active: true, currentWindow: true },
-            function (tabInfo) {
-              sendResponse(tabInfo);
-            },
-          );
+          .tabs.query({ active: true, currentWindow: true })
+          .then(sendResponse, error => {
+            console.error('Failed to get current tab', error);
+            sendResponse({
+              success: false,
+              error: error?.message || String(error),
+            });
+          });
         return true;
       }
       case 'getAllCookies': {
         const getAllCookiesParams = {
           url: request.params.url,
         };
-        if (browserDetector.supportsPromises()) {
-          browserDetector
-            .getApi()
-            .cookies.getAll(getAllCookiesParams)
-            .then(sendResponse);
-        } else {
-          browserDetector
-            .getApi()
-            .cookies.getAll(getAllCookiesParams, sendResponse);
+        if (request.params.storeId) {
+          getAllCookiesParams.storeId = request.params.storeId;
         }
+        GenericCookieHandler.getAllWithPartitions(
+          browserDetector,
+          getAllCookiesParams,
+          request.params.tabId
+        ).then(sendResponse, error => {
+          console.error('Failed to get all cookies', error);
+          sendResponse({
+            success: false,
+            error: error?.message || String(error),
+          });
+        });
         return true;
       }
       case 'saveCookie': {
-        if (browserDetector.supportsPromises()) {
-          browserDetector
-            .getApi()
-            .cookies.set(request.params.cookie)
-            .then(
-              (cookie) => {
-                sendResponse(null, cookie);
-              },
-              (error) => {
-                console.error('Failed to create cookie', error);
-                sendResponse(error.message, null);
-              },
-            );
-        } else {
-          browserDetector
-            .getApi()
-            .cookies.set(request.params.cookie, (cookie) => {
-              if (cookie) {
-                sendResponse(null, cookie);
-              } else {
-                const error = browserDetector.getApi().runtime.lastError;
-                console.error('Failed to create cookie', error);
-                sendResponse(error.message, cookie);
-              }
-            });
-        }
+        GenericCookieHandler.withSafariStoreId(
+          browserDetector,
+          request.params.cookie,
+          request.params.tabId
+        )
+          .then(cookie => browserDetector.getApi().cookies.set(cookie))
+          .then(
+            cookie => {
+              sendResponse({ success: true, cookie });
+            },
+            error => {
+              console.error('Failed to create cookie', error);
+              sendResponse({
+                success: false,
+                error: error?.message || String(error),
+              });
+            }
+          );
         return true;
       }
       case 'removeCookie': {
@@ -126,22 +133,46 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
           name: request.params.name,
           url: request.params.url,
         };
-        if (browserDetector.supportsPromises()) {
-          browserDetector
-            .getApi()
-            .cookies.remove(removeParams)
-            .then(sendResponse);
-        } else {
-          browserDetector.getApi().cookies.remove(removeParams, sendResponse);
+        if (request.params.storeId) {
+          removeParams.storeId = request.params.storeId;
         }
+        if (request.params.partitionKey && !browserDetector.isSafari()) {
+          removeParams.partitionKey = request.params.partitionKey;
+        }
+        browserDetector
+          .getApi()
+          .cookies.remove(removeParams)
+          .then(sendResponse, error => {
+            console.error('Failed to remove cookie', error);
+            sendResponse({
+              success: false,
+              error: error?.message || String(error),
+            });
+          });
         return true;
       }
       case 'permissionsContains': {
-        permissionHandler.checkPermissions(request.params).then(sendResponse);
+        permissionHandler
+          .checkPermissions(request.params)
+          .then(sendResponse, error => {
+            console.error('Failed to check permissions', error);
+            sendResponse({
+              success: false,
+              error: error?.message || String(error),
+            });
+          });
         return true;
       }
       case 'permissionsRequest': {
-        permissionHandler.requestPermission(request.params).then(sendResponse);
+        permissionHandler
+          .requestPermission(request.params)
+          .then(sendResponse, error => {
+            console.error('Failed to request permission', error);
+            sendResponse({
+              success: false,
+              error: error?.message || String(error),
+            });
+          });
         return true;
       }
       case 'optionsChanged': {
@@ -164,7 +195,7 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
       switch (request.type) {
         case 'init_cookieHandler':
           console.log(
-            'Devtool cookieHandler connected on tab ' + request.tabId,
+            'Devtool cookieHandler connected on tab ' + request.tabId
           );
           connections[request.tabId] = port;
           return;
@@ -243,40 +274,40 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
 
   /**
    * Special function to detect if we are running on Firefox for Android.
-   * @param {function} callback Responds true if it is Firefox on android,
+   * @return {Promise<boolean>} Responds true if it is Firefox on android,
    *     otherwise false.
    */
-  function isFirefoxAndroid(callback) {
+  async function isFirefoxAndroid() {
     if (!browserDetector.isFirefox()) {
-      callback(false);
-      return;
+      return false;
     }
 
-    browserDetector
-      .getApi()
-      .runtime.getPlatformInfo()
-      .then((info) => {
-        callback(info.os === 'android');
-      });
+    try {
+      const info = await browserDetector.getApi().runtime.getPlatformInfo();
+      return info.os === 'android';
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
   }
 
   /**
    * Special function to detect if we are running on Safari on iOS.
-   * @param {function} callback Responds true if it is Safari on iOS,
+   *
+   * Any browser running on iOS would be considered Safari since they
+   * all are wrappers.
+   *
+   * @return {Promise<boolean>} Responds true if it is Safari on iOS,
    *     otherwise false.
    */
-  function isSafariIos(callback) {
-    if (!browserDetector.isSafari()) {
-      callback(false);
-      return;
+  async function isSafariIos() {
+    try {
+      const info = await browserDetector.getApi().runtime.getPlatformInfo();
+      console.log('check for safari on ios: ', info.os);
+      return info.os === 'ios';
+    } catch (e) {
+      console.error(e);
+      return false;
     }
-
-    browserDetector
-      .getApi()
-      .runtime.getPlatformInfo()
-      .then((info) => {
-        console.log('check for safari on ios: ', info.os);
-        callback(info.os === 'ios');
-      });
   }
 })();

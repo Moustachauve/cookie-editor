@@ -9,30 +9,23 @@ export class BrowserDetector {
    * Constructs the BrowserDetector.
    */
   constructor() {
-    console.log('constructing a browserDetector');
-    this.namespace = chrome || window.browser || window.chrome;
-    this.supportPromises = false;
+    this.namespace =
+      (typeof browser !== 'undefined' ? browser : null) ||
+      (typeof chrome !== 'undefined' ? chrome : null) ||
+      (typeof window !== 'undefined' ? window.browser || window.chrome : null);
     this.supportSidePanel = false;
-
-    try {
-      this.supportPromises =
-        this.namespace.runtime.getPlatformInfo() instanceof Promise;
-      console.info('Promises support: ', this.supportPromises);
-    } catch (e) {
-      /* empty */
-    }
 
     try {
       this.supportSidePanel = typeof this.getApi().sidePanel !== 'undefined';
       console.info('SidePanel support: ', this.supportSidePanel);
-    } catch (e) {
+    } catch {
       /* empty */
     }
 
     if (Env.browserName === '@@browser_name') {
       Env.browserName = Browsers.Chrome;
       console.warn(
-        'undefined browser name, using ' + Env.browserName + ' as fallback',
+        'undefined browser name, using ' + Env.browserName + ' as fallback'
       );
     }
 
@@ -80,15 +73,6 @@ export class BrowserDetector {
   }
 
   /**
-   * Checks if the current browser's API supports promises.
-   * @return {boolean} true if the current browser's API supports promises,
-   *     otherwise false.
-   */
-  supportsPromises() {
-    return this.supportPromises;
-  }
-
-  /**
    * Checks if the current browser supports the Sidepanel API.
    * @return {boolean} true if the current browser supports the Sidepanel API,
    *     otherwise false.
@@ -103,5 +87,13 @@ export class BrowserDetector {
    */
   getBrowserName() {
     return Env.browserName;
+  }
+
+  /**
+   * Overrides the detected browser name.
+   * @param {string} browserName The new browser name to set.
+   */
+  overrideBrowserName(browserName) {
+    Env.browserName = browserName;
   }
 }

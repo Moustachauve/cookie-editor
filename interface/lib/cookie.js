@@ -53,34 +53,34 @@ export class Cookie {
     this.cookie = cookie;
 
     const oldCookieName = this.baseHtml.querySelector(
-      '#name-' + this.guid,
+      '#name-' + this.guid
     ).value;
     const oldCookieValue = this.baseHtml.querySelector(
-      '#value-' + this.guid,
+      '#value-' + this.guid
     ).value;
     const oldCookieDomain = this.baseHtml.querySelector(
-      '#domain-' + this.guid,
+      '#domain-' + this.guid
     ).value;
     const oldCookiePath = this.baseHtml.querySelector(
-      '#path-' + this.guid,
+      '#path-' + this.guid
     ).value;
     const oldCookieSameSite = this.baseHtml.querySelector(
-      '#sameSite-' + this.guid,
+      '#sameSite-' + this.guid
     ).value;
     const oldCookieHostOnly = this.baseHtml.querySelector(
-      '#hostOnly-' + this.guid,
+      '#hostOnly-' + this.guid
     ).checked;
     const oldCookieSession = this.baseHtml.querySelector(
-      '#session-' + this.guid,
+      '#session-' + this.guid
     ).checked;
     const oldCookieSecure = this.baseHtml.querySelector(
-      '#secure-' + this.guid,
+      '#secure-' + this.guid
     ).checked;
     const oldCookieHttpOnly = this.baseHtml.querySelector(
-      '#httpOnly-' + this.guid,
+      '#httpOnly-' + this.guid
     ).checked;
     let oldCookieExpiration = this.baseHtml.querySelector(
-      '#expiration-' + this.guid,
+      '#expiration-' + this.guid
     ).value;
     oldCookieExpiration = new Date(oldCookieExpiration).getTime() / 1000;
     if (isNaN(oldCookieExpiration)) {
@@ -127,7 +127,7 @@ export class Cookie {
     const self = this;
     const template = document.importNode(
       document.getElementById('tmp-cookie').content,
-      true,
+      true
     );
     this.baseHtml = template.querySelector('li');
     this.baseHtml.setAttribute('data-name', this.cookie.name);
@@ -358,7 +358,7 @@ export class Cookie {
     const valueInput = this.baseHtml.querySelector('#session-' + this.guid);
     const header = this.baseHtml.querySelector('.header');
     valueInput.checked = !this.cookie.expirationDate;
-    this.afterSessionChanged();
+    this.afterSessionChanged(!this.cookie.expirationDate);
 
     this.animateChangeOnNode(header);
     this.animateChangeOnNode(valueInput);
@@ -370,7 +370,7 @@ export class Cookie {
    */
   afterSessionChanged(inputValue) {
     const expirationInput = this.baseHtml.querySelector(
-      '#expiration-' + this.guid,
+      '#expiration-' + this.guid
     );
     expirationInput.disabled = inputValue;
     if (inputValue) {
@@ -513,7 +513,7 @@ export class Cookie {
       case ExtraInfos.Hostonly:
         return this.formatBoolForDisplayShort(
           'Host Only',
-          this.cookie.hostOnly,
+          this.cookie.hostOnly
         );
       case ExtraInfos.Session:
         return this.formatBoolForDisplayShort('Session', this.cookie.session);
@@ -522,7 +522,7 @@ export class Cookie {
       case ExtraInfos.Httponly:
         return this.formatBoolForDisplayShort(
           'Http Only',
-          this.cookie.httpOnly,
+          this.cookie.httpOnly
         );
       case ExtraInfos.Nothing:
       default:
@@ -563,18 +563,48 @@ export class Cookie {
   }
 
   /**
-   * Generates a hashcode to represent a cookie based on its name and domain.
+   * Constructs a valid URL for targeting a specific cookie based on its domain,
+   * path, and secure flag.
    * @param {object} cookie A cookie's data.
-   * @return {string} A hashcode.
+   * @param {string} [fallbackUrl=''] Optional fallback URL (e.g. current tab URL).
+   * @return {string} Constructed URL or fallback URL.
+   */
+  static getUrl(cookie, fallbackUrl = '') {
+    if (!cookie || !cookie.domain) {
+      return fallbackUrl;
+    }
+    const isHttpsFallback = fallbackUrl.startsWith('https://');
+    const protocol = cookie.secure || isHttpsFallback ? 'https://' : 'http://';
+    const domain = cookie.domain.replace(/^\./, '');
+    const path = cookie.path || '/';
+    return `${protocol}${domain}${path}`;
+  }
+
+  /**
+   * Generates a hashcode to represent a cookie based on its key attributes.
+   * @param {object} cookie A cookie's data.
+   * @return {number} A hashcode.
    */
   static hashCode(cookie) {
-    const cookieString = cookie.name + cookie.domain;
+    const partitionKey = cookie.partitionKey
+      ? `${cookie.partitionKey.topLevelSite || ''}\u0000${
+          cookie.partitionKey.hasCrossSiteAncestor ? '1' : '0'
+        }`
+      : '';
+    const parts = [
+      cookie.name || '',
+      cookie.domain || '',
+      cookie.path || '',
+      cookie.storeId || '',
+      partitionKey,
+    ];
+    if (parts.every(part => part.length === 0)) {
+      return 0;
+    }
+    const cookieString = parts.join('\u0000');
     let hash = 0;
-    let i;
-    let chr;
-    if (cookieString.length === 0) return hash;
-    for (i = 0; i < cookieString.length; i++) {
-      chr = cookieString.charCodeAt(i);
+    for (let i = 0; i < cookieString.length; i++) {
+      const chr = cookieString.charCodeAt(i);
       hash = (hash << 5) - hash + chr;
       hash |= 0; // Convert to 32bit integer
     }

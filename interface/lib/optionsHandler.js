@@ -95,7 +95,7 @@ export class OptionsHandler extends EventEmitter {
     if (!this.isExportFormatValid(exportFormat)) {
       console.error(
         "Tried to load an exportFormat that doesn't exists",
-        exportFormat,
+        exportFormat
       );
       exportFormat = ExportFormats.Ask;
       this.setExportFormat(exportFormat);
@@ -110,7 +110,7 @@ export class OptionsHandler extends EventEmitter {
     if (!this.isExportFormatValid(exportFormat)) {
       console.error(
         "Tried to save an exportFormat that doesn't exists",
-        exportFormat,
+        exportFormat
       );
       return;
     }
@@ -142,7 +142,7 @@ export class OptionsHandler extends EventEmitter {
     if (!this.isExtraInfoValid(extraInfo)) {
       console.error(
         "Tried to load an extraInfo that doesn't exists",
-        extraInfo,
+        extraInfo
       );
       extraInfo = ExtraInfos.Nothing;
       this.setExtraInfo(extraInfo);
@@ -157,7 +157,7 @@ export class OptionsHandler extends EventEmitter {
     if (!this.isExtraInfoValid(extraInfo)) {
       console.error(
         "Tried to save an extraInfo that doesn't exists",
-        extraInfo,
+        extraInfo
       );
       return;
     }
@@ -290,33 +290,25 @@ export class OptionsHandler extends EventEmitter {
    * Sends a message to the background script.
    * @param {string} type The type of the message.
    * @param {object} params The payload of the message
-   * @param {function} callback
-   * @param {function} errorCallback
+   * @return {Promise}
    */
-  sendMessage(type, params, callback, errorCallback) {
-    if (this.browserDetector.supportsPromises()) {
-      this.browserDetector
-        .getApi()
-        .runtime.sendMessage({ type: type, params: params })
-        .then(callback, errorCallback);
-    } else {
-      this.browserDetector
-        .getApi()
-        .runtime.sendMessage({ type: type, params: params }, callback);
-    }
+  sendMessage(type, params) {
+    return this.browserDetector
+      .getApi()
+      .runtime.sendMessage({ type: type, params: params });
   }
 
   /**
    * Handles the reception of messages from the background script.
    * @param {object} request
    */
-  onMessage = async (request) => {
+  onMessage = async request => {
     console.log(
-      '[options] background message received: ' + (request.type || 'unknown'),
+      '[options] background message received: ' + (request.type || 'unknown')
     );
     switch (request.type) {
       case 'optionsChanged': {
-        if (request.data.from == this.guid) {
+        if (request.data.from === this.guid) {
           return;
         }
         const oldOptions = this.options;
