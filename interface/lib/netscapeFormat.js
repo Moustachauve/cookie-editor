@@ -12,9 +12,9 @@ export class NetscapeFormat {
    */
   static parse(cookieString) {
     const cookies = [];
-    const lines = cookieString.split('\n');
+    const lines = cookieString.split(/\r?\n/);
     for (let line of lines) {
-      line = line.trim();
+      line = line.trimStart();
       if (!line.length) {
         continue;
       }

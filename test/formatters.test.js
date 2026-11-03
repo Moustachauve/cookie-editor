@@ -163,3 +163,47 @@ test('NetscapeFormat - throws on malformed column count', () => {
     message: 'Invalid netscape format',
   });
 });
+
+test('NetscapeFormat - formats and parses cookies with empty values and CRLF line endings', () => {
+  const cookiesMap = {
+    c1: {
+      cookie: {
+        name: 'blank',
+        value: '',
+        domain: 'site-a.test',
+        path: '/',
+        secure: false,
+        expirationDate: 1793414693,
+        hostOnly: true,
+      },
+    },
+    c2: {
+      cookie: {
+        name: 'non_blank',
+        value: 'abc',
+        domain: 'site-a.test',
+        path: '/',
+        secure: true,
+        expirationDate: 1793414693,
+        hostOnly: true,
+      },
+    },
+  };
+
+  const formattedNetscape = NetscapeFormat.format(cookiesMap);
+  assert.ok(
+    formattedNetscape.includes(
+      'site-a.test\tFALSE\t/\tFALSE\t1793414693\tblank\t'
+    )
+  );
+
+  const parsed = NetscapeFormat.parse(formattedNetscape.replace(/\n/g, '\r\n'));
+  assert.equal(parsed.length, 2);
+  assert.equal(parsed[0].name, 'blank');
+  assert.equal(parsed[0].value, '');
+  assert.equal(parsed[0].domain, 'site-a.test');
+  assert.equal(parsed[0].hostOnly, true);
+  assert.equal(parsed[0].secure, false);
+  assert.equal(parsed[1].name, 'non_blank');
+  assert.equal(parsed[1].value, 'abc');
+});
