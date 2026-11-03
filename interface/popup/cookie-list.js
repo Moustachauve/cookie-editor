@@ -2,6 +2,7 @@ import { CookieHandlerDevtools } from '../devtools/cookieHandlerDevtools.js';
 import { AdHandler } from '../lib/ads/adHandler.js';
 import { Animate } from '../lib/animate.js';
 import { BrowserDetector } from '../lib/browserDetector.js';
+import { Clipboard } from '../lib/clipboard.js';
 import { Cookie } from '../lib/cookie.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
 import { HeaderstringFormat } from '../lib/headerstringFormat.js';
@@ -943,7 +944,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     }
 
     buttonIcon.setAttribute('href', '../sprites/solid.svg#check');
-    copyText(JsonFormat.format(loadedCookies));
+    await Clipboard.copy(JsonFormat.format(loadedCookies));
 
     sendNotification('Cookies exported to clipboard as JSON');
     setTimeout(() => {
@@ -954,7 +955,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   /**
    * Exports all the cookies for the current tab in the header string format.
    */
-  function exportToHeaderstring() {
+  async function exportToHeaderstring() {
     hideExportMenu();
     const buttonIcon = document
       .getElementById('export-cookies')
@@ -964,7 +965,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     }
 
     buttonIcon.setAttribute('href', '../sprites/solid.svg#check');
-    copyText(HeaderstringFormat.format(loadedCookies));
+    await Clipboard.copy(HeaderstringFormat.format(loadedCookies));
 
     sendNotification('Cookies exported to clipboard as Header String');
     setTimeout(() => {
@@ -975,7 +976,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
   /**
    * Exports all the cookies for the current tab in the Netscape format.
    */
-  function exportToNetscape() {
+  async function exportToNetscape() {
     hideExportMenu();
     const buttonIcon = document
       .getElementById('export-cookies')
@@ -985,7 +986,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     }
 
     buttonIcon.setAttribute('href', '../sprites/solid.svg#check');
-    copyText(NetscapeFormat.format(loadedCookies));
+    await Clipboard.copy(NetscapeFormat.format(loadedCookies));
 
     sendNotification('Cookies exported to clipboard as Netscape format');
     setTimeout(() => {
@@ -1207,22 +1208,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     }
 
     pageTitleContainer.querySelector('h1').textContent = title;
-  }
-
-  /**
-   * Copy some text to the user's clipboard.
-   * @param {string} text Text to copy.
-   */
-  function copyText(text) {
-    const fakeText = document.createElement('textarea');
-    fakeText.classList.add('clipboardCopier');
-    fakeText.textContent = text;
-    document.body.appendChild(fakeText);
-    fakeText.focus();
-    fakeText.select();
-    // TODO: switch to clipboard API.
-    document.execCommand('Copy');
-    document.body.removeChild(fakeText);
   }
 
   /**

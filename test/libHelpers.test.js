@@ -5,6 +5,7 @@ import sinon from 'sinon';
 
 import { BrowserDetector } from '../interface/lib/browserDetector.js';
 import { Browsers } from '../interface/lib/browsers.js';
+import { Clipboard } from '../interface/lib/clipboard.js';
 import { EventEmitter } from '../interface/lib/eventEmitter.js';
 import { GenericStorageHandler } from '../interface/lib/genericStorageHandler.js';
 import { GUID } from '../interface/lib/guid.js';
@@ -191,4 +192,45 @@ test('ThemeHandler - updates theme on optionsChanged only when theme option chan
   optionEvents.emit('optionsChanged', { theme: Themes.Light });
   assert.equal(updateSpy.calledOnce, true);
   assert.equal(document.body.dataset.theme, 'dark');
+});
+
+test('Clipboard.copy - writes text using navigator.clipboard.writeText', async () => {
+  const { teardown } = setupDom();
+  teardownDom = teardown;
+
+  const writeTextStub = sinon.stub().resolves();
+  Object.defineProperty(globalThis.navigator, 'clipboard', {
+    value: { writeText: writeTextStub },
+    configurable: true,
+  });
+
+  await Clipboard.copy('cookie_data');
+  assert.equal(writeTextStub.calledOnceWithExactly('cookie_data'), true);
+});
+
+test('Clipboard.copy - falls back to textarea and execCommand when writeText rejects', async () => {
+  const { teardown } = setupDom();
+  teardownDom = teardown;
+
+  const writeTextStub = sinon.stub().rejects(new Error('NotAllowedError'));
+  Object.defineProperty(globalThis.navigator, 'clipboard', {
+    value: { writeText: writeTextStub },
+    configurable: true,
+  });
+
+  let copiedValue = null;
+  document.execCommand = sinon.stub().callsFake(command => {
+    if (command === 'Copy') {
+      const textarea = document.querySelector('textarea.clipboardCopier');
+      copiedValue = textarea ? textarea.textContent : null;
+    }
+    return true;
+  });
+
+  await Clipboard.copy('fallback_cookie_data');
+
+  assert.equal(writeTextStub.calledOnce, true);
+  assert.equal(document.execCommand.calledOnceWithExactly('Copy'), true);
+  assert.equal(copiedValue, 'fallback_cookie_data');
+  assert.equal(document.querySelector('textarea.clipboardCopier'), null);
 });
