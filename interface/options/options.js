@@ -1,4 +1,5 @@
 import { BrowserDetector } from '../lib/browserDetector.js';
+import { Clipboard } from '../lib/clipboard.js';
 import { Cookie } from '../lib/cookie.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
 import { JsonFormat } from '../lib/jsonFormat.js';
@@ -181,7 +182,7 @@ document.addEventListener('DOMContentLoaded', async event => {
    */
   async function exportCookiesAsJson() {
     const cookies = await getAllCookies();
-    copyText(JsonFormat.format(cookies));
+    await Clipboard.copy(JsonFormat.format(cookies));
     alert('Done!');
   }
 
@@ -190,16 +191,8 @@ document.addEventListener('DOMContentLoaded', async event => {
    */
   async function exportCookiesAsNetscape() {
     const cookies = await getAllCookies();
-    copyText(NetscapeFormat.format(cookies));
+    await Clipboard.copy(NetscapeFormat.format(cookies));
     alert('Done!');
-  }
-
-  /**
-   * Copy some text to the user's clipboard.
-   * @param {string} text Text to copy.
-   */
-  function copyText(text) {
-    navigator.clipboard.writeText(text);
   }
 
   /**
