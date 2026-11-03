@@ -14,16 +14,17 @@ export class CookieHandlerPopup extends GenericCookieHandler {
     this.isReady = false;
     this.currentTabId = null;
 
-    if (this.browserDetector.supportsPromises()) {
-      this.browserDetector
-        .getApi()
-        .tabs.query({ active: true, currentWindow: true })
-        .then(this.init);
-    } else {
-      this.browserDetector
-        .getApi()
-        .tabs.query({ active: true, currentWindow: true }, this.init);
-    }
+    this.browserDetector
+      .getApi()
+      .tabs.query({ active: true, currentWindow: true })
+      .then(tabInfo => {
+        if (tabInfo && tabInfo.length > 0) {
+          this.init(tabInfo);
+        }
+      })
+      .catch(error => {
+        console.error('Failed to query current tab on popup init:', error);
+      });
   }
 
   /**
@@ -32,6 +33,9 @@ export class CookieHandlerPopup extends GenericCookieHandler {
    * @param {*} tabInfo Info about the current tab.
    */
   init = tabInfo => {
+    if (!tabInfo || !tabInfo[0]) {
+      return;
+    }
     this.currentTabId = tabInfo[0].id;
     this.currentTab = tabInfo[0];
     const api = this.browserDetector.getApi();
@@ -53,8 +57,10 @@ export class CookieHandlerPopup extends GenericCookieHandler {
   onCookiesChanged = changeInfo => {
     const domain = changeInfo.cookie.domain.substring(1);
     if (
+      this.currentTab &&
       this.currentTab.url.indexOf(domain) !== -1 &&
-      changeInfo.cookie.storeId === (this.currentTab.cookieStoreId || '0')
+      (this.browserDetector.isSafari() ||
+        changeInfo.cookie.storeId === (this.currentTab.cookieStoreId || '0'))
     ) {
       this.emit('cookiesChanged', changeInfo);
     }
@@ -66,24 +72,21 @@ export class CookieHandlerPopup extends GenericCookieHandler {
    * @param {object} changeInfo Properties of the tab that changed.
    * @param {object} _tab
    */
-  onTabsChanged = (tabId, changeInfo, _tab) => {
+  onTabsChanged = async (tabId, changeInfo, _tab) => {
     if (
       tabId === this.currentTabId &&
       (changeInfo.url || changeInfo.status === 'complete')
     ) {
       console.log('tabChanged!');
-      if (this.browserDetector.supportsPromises()) {
-        this.browserDetector
+      try {
+        const tabInfo = await this.browserDetector
           .getApi()
-          .tabs.query({ active: true, currentWindow: true })
-          .then(this.updateCurrentTab);
-      } else {
-        this.browserDetector
-          .getApi()
-          .tabs.query(
-            { active: true, currentWindow: true },
-            this.updateCurrentTab
-          );
+          .tabs.query({ active: true, currentWindow: true });
+        if (tabInfo && tabInfo.length > 0) {
+          this.updateCurrentTab(tabInfo);
+        }
+      } catch (error) {
+        console.error('Failed to query tab on tabsChanged:', error);
       }
     }
   };
@@ -92,19 +95,16 @@ export class CookieHandlerPopup extends GenericCookieHandler {
    * Event handler for when a tab is being activated.
    * @param {object} activeInfo Info about the event.
    */
-  onTabActivated = activeInfo => {
-    if (this.browserDetector.supportsPromises()) {
-      this.browserDetector
+  onTabActivated = async activeInfo => {
+    try {
+      const tabInfo = await this.browserDetector
         .getApi()
-        .tabs.query({ active: true, currentWindow: true })
-        .then(this.updateCurrentTab);
-    } else {
-      this.browserDetector
-        .getApi()
-        .tabs.query(
-          { active: true, currentWindow: true },
-          this.updateCurrentTab
-        );
+        .tabs.query({ active: true, currentWindow: true });
+      if (tabInfo && tabInfo.length > 0) {
+        this.updateCurrentTab(tabInfo);
+      }
+    } catch (error) {
+      console.error('Failed to query tab on tabActivated:', error);
     }
   };
 
@@ -113,8 +113,12 @@ export class CookieHandlerPopup extends GenericCookieHandler {
    * @param {object} tabInfo Info about the new current tab.
    */
   updateCurrentTab = tabInfo => {
+    if (!tabInfo || !tabInfo[0]) {
+      return;
+    }
     const newTab =
       tabInfo[0].id !== this.currentTabId ||
+      !this.currentTab ||
       tabInfo[0].url !== this.currentTab.url;
     this.currentTabId = tabInfo[0].id;
     this.currentTab = tabInfo[0];

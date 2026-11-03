@@ -53,17 +53,8 @@ export class PermissionHandler {
    * @return {Promise}
    */
   sendMessage(type, params) {
-    const self = this;
-    if (this.browserDetector.supportsPromises()) {
-      return this.browserDetector
-        .getApi()
-        .runtime.sendMessage({ type: type, params: params });
-    } else {
-      return new Promise(function (resolve) {
-        self.browserDetector
-          .getApi()
-          .runtime.sendMessage({ type: type, params: params }, resolve);
-      });
-    }
+    return this.browserDetector
+      .getApi()
+      .runtime.sendMessage({ type: type, params: params });
   }
 }

@@ -290,20 +290,12 @@ export class OptionsHandler extends EventEmitter {
    * Sends a message to the background script.
    * @param {string} type The type of the message.
    * @param {object} params The payload of the message
-   * @param {function} callback
-   * @param {function} errorCallback
+   * @return {Promise}
    */
-  sendMessage(type, params, callback, errorCallback) {
-    if (this.browserDetector.supportsPromises()) {
-      this.browserDetector
-        .getApi()
-        .runtime.sendMessage({ type: type, params: params })
-        .then(callback, errorCallback);
-    } else {
-      this.browserDetector
-        .getApi()
-        .runtime.sendMessage({ type: type, params: params }, callback);
-    }
+  sendMessage(type, params) {
+    return this.browserDetector
+      .getApi()
+      .runtime.sendMessage({ type: type, params: params });
   }
 
   /**
@@ -316,7 +308,7 @@ export class OptionsHandler extends EventEmitter {
     );
     switch (request.type) {
       case 'optionsChanged': {
-        if (request.data.from == this.guid) {
+        if (request.data.from === this.guid) {
           return;
         }
         const oldOptions = this.options;

@@ -5,7 +5,7 @@
 	"author": "Moustachauve",
 	"description": "Simple yet powerful Cookie Editor that allow you to quickly create, edit and delete cookies without leaving your tab.",
 	"offline_enabled": true,
-	"minimum_chrome_version": "102",
+	"minimum_chrome_version": "119",
 	"background": {
 		"service_worker": "cookie-editor.js",
 		"type": "module"

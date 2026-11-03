@@ -17,7 +17,7 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
     this.backgroundPageConnection = this.browserDetector
       .getApi()
       .runtime.connect({ name: 'panel' });
-    this.updateCurrentTab(this.init);
+    this.updateCurrentTab().then(this.init);
   }
 
   /**
@@ -39,17 +39,21 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
 
   /**
    * Gets all the cookies for the current tab.
-   * @param {function} callback
+   * @return {Promise}
    */
-  getAllCookies(callback) {
-    this.sendMessage(
-      'getAllCookies',
-      {
-        url: this.currentTab.url,
-        storeId: this.currentTab.cookieStoreId,
-      },
-      callback
-    );
+  async getAllCookies() {
+    const params = {
+      url: this.currentTab.url,
+      tabId: this.currentTab.id,
+    };
+    if (this.currentTab.cookieStoreId) {
+      params.storeId = this.currentTab.cookieStoreId;
+    }
+    const response = await this.sendMessage('getAllCookies', params);
+    if (response && response.success === false) {
+      throw new Error(response.error || 'Failed to get cookies');
+    }
+    return response;
   }
 
   /**
@@ -57,32 +61,55 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
    * one.
    * @param {Cookie} cookie Cookie's data.
    * @param {string} url The url to attach the cookie to.
-   * @param {function} callback
+   * @return {Promise}
    */
-  saveCookie(cookie, url, callback) {
-    this.sendMessage(
-      'saveCookie',
-      { cookie: this.prepareCookie(cookie, url) },
-      callback
-    );
+  async saveCookie(cookie, url) {
+    const response = await this.sendMessage('saveCookie', {
+      cookie: this.prepareCookie(cookie, url),
+      tabId: this.currentTab.id,
+    });
+    if (response && response.success === false) {
+      throw new Error(response.error || 'Failed to save cookie');
+    }
+    return response?.cookie ?? response;
   }
 
   /**
    * Removes a cookie from the browser.
    * @param {string} name The name of the cookie to remove.
    * @param {string} url The url that the cookie is attached to.
-   * @param {function} callback
+   * @param {object} [partitionKey=null] Optional storage partition key.
+   * @param {boolean} [isRecursive=false]
+   * @param {string} [storeId] Optional cookie store ID.
+   * @return {Promise}
    */
-  removeCookie(name, url, callback) {
-    this.sendMessage(
-      'removeCookie',
-      {
-        name: name,
-        url: url,
-        storeId: this.currentTab.cookieStoreId,
-      },
-      callback
-    );
+  async removeCookie(
+    name,
+    url,
+    partitionKey = null,
+    isRecursive = false,
+    storeId = undefined
+  ) {
+    if (this.browserDetector.isSafari() && !isRecursive) {
+      return super.removeCookie(name, url, partitionKey, isRecursive, storeId);
+    }
+
+    const params = {
+      name: name,
+      url: url,
+    };
+    const resolvedStoreId = storeId || this.currentTab.cookieStoreId;
+    if (resolvedStoreId) {
+      params.storeId = resolvedStoreId;
+    }
+    if (partitionKey) {
+      params.partitionKey = partitionKey;
+    }
+    const response = await this.sendMessage('removeCookie', params);
+    if (response && response.success === false) {
+      throw new Error(response.error || 'Failed to remove cookie');
+    }
+    return response;
   }
 
   /**
@@ -131,49 +158,35 @@ export class CookieHandlerDevtools extends GenericCookieHandler {
 
   /**
    * Retrieves the informations of the current tab from the background script.
-   * @param {*} callback
    */
-  updateCurrentTab = callback => {
-    const self = this;
-    this.sendMessage(
-      'getCurrentTab',
-      null,
-      function (tabInfo) {
-        const newTab =
-          tabInfo[0].id !== self.currentTabId ||
-          tabInfo[0].url !== self.currentTab.url;
-        self.currentTabId = tabInfo[0].id;
-        self.currentTab = tabInfo[0];
-        if (newTab && self.isReady) {
-          self.emit('cookiesChanged');
-        }
-        if (callback) {
-          callback();
-        }
-      },
-      function (e) {
-        console.log('failed to update current tab', e);
+  updateCurrentTab = async () => {
+    try {
+      const tabInfo = await this.sendMessage('getCurrentTab', null);
+      if (!tabInfo || !tabInfo[0]) {
+        return;
       }
-    );
+      const newTab =
+        tabInfo[0].id !== this.currentTabId ||
+        tabInfo[0].url !== this.currentTab.url;
+      this.currentTabId = tabInfo[0].id;
+      this.currentTab = tabInfo[0];
+      if (newTab && this.isReady) {
+        this.emit('cookiesChanged');
+      }
+    } catch (e) {
+      console.log('failed to update current tab', e);
+    }
   };
 
   /**
    * Sends a message to the background script.
    * @param {string} type The type of the message.
    * @param {object} params The payload of the message
-   * @param {function} callback
-   * @param {function} errorCallback
+   * @return {Promise}
    */
-  sendMessage(type, params, callback, errorCallback) {
-    if (this.browserDetector.supportsPromises()) {
-      this.browserDetector
-        .getApi()
-        .runtime.sendMessage({ type: type, params: params })
-        .then(callback, errorCallback);
-    } else {
-      this.browserDetector
-        .getApi()
-        .runtime.sendMessage({ type: type, params: params }, callback);
-    }
+  sendMessage(type, params) {
+    return this.browserDetector
+      .getApi()
+      .runtime.sendMessage({ type: type, params: params });
   }
 }

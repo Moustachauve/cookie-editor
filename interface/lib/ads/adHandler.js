@@ -46,7 +46,7 @@ export class AdHandler {
     // Only show a ad if it has not been dismissed in less than |ad.refreshDays|
     // days
     if (
-      secondsInOneDay * selectedAd.refreshDays + new Date().getTime() >
+      new Date().getTime() - secondsInOneDay * selectedAd.refreshDays <
       dismissedAd.date
     ) {
       console.log('Not showing ad ' + selectedAd.id + ', it was dismissed.');
