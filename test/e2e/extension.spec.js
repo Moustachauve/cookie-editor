@@ -187,11 +187,12 @@ test('Popup imports cookies (JSON & Header string), exports cookies, and deletes
     .poll(async () => (await context.cookies(testServerUrl)).length)
     .toBe(0);
 
-  // 5. Import Netscape cookies including a blank-value cookie
+  // 5. Import Netscape cookies including blank-value cookies (with and without trailing tab)
   const hostname = new URL(testServerUrl).hostname;
   const netscapeInput = [
     '# Netscape HTTP Cookie File',
     `${hostname}\tFALSE\t/\tFALSE\t1900000000\tblank_cookie\t`,
+    `${hostname}\tFALSE\t/\tFALSE\t1900000000\tblank_no_trailing_tab`,
     `${hostname}\tFALSE\t/\tFALSE\t1900000000\tnon_blank_cookie\tval`,
   ].join('\n');
 
@@ -203,7 +204,7 @@ test('Popup imports cookies (JSON & Header string), exports cookies, and deletes
   await expect(popup.locator('#notification span')).toHaveText(
     'Cookies were imported'
   );
-  await expect(popup.locator('#cookie-container li.cookie')).toHaveCount(2);
+  await expect(popup.locator('#cookie-container li.cookie')).toHaveCount(3);
 
   const netscapeCookies = await context.cookies(testServerUrl);
   expect(
@@ -212,6 +213,7 @@ test('Popup imports cookies (JSON & Header string), exports cookies, and deletes
       .sort((a, b) => a.name.localeCompare(b.name))
   ).toEqual([
     { name: 'blank_cookie', value: '' },
+    { name: 'blank_no_trailing_tab', value: '' },
     { name: 'non_blank_cookie', value: 'val' },
   ]);
 });

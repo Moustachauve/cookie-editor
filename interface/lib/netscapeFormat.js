@@ -28,7 +28,7 @@ export class NetscapeFormat {
       }
 
       const elements = line.split('\t');
-      if (elements.length != 7) {
+      if (elements.length < 6 || elements.length > 7) {
         throw new Error('Invalid netscape format');
       }
       cookies.push({
@@ -38,7 +38,7 @@ export class NetscapeFormat {
         secure: elements[3].toLowerCase() === 'true',
         expiration: elements[4],
         name: elements[5],
-        value: elements[6],
+        value: elements[6] ?? '',
         httpOnly: isHttpOnly,
       });
     }
