@@ -52,6 +52,21 @@ test('PermissionHandler - getRootDomainName', () => {
   assert.equal(handler.getRootDomainName('org.au'), 'org.au');
 });
 
+test('PermissionHandler - getPermissionOrigins expands http and https URLs to wildcard scheme', () => {
+  const { detector } = createSinonBrowserMock();
+  const handler = new PermissionHandler(detector);
+
+  assert.deepEqual(
+    handler.getPermissionOrigins('https://sub.example.com/page'),
+    ['*://sub.example.com/*', '*://*.example.com/*']
+  );
+  assert.deepEqual(
+    handler.getPermissionOrigins('http://sub.example.com:8080/page'),
+    ['*://sub.example.com/*', '*://*.example.com/*']
+  );
+  assert.deepEqual(handler.getPermissionOrigins('<all_urls>'), ['<all_urls>']);
+});
+
 test('PermissionHandler - checkPermissions calls permissions.contains with formatted origin', async () => {
   const { detector, stubs } = createSinonBrowserMock();
   stubs.permissions.contains.resolves(true);
@@ -62,7 +77,7 @@ test('PermissionHandler - checkPermissions calls permissions.contains with forma
   assert.equal(result, true);
   assert.equal(stubs.permissions.contains.calledOnce, true);
   assert.deepEqual(stubs.permissions.contains.firstCall.args[0], {
-    origins: ['https://sub.example.com/*', 'https://*.example.com/*'],
+    origins: ['*://sub.example.com/*', '*://*.example.com/*'],
   });
 });
 
@@ -92,7 +107,7 @@ test('PermissionHandler - requestPermission calls permissions.request with forma
   assert.equal(result, true);
   assert.equal(stubs.permissions.request.calledOnce, true);
   assert.deepEqual(stubs.permissions.request.firstCall.args[0], {
-    origins: ['https://sub.example.com/*', 'https://*.example.com/*'],
+    origins: ['*://sub.example.com/*', '*://*.example.com/*'],
   });
 });
 

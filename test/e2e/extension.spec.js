@@ -477,3 +477,62 @@ test('Popup deletes a partitioned (CHIPS) cookie from partitioned storage', asyn
     )
     .toBe(0);
 });
+
+test('Popup on HTTPS site with per-site permissions sees non-Secure cookies, newly created cookies, and cookies with Secure toggled off', async ({
+  context,
+  openPopup,
+}) => {
+  const popup = await openPopupWithSeededCookies(context, openPopup, [
+    {
+      url: 'https://example.com/',
+      name: 'plain_cookie',
+      value: 'plain_val',
+      path: '/',
+      secure: false,
+      httpOnly: true,
+    },
+    {
+      url: 'https://example.com/',
+      name: 'sec_cookie',
+      value: 'sec_val',
+      path: '/',
+      secure: true,
+    },
+  ]);
+
+  // 1. Both Secure and non-Secure (HttpOnly) cookies are visible
+  const cookieItems = popup.locator('#cookie-container li.cookie');
+  await expect(cookieItems).toHaveCount(2);
+  await expect(
+    popup.locator('li.cookie[data-name="plain_cookie"]')
+  ).toBeVisible();
+  await expect(
+    popup.locator('li.cookie[data-name="sec_cookie"]')
+  ).toBeVisible();
+
+  // 2. Creating a cookie in the popup (non-Secure by default) remains visible
+  await popup.locator('#create-cookie').click();
+  await popup.locator('#name-create').fill('made_here');
+  await popup.locator('#value-create').fill('made_val');
+  await popup.locator('#save-create-cookie').click();
+
+  await expect(popup.locator('li.cookie[data-name="made_here"]')).toBeVisible();
+  await expect(cookieItems).toHaveCount(3);
+
+  // 3. Toggling Secure off on sec_cookie and reloading keeps it visible in the list
+  const secRow = popup.locator('li.cookie[data-name="sec_cookie"]');
+  await secRow.locator('.header').click();
+  await secRow.locator('button.advanced-toggle').click();
+  const secureCheckbox = secRow.locator('input[name="secure"]');
+  await expect(secureCheckbox).toBeChecked();
+  await secureCheckbox.uncheck();
+  await secRow.locator('button.save').click();
+
+  await popup.reload();
+  await expect(popup.locator('#cookie-container li.cookie')).toHaveCount(3);
+  const reloadedSecRow = popup.locator('li.cookie[data-name="sec_cookie"]');
+  await expect(reloadedSecRow).toBeVisible();
+  await expect(
+    reloadedSecRow.locator('input[name="secure"]')
+  ).not.toBeChecked();
+});

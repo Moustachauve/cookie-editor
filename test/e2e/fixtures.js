@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url';
 
 import * as pw from '@playwright/test';
 
+import { PermissionHandler } from '../../interface/lib/permissionHandler.js';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const sourceExtensionDir = path.resolve(__dirname, '../../build/chrome');
 
@@ -46,7 +48,11 @@ export const test = pw.test.extend({
 
     const manifestPath = path.join(extDir, 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-    manifest.host_permissions = ['<all_urls>'];
+    const permissionHandler = new PermissionHandler();
+    manifest.host_permissions = [
+      ...permissionHandler.getPermissionOrigins('http://example.test/'),
+      ...permissionHandler.getPermissionOrigins('https://example.com/app'),
+    ];
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
     const context = await pw.chromium.launchPersistentContext('', {
