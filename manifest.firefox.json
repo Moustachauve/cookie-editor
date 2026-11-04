@@ -70,10 +70,14 @@
 	"browser_specific_settings": {
 		"gecko": {
 			"id": "{c3c10168-4186-445c-9c5b-63f12b8e2c87}",
-			"strict_min_version": "128.0"
+			"strict_min_version": "128.0",
+			"data_collection_permissions": {
+				"required": [
+					"none"
+				]
+			}
 		},
 		"gecko_android": {
-			"id": "cookie-editor@cookie-editor.com",
 			"strict_min_version": "128.0"
 		}
 	}
