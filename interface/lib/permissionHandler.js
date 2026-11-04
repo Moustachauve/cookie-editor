@@ -49,9 +49,9 @@ export class PermissionHandler {
       return ['<all_urls>'];
     }
     try {
-      const { protocol, hostname } = new URL(url);
+      const { hostname } = new URL(url);
       const rootDomain = this.getRootDomainName(hostname);
-      return [`${protocol}//${hostname}/*`, `${protocol}//*.${rootDomain}/*`];
+      return [`*://${hostname}/*`, `*://*.${rootDomain}/*`];
     } catch (err) {
       console.error(err);
       return [url];

@@ -197,7 +197,7 @@ for (const { name, message, setupStub, expectedResponse, verifyCall } of [
     expectedResponse: true,
     verifyCall: stubs =>
       assert.deepEqual(stubs.permissions.contains.firstCall.args[0], {
-        origins: ['https://sub.example.com/*', 'https://*.example.com/*'],
+        origins: ['*://sub.example.com/*', '*://*.example.com/*'],
       }),
   },
   {
@@ -207,7 +207,7 @@ for (const { name, message, setupStub, expectedResponse, verifyCall } of [
     expectedResponse: false,
     verifyCall: stubs =>
       assert.deepEqual(stubs.permissions.request.firstCall.args[0], {
-        origins: ['https://sub.example.com/*', 'https://*.example.com/*'],
+        origins: ['*://sub.example.com/*', '*://*.example.com/*'],
       }),
   },
 ]) {
