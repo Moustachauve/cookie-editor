@@ -206,4 +206,12 @@ test('NetscapeFormat - formats and parses cookies with empty values and CRLF lin
   assert.equal(parsed[0].secure, false);
   assert.equal(parsed[1].name, 'non_blank');
   assert.equal(parsed[1].value, 'abc');
+
+  // Also handles empty-value lines when the trailing tab was stripped
+  const strippedTrailingTab = 'youtube.com\tFALSE\t/\tFALSE\t1793414693\tblank';
+  const parsedStripped = NetscapeFormat.parse(strippedTrailingTab);
+  assert.equal(parsedStripped.length, 1);
+  assert.equal(parsedStripped[0].domain, 'youtube.com');
+  assert.equal(parsedStripped[0].name, 'blank');
+  assert.equal(parsedStripped[0].value, '');
 });
