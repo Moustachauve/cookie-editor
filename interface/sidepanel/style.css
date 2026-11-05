@@ -13,7 +13,9 @@ body {
   font-size: 1em;
   overflow: hidden;
 }
-.notransition *, .notransition *::before {
+.notransition *,
+.notransition *::before,
+.notransition *::after {
   -webkit-transition: none !important;
   -moz-transition: none !important;
   -o-transition: none !important;

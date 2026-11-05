@@ -12,11 +12,24 @@ body * {
   box-sizing: border-box;
   text-align: start;
 }
-.notransition *, .notransition *::before {
+.notransition *,
+.notransition *::before,
+.notransition *::after {
   -webkit-transition: none !important;
   -moz-transition: none !important;
   -o-transition: none !important;
   transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+  }
 }
 
 svg.icon {

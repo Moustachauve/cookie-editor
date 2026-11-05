@@ -536,3 +536,67 @@ test('Popup on HTTPS site with per-site permissions sees non-Secure cookies, new
     reloadedSecRow.locator('input[name="secure"]')
   ).not.toBeChecked();
 });
+
+test('Popup runs slide and page transition animations smoothly when animations are enabled', async ({
+  testServerUrl,
+  openPopup,
+}) => {
+  const popup = await openPopup(`${testServerUrl}/`);
+  await popup.setViewportSize({ width: 500, height: 600 });
+  await expect(popup.locator('#no-cookies')).toBeVisible();
+
+  // Transition to Create Cookie page and verify container/document width never exceeds 500px mid-transition
+  await popup.locator('#create-cookie').click();
+  const widthsDuringTransition = await popup.evaluate(() => {
+    const container = document.getElementById('cookie-container');
+    return {
+      bodyClientWidth: document.body.clientWidth,
+      bodyScrollWidth: document.body.scrollWidth,
+      docScrollWidth: document.documentElement.scrollWidth,
+      containerOffsetWidth: container.offsetWidth,
+    };
+  });
+  expect(widthsDuringTransition.containerOffsetWidth).toBe(
+    widthsDuringTransition.bodyClientWidth
+  );
+  expect(widthsDuringTransition.bodyScrollWidth).toBe(
+    widthsDuringTransition.bodyClientWidth
+  );
+  expect(widthsDuringTransition.docScrollWidth).toBe(
+    widthsDuringTransition.bodyClientWidth
+  );
+
+  await expect(popup.locator('#name-create')).toBeVisible();
+  await popup.locator('#name-create').fill('animated_cookie');
+  await popup.locator('#value-create').fill('anim_val');
+  await popup.locator('#save-create-cookie').click();
+
+  const cookieRow = popup.locator('li.cookie[data-name="animated_cookie"]');
+  await expect(cookieRow).toBeVisible();
+
+  // Expand cookie row, toggle Show/Hide Advanced, and collapse row
+  const header = cookieRow.locator('.header');
+  const expando = cookieRow.locator('.expando');
+  const advancedToggle = cookieRow.locator('button.advanced-toggle');
+  const advancedForm = cookieRow.locator('.advanced-form');
+
+  await header.click();
+  await expect(header).toHaveAttribute('aria-expanded', 'true');
+  await expect(expando).toBeVisible();
+
+  await advancedToggle.click();
+  await expect(advancedForm).toHaveClass(/show/);
+  await expect(advancedToggle).toHaveText('Hide Advanced');
+
+  await advancedToggle.click();
+  await expect(advancedForm).not.toHaveClass(/show/);
+  await expect(advancedToggle).toHaveText('Show Advanced');
+
+  await header.click();
+  await expect(header).toHaveAttribute('aria-expanded', 'false');
+  await expect(expando).toBeHidden();
+
+  // Delete cookie with slide-up animation and verify empty state appears
+  await cookieRow.locator('.header button.delete').click();
+  await expect(popup.locator('#no-cookies')).toBeVisible();
+});
