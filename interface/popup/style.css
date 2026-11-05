@@ -21,11 +21,58 @@ body * {
   text-align: start;
 }
 
-.notransition *, .notransition *::before {
+.notransition *,
+.notransition *::before,
+.notransition *::after {
   -webkit-transition: none !important;
   -moz-transition: none !important;
   -o-transition: none !important;
   transition: none !important;
+}
+
+.notransition .anim-value-changed,
+.notransition #cookie-container .anim-value-changed,
+.notransition .anim-success,
+.notransition #cookie-container .anim-success {
+  animation: none !important;
+}
+
+.notransition #notification.fadeInUp {
+  opacity: 1;
+  animation: none;
+}
+
+.notransition #notification.fadeOutDown {
+  opacity: 0;
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+  }
+
+  .anim-value-changed,
+  #cookie-container .anim-value-changed,
+  .anim-success,
+  #cookie-container .anim-success {
+    animation: none !important;
+  }
+
+  #notification.fadeInUp {
+    opacity: 1;
+    animation: none;
+  }
+
+  #notification.fadeOutDown {
+    opacity: 0;
+    animation: none;
+  }
 }
 
 button::-moz-focus-inner {
@@ -270,6 +317,7 @@ button:focus {
   min-height: 100px;
   min-width: 300px;
   max-height: 400px;
+  overflow-x: hidden;
   overflow-y: auto;
   background-color: var(--secondary-surface-color);
 }
@@ -306,7 +354,9 @@ button:focus {
   color: var(--primary-text-color);
   padding: 8px 25px;
   font-size: 14px;
-  transition: all 100ms linear;
+  transition:
+    border-color 100ms linear,
+    border-radius 100ms linear;
 }
 
 #no-permission button:hover {
@@ -347,7 +397,7 @@ button:focus {
   position: absolute;
   right: 5px;
   top: 4px;
-  transition: all 100ms ease;
+  transition: opacity 100ms ease;
 }
 
 /* Firefox display outlines in a strange way */
@@ -397,7 +447,6 @@ button:focus {
 }
 
 #cookie-container .expando {
-  max-height: 0;
   display: none;
   overflow: hidden;
 }
@@ -525,7 +574,11 @@ label {
 
 .action-btns button,
 .btns button {
-  transition: all 100ms ease;
+  transition:
+    fill 100ms ease,
+    color 100ms ease,
+    border-color 100ms ease,
+    box-shadow 100ms ease;
   fill: var(--primary-text-color);
 }
 
@@ -541,13 +594,6 @@ button.delete:focus svg {
 .action-btns button.save:hover svg,
 .action-btns button.save:focus svg {
   fill: var(--primary-safe-color);
-}
-
-/* Quick workaround the rendering issue for popups */
-body,
-.expando,
-#cookie-container {
-  background-image: url('pixel.png');
 }
 
 .panel-section-footer {
@@ -575,7 +621,11 @@ body,
   padding: 12px;
   text-align: center;
   cursor: pointer;
-  transition: all 150ms ease;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    fill 150ms ease;
   border: 1px solid transparent;
   background-color: var(--secondary-surface-color);
 }
@@ -612,7 +662,9 @@ body,
 .panel-section-footer-button .tooltip {
   text-align: center;
   color: var(--secondary-text-color);
-  transition: all 200ms ease;
+  transition:
+    opacity 200ms ease,
+    color 200ms ease;
   opacity: 0;
 }
 .panel-section-footer-button:hover > div,
@@ -767,7 +819,10 @@ body,
 [data-tooltip]:focus::after,
 [data-tooltip-left]:focus::after {
   opacity: 1;
-  transition: all 0.1s ease 0.5s;
+  transition:
+    opacity 0.1s ease 0.5s,
+    transform 0.1s ease 0.5s,
+    visibility 0.1s ease 0.5s;
   visibility: visible;
   transform: translateY(-50%);
 }
@@ -794,7 +849,6 @@ body,
 #cookie-container .anim-success {
   animation-name: success;
   animation-duration: 0.5s;
-  border: 1px solid initial;
 }
 
 @keyframes success {
@@ -885,7 +939,10 @@ body,
   border-radius: 3px;
   padding: 10px;
   font-size: 14px;
-  transition: all 100ms linear;
+  transition:
+    background-color 100ms linear,
+    border-color 100ms linear,
+    box-shadow 100ms linear;
 }
 #export-menu button:hover {
   border-color: var(--primary-outline-color);

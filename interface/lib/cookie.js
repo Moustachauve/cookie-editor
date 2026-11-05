@@ -227,13 +227,14 @@ export class Cookie {
     const advancedToggleButton = form.querySelector('.advanced-toggle');
     const advancedForm = form.querySelector('.advanced-form');
     advancedToggleButton.addEventListener('click', function () {
+      const startHeight = expando.offsetHeight;
       advancedForm.classList.toggle('show');
       if (advancedForm.classList.contains('show')) {
         advancedToggleButton.textContent = 'Hide Advanced';
       } else {
         advancedToggleButton.textContent = 'Show Advanced';
       }
-      Animate.resizeSlide(form.parentElement.parentElement);
+      Animate.resizeSlide(expando, null, startHeight);
     });
 
     if (this.optionHandler.getCookieAdvanced()) {
@@ -434,10 +435,7 @@ export class Cookie {
    * @param {Element} node Element to animate.
    */
   animateChangeOnNode(node) {
-    node.classList.remove('anim-value-changed');
-    setTimeout(() => {
-      node.classList.add('anim-value-changed');
-    }, 20);
+    this.triggerClassAnimation(node, 'anim-value-changed');
   }
 
   /**
@@ -454,9 +452,28 @@ export class Cookie {
    * @param {Element} node Element to animate.
    */
   animateSuccessOnNode(node) {
-    node.classList.remove('anim-success');
+    this.triggerClassAnimation(node, 'anim-success');
+  }
+
+  /**
+   * Triggers or restarts a CSS keyframe animation class on a node.
+   * @param {Element} node Element to animate.
+   * @param {string} className CSS animation class name.
+   */
+  triggerClassAnimation(node, className) {
+    if (!node) {
+      return;
+    }
+    node.classList.remove(className);
     setTimeout(() => {
-      node.classList.add('anim-success');
+      node.classList.add(className);
+      node.addEventListener(
+        'animationend',
+        () => {
+          node.classList.remove(className);
+        },
+        { once: true }
+      );
     }, 20);
   }
 
