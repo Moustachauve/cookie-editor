@@ -43,6 +43,7 @@ CI (`.github/workflows/npm-grunt.yml`) runs lint, unit tests and Chrome E2E test
 
 ## Testing changes
 
+- For manual local testing in Chrome, the extension is loaded unpacked directly from the repository root (using the local root `manifest.json` and source files in `interface/`), so there is no need to run a build step for the user to test changes in their browser.
 - Add or update a unit test in `test/` for logic changes; add an E2E case in `test/e2e/extension.spec.js` for popup behaviour.
 - Permission behaviour differs by browser: on Chrome, `cookies.getAll()` only returns cookies for origins the extension has host permission for, including the cookie's own scheme. Test with both Secure and non-Secure cookies.
 - Firefox is not covered by CI. For Firefox changes, build with `npx grunt` and load `build/firefox` as a temporary add-on, and check the browser console for manifest warnings.
