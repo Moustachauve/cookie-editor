@@ -235,6 +235,85 @@ button:focus {
   position: relative;
 }
 
+.cookie-checkbox {
+  margin-right: 8px;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+#bulk-actions-bar {
+  background-color: var(--primary-surface-color);
+  border-bottom: 1px solid var(--primary-border-color);
+  padding: 8px 12px;
+}
+
+.bulk-actions-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.bulk-select-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.bulk-select-all input {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+#bulkCounter {
+  font-weight: 500;
+  color: var(--primary-text-color);
+}
+
+.bulk-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.bulk-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--primary-border-color);
+  border-radius: 4px;
+  background: var(--secondary-surface-color);
+  color: var(--primary-text-color);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.bulk-btn:hover {
+  background: var(--primary-surface-color);
+  border-color: var(--primary-outline-color);
+}
+
+.bulk-btn.danger:hover {
+  background: var(--button-danger-surface-color);
+  border-color: var(--primary-danger-color);
+}
+
+.bulk-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+#searchContainer {
+  display: flex;
+  position: relative;
+}
+
 #cookie-container .search {
   position: absolute;
   left: 15px;

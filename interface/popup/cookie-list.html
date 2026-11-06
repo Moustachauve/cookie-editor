@@ -191,6 +191,7 @@
           role="button"
           aria-expanded="false"
         >
+          <input type="checkbox" class="cookie-checkbox" aria-label="Select cookie" />
           <svg class="icon arrow">
             <use href="../sprites/solid.svg#angle-down"></use>
           </svg>
@@ -213,6 +214,16 @@
         <div class="expando" aria-hidden="true" role="region">
           <div class="wrapper">
             <div class="action-btns">
+              <button
+                class="copy"
+                data-tooltip="Copy"
+                aria-label="Copy"
+                type="button"
+              >
+                <svg class="icon">
+                  <use href="../sprites/solid.svg#copy"></use>
+                </svg>
+              </button>
               <button
                 class="delete"
                 data-tooltip="Delete"
@@ -395,6 +406,24 @@
             <use href="../sprites/solid.svg#search"></use>
           </svg>
           <input id="searchField" type="text" placeholder="Search" />
+        </div>
+      </li>
+      <li id="bulk-actions-bar" style="display: none;">
+        <div class="bulk-actions-container">
+          <label class="bulk-select-all">
+            <input type="checkbox" id="selectAllCheckbox" />
+            <span id="bulkCounter">0 selected</span>
+          </label>
+          <div class="bulk-buttons">
+            <button id="bulkDelete" class="bulk-btn danger">
+              <svg class="icon"><use href="../sprites/solid.svg#trash"></use></svg>
+              Delete
+            </button>
+            <button id="bulkExport" class="bulk-btn">
+              <svg class="icon"><use href="../sprites/solid.svg#file-export"></use></svg>
+              Export
+            </button>
+          </div>
         </div>
       </li>
     </template>
