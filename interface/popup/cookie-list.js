@@ -132,6 +132,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       );
 
       if (form.classList.contains('create')) {
+        disableButtons = false;
         showCookiesForTab();
       }
 
@@ -308,7 +309,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
 
       document.getElementById('button-bar-default').classList.remove('active');
       document.getElementById('button-bar-add').classList.add('active');
-      document.getElementById('name-create').focus();
+      document.getElementById('name-create').focus({ preventScroll: true });
       return false;
     });
 
@@ -379,16 +380,18 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       document.getElementById('button-bar-default').classList.remove('active');
       document.getElementById('button-bar-import').classList.add('active');
 
-      document.getElementById('content-import').focus();
+      document.getElementById('content-import').focus({ preventScroll: true });
       return false;
     });
 
     document.getElementById('return-list-add').addEventListener('click', () => {
+      disableButtons = false;
       showCookiesForTab();
     });
     document
       .getElementById('return-list-import')
       .addEventListener('click', () => {
+        disableButtons = false;
         showCookiesForTab();
       });
 
@@ -475,6 +478,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
         }
 
         sendNotification(`Cookies were imported`);
+        disableButtons = false;
         showCookiesForTab();
       });
 
@@ -535,10 +539,16 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       });
 
     notificationElement.addEventListener('animationend', e => {
+      if (e.target !== notificationElement) {
+        return;
+      }
       if (notificationElement.classList.contains('fadeInUp')) {
         return;
       }
 
+      if (!notificationQueue.length) {
+        notificationElement.parentElement.style.display = 'none';
+      }
       triggerNotification();
     });
 
@@ -648,9 +658,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * available for the current page.
    */
   function showNoCookies() {
-    if (disableButtons) {
-      return;
-    }
     // If on a different page (e.g: import page) - don't show the no-cookies message.
     const pageTitle =
       pageTitleContainer?.querySelector('h1')?.textContent ?? '';
@@ -662,7 +669,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       .importNode(document.getElementById('tmp-empty').content, true)
       .querySelector('p');
     if (containerCookie.firstChild) {
-      if (containerCookie.firstChild.id === 'no-cookie') {
+      if (containerCookie.firstChild.id === 'no-cookies') {
         return;
       }
       disableButtons = true;
@@ -727,7 +734,9 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     } else {
       containerCookie.appendChild(html);
     }
-    document.getElementById('request-permission').focus();
+    document
+      .getElementById('request-permission')
+      .focus({ preventScroll: true });
     document
       .getElementById('request-permission')
       .addEventListener('click', async event => {
@@ -898,7 +907,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     );
     containerCookie.appendChild(template.getElementById('export-menu'));
 
-    document.getElementById('export-json').focus();
+    document.getElementById('export-json').focus({ preventScroll: true });
     document.getElementById('export-json').addEventListener('click', event => {
       exportToJson();
     });
@@ -1016,6 +1025,11 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
    * @param {object} changeInfo
    */
   function onCookiesChanged(changeInfo) {
+    const pageTitle =
+      pageTitleContainer?.querySelector('h1')?.textContent ?? '';
+    if (pageTitle !== 'Cookie-Editor') {
+      return;
+    }
     if (!changeInfo) {
       showCookiesForTab();
       return;
@@ -1030,12 +1044,13 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
 
     if (changeInfo.removed) {
       if (loadedCookies[id]) {
-        loadedCookies[id].removeHtml(() => {
+        const removedCookie = loadedCookies[id];
+        delete loadedCookies[id];
+        removedCookie.removeHtml(() => {
           if (!Object.keys(loadedCookies).length) {
             showNoCookies();
           }
         });
-        delete loadedCookies[id];
       }
       return;
     }
@@ -1196,6 +1211,13 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     notificationElement.classList.add('fadeOutDown');
     notificationElement.querySelector('#notification-dismiss').style.display =
       'none';
+
+    if (!Animate.shouldAnimate(notificationElement)) {
+      if (!notificationQueue.length) {
+        notificationElement.parentElement.style.display = 'none';
+      }
+      triggerNotification();
+    }
   }
 
   /**

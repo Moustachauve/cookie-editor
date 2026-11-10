@@ -1,124 +1,174 @@
+const activeSlideAnimations = new WeakMap();
+const lastSlideHeights = new WeakMap();
+const activePageAnimations = new WeakMap();
+
 /**
  * Handles the different animations used in the interface.
  */
 export class Animate {
   /**
-   * Toggles between the two different states of a expanding element through a
+   * Toggles between the expanded and collapsed states of an element through a
    * sliding animation.
    * @param {Element} el Element to animate.
-   * @param {function} callback Called after the animation is done.
+   * @param {?function} [callback=null] Called after the animation is done.
    */
   static toggleSlide(el, callback = null) {
-    let elMaxHeight;
-    const self = this;
+    const active = activeSlideAnimations.get(el);
+    const expanding = active ? !active.expanding : this.isHidden(el);
+    const startHeight = this.isHidden(el) ? 0 : el.offsetHeight;
 
-    el.style.display = 'flex';
+    if (active) {
+      active.animation.onfinish = null;
+      active.animation.oncancel = null;
+      active.animation.cancel();
+      activeSlideAnimations.delete(el);
+    }
 
-    const onDone = function () {
+    if (expanding) {
+      if (this.isHidden(el)) {
+        el.style.display = 'flex';
+        if (el.style.maxHeight) {
+          el.style.maxHeight = '';
+        }
+      }
+
+      const endHeight = el.offsetHeight;
+      lastSlideHeights.set(el, endHeight);
+
+      if (!this.shouldAnimate(el) || startHeight === endHeight) {
+        if (callback) {
+          callback();
+        }
+        return;
+      }
+
+      const animation = el.animate(
+        [
+          { height: `${startHeight}px`, overflowY: 'hidden' },
+          { height: `${endHeight}px`, overflowY: 'hidden' },
+        ],
+        {
+          duration: 250,
+          easing: 'ease-in-out',
+        }
+      );
+
+      activeSlideAnimations.set(el, { animation, expanding: true });
+      animation.onfinish = () => {
+        activeSlideAnimations.delete(el);
+        lastSlideHeights.set(el, el.offsetHeight);
+        if (callback) {
+          callback();
+        }
+      };
+      animation.oncancel = () => {
+        activeSlideAnimations.delete(el);
+      };
+      return;
+    }
+
+    lastSlideHeights.set(el, 0);
+    const finishCollapse = () => {
+      el.style.display = 'none';
       if (callback) {
         callback();
       }
-
-      if (self.isHidden(el)) {
-        el.style.display = 'none';
-      }
-
-      // Hack to force firefox to resize the popup window after the animation
-      // is done
-      document.body.style.height = '100%';
-      setTimeout(function () {
-        document.body.style.height = '';
-      }, 10);
     };
 
-    el.addEventListener('transitionend', onDone, {
-      once: true,
-    });
-
-    if (el.getAttribute('data-max-height')) {
-      // we've already used this before, so everything is setup
-      if (this.isHidden(el)) {
-        // el.style.maxHeight = el.getAttribute('data-max-height');
-        setTimeout(function () {
-          el.style.maxHeight = el.getAttribute('data-max-height');
-        }, 10);
-      } else {
-        elMaxHeight = this.getHeight(el) + 'px';
-        el.setAttribute('data-max-height', elMaxHeight);
-        el.style.maxHeight = '0';
-      }
-    } else {
-      elMaxHeight = this.getHeight(el) + 'px';
-      el.style.transition = 'max-height 0.25s ease-in-out';
-      el.style.overflowY = 'hidden';
-      // el.style.maxHeight = '0';
-      el.setAttribute('data-max-height', elMaxHeight);
-
-      let nextMaxHeight;
-      if (el.offsetHeight > 0) {
-        nextMaxHeight = 0;
-        el.style.maxHeight = elMaxHeight;
-      } else {
-        nextMaxHeight = elMaxHeight;
-        el.style.maxHeight = 0;
-      }
-      // we use setTimeout to modify maxHeight later than display (to we have the transition effect)
-      setTimeout(function () {
-        el.style.maxHeight = nextMaxHeight;
-      }, 10);
+    if (!this.shouldAnimate(el) || startHeight === 0) {
+      finishCollapse();
+      return;
     }
 
-    // When transitions are disabled (for example with the `notransition`
-    // class used when animations are turned off), `transitionend` never
-    // fires, so finish right after the max-height change instead.
-    if (!this.hasTransition(el)) {
-      setTimeout(function () {
-        el.removeEventListener('transitionend', onDone);
-        onDone();
-      }, 20);
-    }
+    const animation = el.animate(
+      [
+        { height: `${startHeight}px`, overflowY: 'hidden' },
+        { height: '0px', overflowY: 'hidden' },
+      ],
+      {
+        duration: 250,
+        easing: 'ease-in-out',
+      }
+    );
+
+    activeSlideAnimations.set(el, { animation, expanding: false });
+    animation.onfinish = () => {
+      activeSlideAnimations.delete(el);
+      finishCollapse();
+    };
+    animation.oncancel = () => {
+      activeSlideAnimations.delete(el);
+    };
   }
 
   /**
-   * Animates the change of size of an element through a sliding animation.
+   * Animates the change of size of an expanded slide element.
    * @param {Element} el Slide element to recalculate the size.
-   * @param {function} callback Called after the animation is done.
+   * @param {?function} [callback=null] Called after the animation is done.
+   * @param {?number} [startHeight=null] Optional height in pixels measured
+   *     before the DOM content change.
    */
-  static resizeSlide(el, callback = null) {
-    if (callback) {
-      el.addEventListener(
-        'transitionend',
-        function () {
-          callback();
-        },
-        {
-          once: true,
-        }
-      );
+  static resizeSlide(el, callback = null, startHeight = null) {
+    const active = activeSlideAnimations.get(el);
+    const fromHeight =
+      startHeight !== null
+        ? startHeight
+        : active
+          ? el.offsetHeight
+          : (lastSlideHeights.get(el) ?? el.offsetHeight);
+
+    if (active) {
+      active.animation.onfinish = null;
+      active.animation.oncancel = null;
+      active.animation.cancel();
+      activeSlideAnimations.delete(el);
     }
-    const elMaxHeight = this.getHeight(el, true) + 'px';
-    el.style.transition = 'max-height 0.25s ease-in-out';
-    el.style.overflowY = 'hidden';
-    // el.style.maxHeight = '0';
-    el.setAttribute('data-max-height', elMaxHeight);
 
-    const nextMaxHeight = elMaxHeight;
-    el.style.maxHeight = el.offsetHeight;
+    const toHeight = el.offsetHeight;
+    lastSlideHeights.set(el, toHeight);
 
-    // we use setTimeout to modify maxHeight later than display (to we have the transition effect)
-    setTimeout(function () {
-      el.style.maxHeight = nextMaxHeight;
-    }, 10);
+    if (!this.shouldAnimate(el) || fromHeight === toHeight) {
+      if (callback) {
+        callback();
+      }
+      return;
+    }
+
+    const animation = el.animate(
+      [
+        { height: `${fromHeight}px`, overflowY: 'hidden' },
+        { height: `${toHeight}px`, overflowY: 'hidden' },
+      ],
+      {
+        duration: 250,
+        easing: 'ease-in-out',
+      }
+    );
+
+    activeSlideAnimations.set(el, { animation, expanding: true });
+    animation.onfinish = () => {
+      activeSlideAnimations.delete(el);
+      lastSlideHeights.set(el, el.offsetHeight);
+      if (callback) {
+        callback();
+      }
+    };
+    animation.oncancel = () => {
+      activeSlideAnimations.delete(el);
+    };
   }
 
   /**
    * Animates a change of page content.
-   * @param {Element} container Parent container of the page
-   * @param {Element} oldPage Page that needs to get removed from the container.
+   * @param {Element} container Parent container of the page.
+   * @param {?Element} oldPage Page that needs to get removed from the
+   *     container.
    * @param {Element} newPage Page that will be inserted in the container.
-   * @param {string} direction Which direction to slide the old page towards.
-   * @param {function} callback Called after the animation is done.
-   * @param {boolean} animationsEnabled If the animations are enabled or not.
+   * @param {string} [direction='left'] Which direction to slide the old page
+   *     towards.
+   * @param {?function} [callback=null] Called after the animation is done.
+   * @param {boolean} [animationsEnabled=true] If the animations are enabled or
+   *     not.
    */
   static transitionPage(
     container,
@@ -128,145 +178,145 @@ export class Animate {
     callback = null,
     animationsEnabled = true
   ) {
-    if (!animationsEnabled) {
+    const active = activePageAnimations.get(container);
+    if (active) {
+      active.animations.forEach(anim => {
+        anim.onfinish = null;
+        anim.oncancel = null;
+        anim.cancel();
+      });
+      active.cleanup();
+      activePageAnimations.delete(container);
+      oldPage = container.firstElementChild;
+    }
+
+    if (!animationsEnabled || !this.shouldAnimate(container)) {
       if (oldPage) {
         oldPage.remove();
       }
       container.appendChild(newPage);
-      callback();
+      if (callback) {
+        callback();
+      }
       return;
     }
-    const animationTime = '0.3s';
 
-    container.addEventListener(
-      'transitionend',
-      () => {
-        container.style.maxHeight = '';
-        container.style.transition = '';
-        container.style.display = '';
-        container.style.width = '';
-        container.style.transform = '';
-        container.style.overflowY = 'auto';
-        if (oldPage) {
-          oldPage.remove();
-        }
-        callback();
-      },
-      {
-        passive: true,
-        once: true,
-      }
-    );
+    const oldPageHeight = oldPage
+      ? Math.max(oldPage.offsetHeight, container.offsetHeight)
+      : 0;
+    const previousScrollTop = container.scrollTop;
 
-    container.style.overflowY = 'hidden';
-    container.style.width = '200%';
-    container.style.display = 'flex';
+    container.style.pointerEvents = 'none';
+    container.style.position = 'relative';
+    container.style.contain = 'layout paint';
+    container.style.overflowX = 'clip';
+    container.style.overflowY = 'clip';
 
     if (oldPage) {
-      oldPage.style.flex = '0 0 50%';
-    }
-    newPage.style.flex = '0 0 50%';
-
-    if (direction === 'left') {
-      container.appendChild(newPage);
-    } else {
-      container.insertBefore(newPage, container.firstChild);
-      // container.prepend(newPage);
+      oldPage.style.position = 'absolute';
+      oldPage.style.top = `${-previousScrollTop}px`;
+      oldPage.style.left = '0';
+      oldPage.style.width = '100%';
     }
 
-    // This handle the resize of the window, only for the popup
+    container.appendChild(newPage);
+    if (previousScrollTop > 0) {
+      container.scrollTop = 0;
+    }
+
+    const enterFrom =
+      direction === 'left'
+        ? 'translate3d(100%, 0, 0)'
+        : 'translate3d(-100%, 0, 0)';
+    const exitTo =
+      direction === 'left'
+        ? 'translate3d(-100%, 0, 0)'
+        : 'translate3d(100%, 0, 0)';
+
+    const timing = {
+      duration: 300,
+      easing: 'ease-in-out',
+    };
+
+    const animations = [];
+    if (oldPage) {
+      animations.push(
+        oldPage.animate(
+          [{ transform: 'translate3d(0, 0, 0)' }, { transform: exitTo }],
+          timing
+        )
+      );
+    }
+    const primaryAnimation = newPage.animate(
+      [{ transform: enterFrom }, { transform: 'translate3d(0, 0, 0)' }],
+      timing
+    );
+    animations.push(primaryAnimation);
+
     if (window.isPopup) {
-      let newPageHeight = this.getHeight(newPage);
-      const oldPageHeight = oldPage ? this.getHeight(oldPage) : 0;
-      container.style.maxHeight = oldPageHeight + 'px';
-
-      if (newPageHeight > 400) {
-        newPageHeight = 400;
-      }
-
-      setTimeout(() => {
-        let transition = `max-height ${animationTime} ease-in-out`;
-        if (container.style.transition) {
-          transition = ', ' + transition;
-        }
-        container.style.transition += transition;
-        setTimeout(() => {
-          container.style.maxHeight = newPageHeight + 'px';
-        }, 1);
-      }, 1);
+      const startHeight = Math.min(oldPageHeight, 400);
+      const endHeight = Math.min(
+        Math.max(newPage.offsetHeight, container.offsetHeight),
+        400
+      );
+      animations.push(
+        container.animate(
+          [{ height: `${startHeight}px` }, { height: `${endHeight}px` }],
+          timing
+        )
+      );
     }
 
-    if (direction === 'left') {
-      let transition = `transform ${animationTime} ease-in-out`;
-      if (container.style.transition) {
-        transition = ', ' + transition;
+    const cleanup = () => {
+      container.style.pointerEvents = '';
+      container.style.position = '';
+      container.style.contain = '';
+      container.style.height = '';
+      container.style.overflowX = '';
+      container.style.overflowY = 'auto';
+      if (oldPage) {
+        oldPage.style.position = '';
+        oldPage.style.top = '';
+        oldPage.style.left = '';
+        oldPage.style.width = '';
+        oldPage.remove();
       }
-      container.style.transition += transition;
-      setTimeout(() => {
-        container.style.transform = 'translateX(-50%)';
-      }, 10);
-    } else {
-      container.style.transform = 'translateX(-50%)';
-      setTimeout(() => {
-        let transition = `transform ${animationTime} ease-in-out`;
-        if (container.style.transition) {
-          transition = ', ' + transition;
-        }
-        container.style.transition += transition;
-        setTimeout(() => {
-          container.style.transform = 'translateX(0)';
-        }, 1);
-      }, 1);
-    }
+    };
+
+    activePageAnimations.set(container, { animations, cleanup });
+    primaryAnimation.onfinish = () => {
+      activePageAnimations.delete(container);
+      cleanup();
+      if (callback) {
+        callback();
+      }
+    };
+    primaryAnimation.oncancel = () => {
+      activePageAnimations.delete(container);
+    };
   }
 
   /**
-   * Calculates the height for elements with display:none.
-   * https://stackoverflow.com/a/29047447
-   * @param {Element} el Element to calculate the height.
-   * @param {boolean} ignoreMaxHeight Whether the css property `max-height`
-   *     should be ignored or not.
-   * @return {number} The calculated height of the element, in pixel.
+   * Determines whether animations should run for an element, respecting both
+   * the `.notransition` class and the OS `prefers-reduced-motion` preference,
+   * as well as Web Animations API availability.
+   * @param {Element} [el=document.body] The element to check.
+   * @return {boolean} True if animations should run.
    */
-  static getHeight(el, ignoreMaxHeight) {
-    const elStyle = window.getComputedStyle(el);
-    const elMaxHeight = elStyle.maxHeight;
-    const elMaxHeightInt = elMaxHeight.replace('px', '').replace('%', '');
-
-    // if its not hidden we just return normal height
-    if (!ignoreMaxHeight && elMaxHeightInt !== '0' && elMaxHeight !== 'none') {
-      return el.offsetHeight;
+  static shouldAnimate(el = document.body) {
+    if (!el || typeof el.animate !== 'function') {
+      return false;
     }
-
-    const previousDisplay = el.style.display;
-
-    // the element is hidden so:
-    // making the el block so we can meassure its height but still be hidden
-    el.style.position = 'absolute';
-    el.style.visibility = 'hidden';
-    el.style.display = 'block';
-    el.style.maxHeight = 'none';
-
-    const wantedHeight = el.offsetHeight;
-
-    // reverting to the original values
-    el.style.display = previousDisplay;
-    el.style.position = '';
-    el.style.visibility = '';
-    el.style.maxHeight = elMaxHeight;
-
-    return wantedHeight;
-  }
-
-  /**
-   * Determines whether an element currently has a CSS transition that will
-   * run, meaning a `transitionend` event can be expected.
-   * @param {Element} el The element to check.
-   * @return {boolean} True if at least one transition has a duration.
-   */
-  static hasTransition(el) {
-    const durations = window.getComputedStyle(el).transitionDuration || '';
-    return durations.split(',').some(duration => parseFloat(duration) > 0);
+    if (
+      document.body?.classList.contains('notransition') ||
+      el.closest?.('.notransition')
+    ) {
+      return false;
+    }
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
+      return false;
+    }
+    return true;
   }
 
   /**
@@ -275,6 +325,16 @@ export class Animate {
    * @return {boolean} True if the element is hidden, otherwise false.
    */
   static isHidden(el) {
-    return el.style.maxHeight.replace('px', '').replace('%', '') === '0';
+    if (!el) {
+      return true;
+    }
+    if (
+      el.style.display === 'none' ||
+      window.getComputedStyle(el).display === 'none'
+    ) {
+      return true;
+    }
+    const maxHeight = el.style.maxHeight.replace('px', '').replace('%', '');
+    return maxHeight === '0';
   }
 }
