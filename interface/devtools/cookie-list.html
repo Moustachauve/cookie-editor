@@ -23,20 +23,18 @@
           <label
             class="menu-item switch"
             for="advanced-toggle-all"
-            id="advanced-toggle-all-label"
-          >
-            Show Advanced
+            id="advanced-toggle-all-label">
+            <span data-i18n="showAdvanced">Show Advanced</span>
             <label class="switch">
               <input
                 type="checkbox"
                 id="advanced-toggle-all"
-                aria-describedby="advanced-toggle-all-label"
-              />
+                aria-describedby="advanced-toggle-all-label" />
               <span class="slider"></span>
             </label>
           </label>
           <button class="menu-item" id="menu-all-options">
-            See All Options
+            <span data-i18n="seeAllOptions">See All Options</span>
             <svg class="icon">
               <use href="../sprites/solid.svg#external-link-alt"></use>
             </svg>
@@ -54,8 +52,7 @@
         <button
           class="panel-section-footer-button"
           id="create-cookie"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon"><use href="../sprites/solid.svg#plus"></use></svg>
             <div class="tooltip" role="tooltip">Add</div>
@@ -66,8 +63,7 @@
         <button
           class="panel-section-footer-button danger"
           id="delete-all-cookies"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon">
               <use href="../sprites/solid.svg#trash"></use>
@@ -80,8 +76,7 @@
         <button
           class="panel-section-footer-button"
           id="import-cookies"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon">
               <use href="../sprites/solid.svg#file-import"></use>
@@ -94,8 +89,7 @@
         <button
           class="panel-section-footer-button"
           id="export-cookies"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon">
               <use href="../sprites/solid.svg#file-export"></use>
@@ -111,8 +105,7 @@
         <button
           class="panel-section-footer-button"
           id="return-list-add"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon">
               <use href="../sprites/solid.svg#arrow-left"></use>
@@ -125,8 +118,7 @@
         <button
           class="panel-section-footer-button primary"
           id="save-create-cookie"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon"><use href="../sprites/solid.svg#save"></use></svg>
             <div class="tooltip" role="tooltip">Add</div>
@@ -140,8 +132,7 @@
         <button
           class="panel-section-footer-button"
           id="return-list-import"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon">
               <use href="../sprites/solid.svg#arrow-left"></use>
@@ -154,8 +145,7 @@
         <button
           class="panel-section-footer-button primary"
           id="save-import-cookie"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon">
               <use href="../sprites/solid.svg#file-import"></use>
@@ -172,8 +162,7 @@
         <button
           id="notification-dismiss"
           aria-label="Dismiss Notification"
-          type="button"
-        >
+          type="button">
           <svg class="icon"><use href="../sprites/solid.svg#times"></use></svg>
         </button>
       </div>
@@ -188,8 +177,7 @@
           class="header container"
           tabindex="0"
           role="button"
-          aria-expanded="false"
-        >
+          aria-expanded="false">
           <svg class="icon arrow">
             <use href="../sprites/solid.svg#angle-down"></use>
           </svg>
@@ -201,8 +189,7 @@
               data-tooltip-left="Delete"
               aria-label="Delete"
               tabindex="-1"
-              type="button"
-            >
+              type="button">
               <svg class="icon">
                 <use href="../sprites/solid.svg#trash"></use>
               </svg>
@@ -216,8 +203,7 @@
                 class="delete"
                 data-tooltip="Delete"
                 aria-label="Delete"
-                type="button"
-              >
+                type="button">
                 <svg class="icon">
                   <use href="../sprites/solid.svg#trash"></use>
                 </svg>
@@ -226,8 +212,7 @@
                 class="save"
                 data-tooltip="Save"
                 aria-label="Save"
-                type="submit"
-              >
+                type="submit">
                 <svg class="icon">
                   <use href="../sprites/solid.svg#save"></use>
                 </svg>
@@ -259,8 +244,7 @@
                   <input
                     name="expiration"
                     type="text"
-                    class="input-expiration"
-                  />
+                    class="input-expiration" />
                 </div>
                 <div>
                   <label class="label-sameSite">Same Site</label>
@@ -275,16 +259,14 @@
                     <input
                       type="checkbox"
                       name="hostOnly"
-                      class="input-hostOnly"
-                    />
+                      class="input-hostOnly" />
                     Host Only
                   </label>
                   <label class="label-session">
                     <input
                       type="checkbox"
                       name="session"
-                      class="input-session"
-                    />
+                      class="input-session" />
                     Session
                   </label>
                   <label class="label-secure">
@@ -295,8 +277,7 @@
                     <input
                       type="checkbox"
                       name="httpOnly"
-                      class="input-httpOnly"
-                    />
+                      class="input-httpOnly" />
                     Http Only
                   </label>
                 </div>
@@ -317,8 +298,7 @@
             class="json"
             name="content"
             id="content-import"
-            placeholder='JSON:	&#10;[{"name":"Cookie","value":"text",[...]}] &#10;&#10;Header String:	&#10;Cookie=text;Editor=yes	&#10;&#10;Netscape:	&#10;# Netscape HTTP Cookie File	&#10;# [...]	&#10;cookie-editor.com[...]	Cookie	text'
-          ></textarea>
+            placeholder='JSON:	&#10;[{"name":"Cookie","value":"text",[...]}] &#10;&#10;Header String:	&#10;Cookie=text;Editor=yes	&#10;&#10;Netscape:	&#10;# Netscape HTTP Cookie File	&#10;# [...]	&#10;cookie-editor.com[...]	Cookie	text'></textarea>
         </div>
       </form>
     </template>
@@ -337,28 +317,30 @@
     </template>
 
     <template id="tmp-empty">
-      <p class="container" id="no-cookies">
+      <p class="container" id="no-cookies" data-i18n="noCookies">
         This page does not have any cookies.
       </p>
     </template>
 
     <template id="tmp-no-permission">
-      <div class="container" id="no-permission">
+      <div class="container" id="no-permission" data-i18n="noPermission">
         You do not have the permission required to read the cookies for this
         page.
         <div>
-          Request permission for...
+          <span data-i18n="requestPermissionFor"
+            >Request permission for...</span
+          >
           <div class="button-container">
             <button
               id="request-permission"
               title="Request permission to read cookies for this site."
-            >
+              data-i18n="thisSite">
               This site
             </button>
             <button
               id="request-permission-all"
               title="Request permission to read cookies for all sites."
-            >
+              data-i18n="allSites">
               All sites
             </button>
           </div>
@@ -367,7 +349,10 @@
     </template>
 
     <template id="tmp-permission-impossible">
-      <div class="container" id="permission-impossible">
+      <div
+        class="container"
+        id="permission-impossible"
+        data-i18n="permissionImpossible">
         Cookie-Editor can't display cookies for this page.
       </div>
     </template>
@@ -404,5 +389,8 @@
         </div>
       </div>
     </template>
+
+    <script src="../lib/isPopup.js"></script>
+    <script type="module" src="../popup/cookie-list.js"></script>
   </body>
 </html>

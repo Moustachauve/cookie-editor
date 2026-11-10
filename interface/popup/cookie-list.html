@@ -10,9 +10,7 @@
 
   <body class="notransition">
     <div id="pageTitle">
-      <h1 class="container">
-        Cookie-Editor
-      </h1>
+      <h1 class="container">Cookie-Editor</h1>
       <div id="version"></div>
       <div id="main-menu">
         <button id="main-menu-button">
@@ -24,20 +22,18 @@
           <label
             class="menu-item switch"
             for="advanced-toggle-all"
-            id="advanced-toggle-all-label"
-          >
-            Show Advanced
+            id="advanced-toggle-all-label">
+            <span data-i18n="showAdvanced">Show Advanced</span>
             <label class="switch">
               <input
                 type="checkbox"
                 id="advanced-toggle-all"
-                aria-describedby="advanced-toggle-all-label"
-              />
+                aria-describedby="advanced-toggle-all-label" />
               <span class="slider"></span>
             </label>
           </label>
           <button class="menu-item" id="menu-all-options">
-            See All Options
+            <span data-i18n="seeAllOptions">See All Options</span>
             <svg class="icon">
               <use href="../sprites/solid.svg#external-link-alt"></use>
             </svg>
@@ -55,11 +51,10 @@
         <button
           class="panel-section-footer-button"
           id="create-cookie"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon"><use href="../sprites/solid.svg#plus"></use></svg>
-            <div class="tooltip" role="tooltip">Add</div>
+            <div class="tooltip" role="tooltip" data-i18n="addTooltip">Add</div>
           </div>
         </button>
         <div class="panel-section-footer-separator"></div>
@@ -67,13 +62,14 @@
         <button
           class="panel-section-footer-button danger"
           id="delete-all-cookies"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon">
               <use href="../sprites/solid.svg#trash"></use>
             </svg>
-            <div class="tooltip" role="tooltip">Delete All</div>
+            <div class="tooltip" role="tooltip" data-i18n="deleteAllTooltip">
+              Delete All
+            </div>
           </div>
         </button>
         <div class="panel-section-footer-separator"></div>
@@ -81,13 +77,14 @@
         <button
           class="panel-section-footer-button"
           id="import-cookies"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon">
               <use href="../sprites/solid.svg#file-import"></use>
             </svg>
-            <div class="tooltip" role="tooltip">Import</div>
+            <div class="tooltip" role="tooltip" data-i18n="importTooltip">
+              Import
+            </div>
           </div>
         </button>
         <div class="panel-section-footer-separator"></div>
@@ -95,13 +92,14 @@
         <button
           class="panel-section-footer-button"
           id="export-cookies"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon">
               <use href="../sprites/solid.svg#file-export"></use>
             </svg>
-            <div class="tooltip" role="tooltip">Export</div>
+            <div class="tooltip" role="tooltip" data-i18n="exportTooltip">
+              Export
+            </div>
           </div>
         </button>
       </div>
@@ -112,13 +110,14 @@
         <button
           class="panel-section-footer-button"
           id="return-list-add"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon">
               <use href="../sprites/solid.svg#arrow-left"></use>
             </svg>
-            <div class="tooltip" role="tooltip">Cancel</div>
+            <div class="tooltip" role="tooltip" data-i18n="cancelTooltip">
+              Cancel
+            </div>
           </div>
         </button>
         <div class="panel-section-footer-separator"></div>
@@ -126,11 +125,10 @@
         <button
           class="panel-section-footer-button primary"
           id="save-create-cookie"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon"><use href="../sprites/solid.svg#save"></use></svg>
-            <div class="tooltip" role="tooltip">Add</div>
+            <div class="tooltip" role="tooltip" data-i18n="addTooltip">Add</div>
           </div>
         </button>
       </div>
@@ -141,13 +139,14 @@
         <button
           class="panel-section-footer-button"
           id="return-list-import"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon">
               <use href="../sprites/solid.svg#arrow-left"></use>
             </svg>
-            <div class="tooltip" role="tooltip">Cancel</div>
+            <div class="tooltip" role="tooltip" data-i18n="cancelTooltip">
+              Cancel
+            </div>
           </div>
         </button>
         <div class="panel-section-footer-separator"></div>
@@ -155,13 +154,14 @@
         <button
           class="panel-section-footer-button primary"
           id="save-import-cookie"
-          type="button"
-        >
+          type="button">
           <div>
             <svg class="icon">
               <use href="../sprites/solid.svg#file-import"></use>
             </svg>
-            <div class="tooltip" role="tooltip">Import</div>
+            <div class="tooltip" role="tooltip" data-i18n="importTooltip">
+              Import
+            </div>
           </div>
         </button>
       </div>
@@ -173,8 +173,7 @@
         <button
           id="notification-dismiss"
           aria-label="Dismiss Notification"
-          type="button"
-        >
+          type="button">
           <svg class="icon"><use href="../sprites/solid.svg#times"></use></svg>
         </button>
       </div>
@@ -189,8 +188,7 @@
           class="header container"
           tabindex="0"
           role="button"
-          aria-expanded="false"
-        >
+          aria-expanded="false">
           <svg class="icon arrow">
             <use href="../sprites/solid.svg#angle-down"></use>
           </svg>
@@ -200,10 +198,10 @@
             <button
               class="delete"
               data-tooltip-left="Delete"
+              data-i18n="deleteTooltip"
               aria-label="Delete"
               tabindex="-1"
-              type="button"
-            >
+              type="button">
               <svg class="icon">
                 <use href="../sprites/solid.svg#trash"></use>
               </svg>
@@ -216,9 +214,9 @@
               <button
                 class="delete"
                 data-tooltip="Delete"
+                data-i18n="deleteTooltip"
                 aria-label="Delete"
-                type="button"
-              >
+                type="button">
                 <svg class="icon">
                   <use href="../sprites/solid.svg#trash"></use>
                 </svg>
@@ -226,9 +224,9 @@
               <button
                 class="save"
                 data-tooltip="Save"
+                data-i18n="saveTooltip"
                 aria-label="Save"
-                type="submit"
-              >
+                type="submit">
                 <svg class="icon">
                   <use href="../sprites/solid.svg#save"></use>
                 </svg>
@@ -236,39 +234,44 @@
             </div>
             <form data-id="" class="form container">
               <div>
-                <label class="label-name">Name</label>
+                <label class="label-name" data-i18n="name">Name</label>
                 <input name="name" type="text" class="input-name" />
               </div>
               <div>
-                <label class="label-value">Value</label>
+                <label class="label-value" data-i18n="value">Value</label>
                 <textarea name="value" class="input-value"></textarea>
               </div>
               <button class="advanced-toggle" type="button">
-                Show Advanced
+                <span data-i18n="showAdvanced">Show Advanced</span>
               </button>
               <div class="advanced-form">
                 <div>
-                  <label class="label-domain">Domain</label>
+                  <label class="label-domain" data-i18n="domain">Domain</label>
                   <input name="domain" type="text" class="input-domain" />
                 </div>
                 <div>
-                  <label class="label-path">Path</label>
+                  <label class="label-path" data-i18n="path">Path</label>
                   <input name="path" type="text" class="input-path" />
                 </div>
                 <div>
-                  <label class="label-expiration">Expiration</label>
+                  <label class="label-expiration" data-i18n="expiration"
+                    >Expiration</label
+                  >
                   <input
                     name="expiration"
                     type="text"
-                    class="input-expiration"
-                  />
+                    class="input-expiration" />
                 </div>
                 <div>
-                  <label class="label-sameSite">Same Site</label>
+                  <label class="label-sameSite" data-i18n="sameSite"
+                    >Same Site</label
+                  >
                   <select name="sameSite" class="input-sameSite">
-                    <option value="no_restriction">None</option>
-                    <option value="lax">Lax</option>
-                    <option value="strict">Strict</option>
+                    <option value="no_restriction" data-i18n="none">
+                      None
+                    </option>
+                    <option value="lax" data-i18n="lax">Lax</option>
+                    <option value="strict" data-i18n="strict">Strict</option>
                   </select>
                 </div>
                 <div class="checkbox-list">
@@ -276,29 +279,26 @@
                     <input
                       type="checkbox"
                       name="hostOnly"
-                      class="input-hostOnly"
-                    />
-                    Host Only
+                      class="input-hostOnly" />
+                    <span data-i18n="hostOnly">Host Only</span>
                   </label>
                   <label class="label-session">
                     <input
                       type="checkbox"
                       name="session"
-                      class="input-session"
-                    />
-                    Session
+                      class="input-session" />
+                    <span data-i18n="session">Session</span>
                   </label>
                   <label class="label-secure">
                     <input type="checkbox" name="secure" class="input-secure" />
-                    Secure
+                    <span data-i18n="secure">Secure</span>
                   </label>
                   <label class="label-httpOnly">
                     <input
                       type="checkbox"
                       name="httpOnly"
-                      class="input-httpOnly"
-                    />
-                    Http Only
+                      class="input-httpOnly" />
+                    <span data-i18n="httpOnly">Http Only</span>
                   </label>
                 </div>
               </div>
@@ -311,15 +311,14 @@
     <template id="tmp-import">
       <form class="form container import">
         <div>
-          <label for="content-import">
+          <label for="content-import" data-i18n="supportedFormats">
             Supported format: JSON, Header string, Netscape.
           </label>
           <textarea
             class="json"
             name="content"
             id="content-import"
-            placeholder='JSON:	&#10;[{"name":"Cookie","value":"text",[...]}] &#10;&#10;Header String:	&#10;Cookie=text;Editor=yes	&#10;&#10;Netscape:	&#10;# Netscape HTTP Cookie File	&#10;# [...]	&#10;cookie-editor.com[...]	Cookie	text'
-          ></textarea>
+            placeholder='JSON:	&#10;[{"name":"Cookie","value":"text",[...]}] &#10;&#10;Header String:	&#10;Cookie=text;Editor=yes	&#10;&#10;Netscape:	&#10;# Netscape HTTP Cookie File	&#10;# [...]	&#10;cookie-editor.com[...]	Cookie	text'></textarea>
         </div>
       </form>
     </template>
@@ -327,13 +326,14 @@
     <template id="tmp-export">
       <form class="form container export sbro">
         <div>
-          <label for="content-export">Json Only Format Exporter</label>
+          <label for="content-export" data-i18n="jsonOnlyFormatExporter"
+            >Json Only Format Exporter</label
+          >
           <textarea
             class="json"
             name="content"
             id="content-export"
-            placeholder="Export your  here"
-          >
+            placeholder="Export your  here">
           </textarea>
         </div>
       </form>
@@ -342,39 +342,41 @@
     <template id="tmp-create">
       <form class="form container create">
         <div>
-          <label for="name-create">Name</label>
+          <label for="name-create" data-i18n="name">Name</label>
           <input name="name" type="text" value="" id="name-create" />
         </div>
         <div>
-          <label for="value-create">Value</label>
+          <label for="value-create" data-i18n="value">Value</label>
           <textarea name="value" id="value-create"></textarea>
         </div>
       </form>
     </template>
 
     <template id="tmp-empty">
-      <p class="container" id="no-cookies">
+      <p class="container" id="no-cookies" data-i18n="noCookies">
         This page does not have any cookies.
       </p>
     </template>
 
     <template id="tmp-no-permission">
-      <div class="container" id="no-permission">
+      <div class="container" id="no-permission" data-i18n="noPermission">
         You do not have the permission required to read the cookies for this
         page.
         <div>
-          Request permission for...
+          <span data-i18n="requestPermissionFor"
+            >Request permission for...</span
+          >
           <div class="button-container">
             <button
               id="request-permission"
               title="Request permission to read cookies for this site."
-            >
+              data-i18n="thisSite">
               This site
             </button>
             <button
               id="request-permission-all"
               title="Request permission to read cookies for all sites."
-            >
+              data-i18n="allSites">
               All sites
             </button>
           </div>
@@ -383,7 +385,10 @@
     </template>
 
     <template id="tmp-permission-impossible">
-      <div class="container" id="permission-impossible">
+      <div
+        class="container"
+        id="permission-impossible"
+        data-i18n="permissionImpossible">
         Cookie-Editor can't display cookies for this page.
       </div>
     </template>
@@ -394,29 +399,45 @@
           <svg class="icon search">
             <use href="../sprites/solid.svg#search"></use>
           </svg>
-          <input id="searchField" type="text" placeholder="Search" />
+          <input
+            id="searchField"
+            type="text"
+            placeholder="Search"
+            data-i18n-placeholder="search" />
         </div>
       </li>
     </template>
 
     <template id="tmp-export-options">
       <div id="export-menu">
-        <h3>Export As:</h3>
-        <button id="export-json" type="button">JSON</button>
-        <button id="export-headerstring" type="button">Header String</button>
-        <button id="export-netscape" type="button">Netscape</button>
+        <h3 data-i18n="exportAs">Export As:</h3>
+        <button id="export-json" type="button" data-i18n="json">JSON</button>
+        <button id="export-headerstring" type="button" data-i18n="headerString">
+          Header String
+        </button>
+        <button id="export-netscape" type="button" data-i18n="netscape">
+          Netscape
+        </button>
       </div>
     </template>
 
     <template id="tmp-ad-item">
       <div>
-        <span class="ad-tag">Ad</span>
+        <span class="ad-tag" data-i18n="ad">Ad</span>
         <div class="ad-link">
-          <a href="" target="_blank" rel="noopener noreferrer">Ad Text!</a>
+          <a
+            href=""
+            target="_blank"
+            rel="noopener noreferrer"
+            data-i18n="adText"
+            >Ad Text!</a
+          >
         </div>
         <div class="ad-actions">
-          <button class="dont-show">Not interested</button>
-          <button class="later">Later</button>
+          <button class="dont-show" data-i18n="notInterested">
+            Not interested
+          </button>
+          <button class="later" data-i18n="later">Later</button>
         </div>
       </div>
     </template>
